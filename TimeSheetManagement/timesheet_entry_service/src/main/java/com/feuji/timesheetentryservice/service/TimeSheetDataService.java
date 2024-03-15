@@ -1,8 +1,10 @@
 package com.feuji.timesheetentryservice.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.feuji.timesheetentryservice.bean.WeekAndDayDataBean;
+import com.feuji.timesheetentryservice.dto.SaveAndEditRecordsDto;
 import com.feuji.timesheetentryservice.dto.WeekAndDayDto;
 import com.feuji.timesheetentryservice.entity.TimesheetDayEntity;
 import com.feuji.timesheetentryservice.entity.TimesheetWeekEntity;
@@ -12,7 +14,7 @@ public interface TimeSheetDataService {
 	// public void saveTimeSheetHome(TimesheetHomeUiBean
 	// timesheetHomeUiBean,TimesheetHomeUiDayBean timesheetHomeUiDayBean);
 
-	public List<TimesheetWeekEntity> saveAll(List<WeekAndDayDataBean> yourJavaClassList);
+	public List<TimesheetWeekEntity> saveAll(List<WeekAndDayDataBean> yourJavaClassList,Date mondate );
 
 	public List<WeekAndDayDto> fetchAllWeekDayRecordsById(Integer employeeId, Integer accountId, String weekStartDate,
 			String weekEndDate);
@@ -26,7 +28,8 @@ public interface TimeSheetDataService {
 	List<TimesheetDayEntity> deleteDayRecord(WeekAndDayDto weekAndDayDto);
 
 	List<TimesheetWeekEntity> submittingTimesheet(String weekStartDate, Integer timesheetStatus);
-
 	// void deleteRecords(Integer timesheetWeekId, Integer employeeId, String
-	// weekStartDate);
+	// weekStartDate);
+
+	public void saveOrUpdate(SaveAndEditRecordsDto weekAndDayDataBeans, String dateMon);
 }

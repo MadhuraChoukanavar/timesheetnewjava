@@ -8,12 +8,14 @@ import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -37,6 +39,7 @@ import com.feuji.timesheetentryservice.bean.AccountTaskBean;
 import com.feuji.timesheetentryservice.bean.CommonReferenceDetailsBean;
 import com.feuji.timesheetentryservice.bean.EmployeeBean;
 import com.feuji.timesheetentryservice.bean.WeekAndDayDataBean;
+import com.feuji.timesheetentryservice.dto.SaveAndEditRecordsDto;
 import com.feuji.timesheetentryservice.dto.TimesheetWeekDayDetailDto;
 import com.feuji.timesheetentryservice.dto.WeekAndDayDto;
 import com.feuji.timesheetentryservice.entity.TimesheetDayEntity;
@@ -46,6 +49,7 @@ import com.feuji.timesheetentryservice.repository.TimesheetWeekRepo;
 import com.feuji.timesheetentryservice.service.TimeSheetDataService;
 import com.feuji.timesheetentryservice.util.Constants;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -64,31 +68,43 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 	TimesheetWeekRepo timesheetWeekRepo;
 
 	@Override
-	public List<TimesheetWeekEntity> saveAll(List<WeekAndDayDataBean> weekAndDayDataBeans) {
+	public void saveOrUpdate(SaveAndEditRecordsDto saveAndEditRecordsDto, String mondayDate) {
+		List<WeekAndDayDataBean> dto = saveAndEditRecordsDto.getTimesheetWeekDayDetailDto();
+
+		update(saveAndEditRecordsDto.getWeekAndDayDto());
+		Date date = convertDateStringToDate(mondayDate);
+
+		List<TimesheetWeekEntity> saveAll = saveAll(saveAndEditRecordsDto.getTimesheetWeekDayDetailDto(), date);
+		saveAll.forEach(e -> System.out.println(e));
+	}
+
+	@Override
+	public List<TimesheetWeekEntity> saveAll(List<WeekAndDayDataBean> weekAndDayDataBeans, Date mondayDate) {
 		List<TimesheetWeekEntity> weekEntityList = new ArrayList<>();
 
 		LocalDate currentDate = LocalDate.now();
 		WeekFields weekFields = WeekFields.of(Locale.getDefault());
 		int currentWeekNumber = currentDate.get(weekFields.weekOfWeekBasedYear());
 
-		Date dateMon = weekAndDayDataBeans.get(0).getDateMon();
+		Date mondayDatee = mondayDate;
 
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
 
-		String formattedDate = dateFormat.format(dateMon);
+		String formattedDate = dateFormat.format(mondayDatee);
 
 		Date monDate = convertDateStringToDate(formattedDate);
 		System.out.println(monDate);
 		for (WeekAndDayDataBean weekAndDayDataBean : weekAndDayDataBeans) {
 			Integer employeeId = weekAndDayDataBean.getEmployeeId();
 			Integer accountId = weekAndDayDataBean.getAccountId();
-			
+
 			List<Integer> getprojectIdOfWeek = timesheetWeekRepo.getprojectIdOfWeek(employeeId, accountId, monDate);
-			
-			if (getprojectIdOfWeek.size() == 0 || !getprojectIdOfWeek.contains(weekAndDayDataBean.getProjectId())) {
-			
+
+			if (getprojectIdOfWeek.size() == 0
+					|| !getprojectIdOfWeek.contains(weekAndDayDataBean.getAccountProjectId())) {
+
 				TimesheetWeekEntity timesheetWeekEntity = createTimesheetWeekEntity(currentWeekNumber,
-						weekAndDayDataBean);
+						weekAndDayDataBean, mondayDatee);
 				weekEntityList.add(timesheetWeekEntity);
 				timesheetWeekRepo.save(timesheetWeekEntity);
 
@@ -110,13 +126,14 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 
 					}
 				}
-				
+
 			}
 
 			else {
-				
-				Integer timesheetweekId = timesheetWeekRepo.getTimesheetweekId(weekAndDayDataBean.getProjectId(),
+
+				Integer timesheetweekId = timesheetWeekRepo.getTimesheetweekId(weekAndDayDataBean.getAccountProjectId(),
 						monDate, weekAndDayDataBean.getEmployeeId());
+
 				TimesheetWeekEntity timesheetWeekEntity = timesheetWeekRepo.findById(timesheetweekId).get();
 				weekEntityList.add(timesheetWeekEntity);
 
@@ -135,11 +152,11 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 						TimesheetDayEntity timeDayEntity = createTimesheetDayEntity(timesheetWeekEntity,
 								weekAndDayDataBean, date.get(j), num.get(j));
 						timesheetDayRepo.save(timeDayEntity);
-					
+
 					}
 
 				}
-			
+
 			}
 
 		}
@@ -148,18 +165,82 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 
 	}
 
-	private TimesheetWeekEntity createTimesheetWeekEntity(int currentWeekNumber, WeekAndDayDataBean weekDayData) {
+	public void update(List<WeekAndDayDto> listWeekAndDayDto) {
+
+		for (WeekAndDayDto weekAndDayDto : listWeekAndDayDto) {
+			Integer timesheetWeekId = weekAndDayDto.getTimesheetWeekId();
+			Integer attendanceType = weekAndDayDto.getAttendanceType();
+			Integer taskId = weekAndDayDto.getTaskId();
+
+			List<TimesheetDayEntity> listOfDayEntity = timesheetDayRepo
+					.findByWeekIdAndAttendanceTypeAndTaskId(timesheetWeekId, attendanceType, taskId);
+
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Map<String, TimesheetDayEntity> existingDates = new HashMap<>();
+			for (TimesheetDayEntity day : listOfDayEntity) {
+				existingDates.put(formatter.format(day.getDate()), day);
+			}
+			this.processWeekDays(weekAndDayDto.getDateMon(), existingDates, formatter, weekAndDayDto.getHoursMon(),weekAndDayDto);
+			this.processWeekDays(weekAndDayDto.getDateTue(), existingDates, formatter, weekAndDayDto.getHoursTue(),weekAndDayDto);
+			this.processWeekDays(weekAndDayDto.getDateWed(), existingDates, formatter, weekAndDayDto.getHoursWed(),weekAndDayDto);
+			this.processWeekDays(weekAndDayDto.getDateThu(), existingDates, formatter, weekAndDayDto.getHoursThu(),weekAndDayDto);
+			this.processWeekDays(weekAndDayDto.getDateFri(), existingDates, formatter, weekAndDayDto.getHoursFri(),weekAndDayDto);
+			this.processWeekDays(weekAndDayDto.getDateSat(), existingDates, formatter, weekAndDayDto.getHoursSat(),weekAndDayDto);
+			this.processWeekDays(weekAndDayDto.getDateSun(), existingDates, formatter, weekAndDayDto.getHoursSun(),weekAndDayDto);
+		}
+
+	}
+
+	private void processWeekDays(Date dateValue, Map<String, TimesheetDayEntity> existingDates,
+			SimpleDateFormat formatter, Integer num,WeekAndDayDto weekAndDayDto) {
+		if (dateValue != null) {
+			String date = formatter.format(dateValue);
+			if (existingDates.containsKey(date)) {
+				TimesheetDayEntity data = existingDates.get(date);
+				System.out.println("data::" + data);
+				data.setNumberOfHours(num);
+				System.out.println("num::" + num);
+				System.out.println("after data::" + data.getNumberOfHours());
+				// update
+				TimesheetDayEntity dayEntity = timesheetDayRepo.save(data);
+			}
+
+		} else {
+			Integer timesheetWeekId = weekAndDayDto.getTimesheetWeekId();
+			 List<TimesheetDayEntity> timesheetWeekId1 = timesheetDayRepo.findAllByTimesheetWeekEntityTimesheetWeekId(timesheetWeekId);
+			
+			//Date weekStartDate = timesheetWeekId1.get(0);
+			//Date weekEndDate = timesheetDayEntity.getTimesheetWeekEntity().getWeekEndDate();
+			//List<String> dateList = getDatesBetweenWeekStartAndEnd(weekStartDate, weekEndDate);
+			if (num != 0) {
+				System.out.println(num);
+				Integer timesheetWeekId2 = weekAndDayDto.getTimesheetWeekId();
+//				TimesheetWeekEntity timesheetWeekEntity = timesheetWeekRepo.findById(timesheetWeekId2).get();
+//				
+//				
+//				
+//				TimesheetDayEntity timeDayEntity = createTimesheetDayEntity1(timesheetWeekEntity,
+//						//weekAndDayDto, dateOfWeek, num.get(i));
+//				System.out.println(timeDayEntity);
+////				 timesheetDayRepo.save(timeDayEntity);
+				
+			}
+		}
+	}
+
+	private TimesheetWeekEntity createTimesheetWeekEntity(int currentWeekNumber, WeekAndDayDataBean weekDayData,
+			Date mondayDatee) {
 		TimesheetWeekEntity timesheetWeekEntity = new TimesheetWeekEntity();
 		timesheetWeekEntity.setEmployeeId(weekDayData.getEmployeeId());
-		timesheetWeekEntity.setAccountProjectId(weekDayData.getProjectId());
-		timesheetWeekEntity.setAccountId(getAccountIdFromProjectId(weekDayData.getProjectId()).getAccountId());
+		timesheetWeekEntity.setAccountProjectId(weekDayData.getAccountProjectId());
+		timesheetWeekEntity.setAccountId(getAccountIdFromProjectId(weekDayData.getAccountProjectId()).getAccountId());
 		timesheetWeekEntity
 				.setApprovedBy(getEmployeeManagerByEmpId(weekDayData.getEmployeeId()).getReportingManagerId());
 		timesheetWeekEntity.setWeekNumber(currentWeekNumber - 1);
-		Date startDate = weekDayData.getDateMon();
-		startDate.setHours(0);
-		startDate.setMinutes(0);
-		startDate.setSeconds(0);
+		Date startDate = mondayDatee;
+//		startDate.setHours(0);
+//		startDate.setMinutes(0);
+//		startDate.setSeconds(0);
 		timesheetWeekEntity.setWeekStartDate(startDate);
 		Date endDate = weekDayData.getDateSun();
 		endDate.setHours(0);
@@ -176,16 +257,35 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 	}
 
 	private TimesheetDayEntity createTimesheetDayEntity(TimesheetWeekEntity timesheetWeekEntity,
-			WeekAndDayDataBean yourJavaClass, Date date, int hours) {
+			WeekAndDayDataBean weekAndDayDataBean, Date date, int hours) {
 
 		TimesheetDayEntity timeDayEntity = new TimesheetDayEntity();
 		timeDayEntity.setTimesheetWeekEntity(timesheetWeekEntity);
 		timeDayEntity.setDate(date);
 		timeDayEntity.setNumberOfHours(hours);
-		timeDayEntity.setAttendanceType(yourJavaClass.getAttendanceType());
-		timeDayEntity.setTaskId(yourJavaClass.getTaskId());
-		timeDayEntity.setCreatedBy(getEmployeeManagerByEmpId(yourJavaClass.getEmployeeId()).getFirstName());
-		timeDayEntity.setModifiedBy(getEmployeeManagerByEmpId(yourJavaClass.getEmployeeId()).getFirstName());
+		timeDayEntity.setAttendanceType(weekAndDayDataBean.getAttendanceType());
+		timeDayEntity.setTaskId(weekAndDayDataBean.getTaskId());
+		timeDayEntity.setCreatedBy(getEmployeeManagerByEmpId(weekAndDayDataBean.getEmployeeId()).getFirstName());
+		timeDayEntity.setModifiedBy(getEmployeeManagerByEmpId(weekAndDayDataBean.getEmployeeId()).getFirstName());
+		timeDayEntity.setIsDeleted((byte) 0);
+		timeDayEntity.setIsActive((byte) 0);
+
+		return timeDayEntity;
+	}
+
+	private TimesheetDayEntity createTimesheetDayEntity1(TimesheetWeekEntity timesheetWeekEntity,
+			WeekAndDayDto weekAndDayDatoWeekAndDayDto, Date date, int hours) {
+
+		TimesheetDayEntity timeDayEntity = new TimesheetDayEntity();
+		timeDayEntity.setTimesheetWeekEntity(timesheetWeekEntity);
+		timeDayEntity.setDate(date);
+		timeDayEntity.setNumberOfHours(hours);
+		timeDayEntity.setAttendanceType(weekAndDayDatoWeekAndDayDto.getAttendanceType());
+		timeDayEntity.setTaskId(weekAndDayDatoWeekAndDayDto.getTaskId());
+		timeDayEntity
+				.setCreatedBy(getEmployeeManagerByEmpId(weekAndDayDatoWeekAndDayDto.getEmployeeId()).getFirstName());
+		timeDayEntity
+				.setModifiedBy(getEmployeeManagerByEmpId(weekAndDayDatoWeekAndDayDto.getEmployeeId()).getFirstName());
 		timeDayEntity.setIsDeleted((byte) 0);
 		timeDayEntity.setIsActive((byte) 0);
 
@@ -198,14 +298,14 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
-	
+
 		HttpEntity<String> httpEntity = new HttpEntity<>(headers);
-	
+
 		ResponseEntity<EmployeeBean> responseEntity = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
 				EmployeeBean.class);
-		
+
 		EmployeeBean employeeBean = responseEntity.getBody();
-	
+
 		return employeeBean;
 	}
 
@@ -258,25 +358,25 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 	}
 
 	public CommonReferenceDetailsBean getAttendanceType(Integer attendanceTypeId) {
-		 try {
-		        log.info("Connecting to CommonRefarance  server...");
-		        String url = "http://localhost:8089/api/referencedetails/getbyid/" + attendanceTypeId;
+		try {
+			log.info("Connecting to CommonRefarance  server...");
+			String url = "http://localhost:8089/api/referencedetails/getbyid/" + attendanceTypeId;
 
-		        HttpHeaders headers = new HttpHeaders();
-		        headers.setContentType(MediaType.APPLICATION_JSON);
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
 
-		        HttpEntity<String> httpEntity = new HttpEntity<>(headers);
-		        ResponseEntity<CommonReferenceDetailsBean> responseEntity = restTemplate.exchange(url, HttpMethod.GET,
-		                httpEntity, CommonReferenceDetailsBean.class);
+			HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+			ResponseEntity<CommonReferenceDetailsBean> responseEntity = restTemplate.exchange(url, HttpMethod.GET,
+					httpEntity, CommonReferenceDetailsBean.class);
 
-		        CommonReferenceDetailsBean commonDetailsBean = responseEntity.getBody();
-		        return commonDetailsBean;
-		    } catch (Exception e) {
-		       
-		        log.error("Client error while connecting to the server: {}", e.getMessage(), e);
-		        
-		        return null;
-		    }
+			CommonReferenceDetailsBean commonDetailsBean = responseEntity.getBody();
+			return commonDetailsBean;
+		} catch (Exception e) {
+
+			log.error("Client error while connecting to the server: {}", e.getMessage(), e);
+
+			return null;
+		}
 
 	}
 
@@ -306,14 +406,15 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 					String dayOfWeek = getDayOfWeek(date);
 
 					WeekAndDayDto weekAndDayDto = weekDayMap.get(key);
-					if (dayOfWeek.equalsIgnoreCase("TUESDAY")) {
-						weekAndDayDto.setHoursTue(timesheetWeekDayDetailDto.getNumberOfHours());
-						weekAndDayDto.setDateTue(timesheetWeekDayDetailDto.getDate());
-					}
 					if (dayOfWeek.equalsIgnoreCase("MONDAY")) {
 						weekAndDayDto.setHoursMon(timesheetWeekDayDetailDto.getNumberOfHours());
 						weekAndDayDto.setDateMon(timesheetWeekDayDetailDto.getDate());
 					}
+					if (dayOfWeek.equalsIgnoreCase("TUESDAY")) {
+						weekAndDayDto.setHoursTue(timesheetWeekDayDetailDto.getNumberOfHours());
+						weekAndDayDto.setDateTue(timesheetWeekDayDetailDto.getDate());
+					}
+
 					if (dayOfWeek.equalsIgnoreCase("WEDNESDAY")) {
 						weekAndDayDto.setHoursWed(timesheetWeekDayDetailDto.getNumberOfHours());
 						weekAndDayDto.setDateWed(timesheetWeekDayDetailDto.getDate());
@@ -326,14 +427,7 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 						weekAndDayDto.setHoursFri(timesheetWeekDayDetailDto.getNumberOfHours());
 						weekAndDayDto.setDateFri(timesheetWeekDayDetailDto.getDate());
 					}
-					if (dayOfWeek.equalsIgnoreCase("SATURDAY")) {
-						weekAndDayDto.setHoursSat(timesheetWeekDayDetailDto.getNumberOfHours());
-						weekAndDayDto.setDateSat(timesheetWeekDayDetailDto.getDate());
-					}
-					if (dayOfWeek.equalsIgnoreCase("SUNDAY")) {
-						weekAndDayDto.setHoursSun(timesheetWeekDayDetailDto.getNumberOfHours());
-						weekAndDayDto.setDateSun(timesheetWeekDayDetailDto.getDate());
-					}
+
 				} else {
 
 					Timestamp date = timesheetWeekDayDetailDto.getDate();
@@ -355,14 +449,15 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 							.attendanceType(timesheetWeekDayDetailDto.getAttendanceType())
 
 							.weekStartDate(timesheetWeekDayDetailDto.getWeekStartDate()).build();
-					if (dayOfWeek.equalsIgnoreCase("TUESDAY")) {
-						timesheetWeekDayDto.setHoursTue(timesheetWeekDayDetailDto.getNumberOfHours());
-						timesheetWeekDayDto.setDateTue(timesheetWeekDayDetailDto.getDate());
-					}
 					if (dayOfWeek.equalsIgnoreCase("MONDAY")) {
 						timesheetWeekDayDto.setHoursMon(timesheetWeekDayDetailDto.getNumberOfHours());
 						timesheetWeekDayDto.setDateMon(timesheetWeekDayDetailDto.getDate());
 					}
+					if (dayOfWeek.equalsIgnoreCase("TUESDAY")) {
+						timesheetWeekDayDto.setHoursTue(timesheetWeekDayDetailDto.getNumberOfHours());
+						timesheetWeekDayDto.setDateTue(timesheetWeekDayDetailDto.getDate());
+					}
+
 					if (dayOfWeek.equalsIgnoreCase("WEDNESDAY")) {
 						timesheetWeekDayDto.setHoursWed(timesheetWeekDayDetailDto.getNumberOfHours());
 						timesheetWeekDayDto.setDateWed(timesheetWeekDayDetailDto.getDate());
@@ -375,21 +470,15 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 						timesheetWeekDayDto.setHoursFri(timesheetWeekDayDetailDto.getNumberOfHours());
 						timesheetWeekDayDto.setDateFri(timesheetWeekDayDetailDto.getDate());
 					}
-					if (dayOfWeek.equalsIgnoreCase("SATURDAY")) {
-						timesheetWeekDayDto.setHoursSat(timesheetWeekDayDetailDto.getNumberOfHours());
-						timesheetWeekDayDto.setDateSat(timesheetWeekDayDetailDto.getDate());
-					}
-					if (dayOfWeek.equalsIgnoreCase("SUNDAY")) {
-						timesheetWeekDayDto.setHoursSun(timesheetWeekDayDetailDto.getNumberOfHours());
-						timesheetWeekDayDto.setDateSun(timesheetWeekDayDetailDto.getDate());
-					}
 
 					weekDayMap.put(key, timesheetWeekDayDto);
 					weekAndDayDtoList.add(timesheetWeekDayDto);
 				}
 
 			}
-		
+			System.out.println("fetched details.............");
+			System.out.println(weekAndDayDtoList);
+
 			return weekAndDayDtoList;
 
 		} catch (Exception e) {
@@ -401,7 +490,6 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 
 	public static String getDayOfWeek(Timestamp timestamp) {
 		try {
-			
 
 			Instant instant = timestamp.toInstant();
 
@@ -414,25 +502,24 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 		}
 	}
 
-
 	private static List<LocalDate> getWeekDates(LocalDate weekStartDate) {
-	    List<LocalDate> weekDates = new ArrayList<>();
+		List<LocalDate> weekDates = new ArrayList<>();
 
-	    try {
-	        for (int i = 0; i < DayOfWeek.values().length; i++) {
-	            LocalDate currentDate = weekStartDate.plusDays(i);
-	            weekDates.add(currentDate);
-	        }
-	    } catch (DateTimeException e) {
+		try {
+			for (int i = 0; i < DayOfWeek.values().length; i++) {
+				LocalDate currentDate = weekStartDate.plusDays(i);
+				weekDates.add(currentDate);
+			}
+		} catch (DateTimeException e) {
 
-	        System.err.println("Error occurred while calculating week dates: " + e.getMessage());
-	       
-	        throw new RuntimeException("Failed to calculate week dates", e);
-	    }
+			System.err.println("Error occurred while calculating week dates: " + e.getMessage());
 
-	
-	    return weekDates;
+			throw new RuntimeException("Failed to calculate week dates", e);
+		}
+
+		return weekDates;
 	}
+
 	@Override
 	public List<TimesheetDayEntity> deleteDayRecord(WeekAndDayDto weekAndDayDto) {
 
@@ -446,10 +533,11 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 
 			if (weekAndDayDto.getTaskId().equals(timesheetDayEntity.getTaskId())
 					&& weekAndDayDto.getAttendanceType().equals(timesheetDayEntity.getAttendanceType())) {
-
+				System.out.println(timesheetDayEntity);
 				timesheetDayEntity.setIsDeleted((byte) 1);
 
 				timesheetDayRepo.save(timesheetDayEntity);
+				System.out.println(timesheetDayEntity);
 
 			}
 			List<TimesheetDayEntity> listOfTimesheetDayEntity2 = timesheetDayRepo
@@ -506,4 +594,75 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 		}
 
 	}
+
+	public static List<String> getDatesBetweenWeekStartAndEnd(Date weekStartDate, Date weekEndDate) {
+		LocalDate localStartDate = convertToLocalDate(weekStartDate);
+		LocalDate localEndDate = convertToLocalDate(weekEndDate);
+
+		long daysBetween = ChronoUnit.DAYS.between(localStartDate, localEndDate);
+
+		List<String> dateStringList = new ArrayList<>();
+		dateStringList.add(convertToString(weekStartDate));
+		for (int i = 1; i < daysBetween; i++) {
+			LocalDate date = localStartDate.plusDays(i);
+			dateStringList.add(date.format(DateTimeFormatter.ofPattern("dd-MMM-yyyy")));
+		}
+		dateStringList.add(convertToString(weekEndDate));
+
+		return dateStringList;
+	}
+
+	public static LocalDate convertToLocalDate(Date date) {
+		return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	}
+
+	public static String convertToString(Date date) {
+		return new java.text.SimpleDateFormat("dd-MMM-yyyy").format(date);
+	}
 }
+
+//Date weekStartDate = timesheetDayEntity.getTimesheetWeekEntity().getWeekStartDate();
+//Date weekEndDate = timesheetDayEntity.getTimesheetWeekEntity().getWeekEndDate();
+//List<String> dateList = getDatesBetweenWeekStartAndEnd(weekStartDate, weekEndDate);
+//ArrayList<Integer> num = new ArrayList<>(List.of(weekAndDayDto.getHoursMon(),
+//		weekAndDayDto.getHoursTue(), weekAndDayDto.getHoursWed(), weekAndDayDto.getHoursThu(),
+//		weekAndDayDto.getHoursFri(), weekAndDayDto.getHoursSat(), weekAndDayDto.getHoursSun()));
+//System.out.println(num);
+//
+//System.out.println(dateList);
+//for (int i = 0; i < dateList.size(); i++) {
+//	boolean flag = false;
+//	Date dateOfWeek = convertDateStringToDate(dateList.get(i));
+//	SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+//	String dateString = formatter.format(timesheetDayEntity.getDate());
+//	System.out.println(dateString+"dataString");
+//	if(dateString==null)
+//	{
+//		if (num.get(i)!= 0) {
+//			System.out.println(dateOfWeek+"date");
+//			System.out.println(num.get(i));
+//			Integer timesheetWeekId2 = weekAndDayDto.getTimesheetWeekId();
+//			TimesheetWeekEntity timesheetWeekEntity = timesheetWeekRepo.findById(timesheetWeekId2)
+//					.get();
+//			TimesheetDayEntity timeDayEntity = createTimesheetDayEntity1(timesheetWeekEntity,
+//					weekAndDayDto, dateOfWeek, num.get(i));
+//			System.out.println(timeDayEntity);
+////			 timesheetDayRepo.save(timeDayEntity);
+//		}
+//	}
+//	else {
+//		System.out.println(dateString);
+//		
+//		Date date =convertDateStringToDate(dateString) ;
+//			
+//		
+//		if (date.equals(dateOfWeek) && timesheetDayEntity.getTimesheetDayId() != null && !flag) {
+//			timesheetDayEntity.setNumberOfHours(num.get(i));
+//			TimesheetDayEntity dayEntity = timesheetDayRepo.save(timesheetDayEntity);
+//			flag = true;
+//
+//		} else {
+//			System.out.println("elsepppppp");
+//
+//		}
+//	}

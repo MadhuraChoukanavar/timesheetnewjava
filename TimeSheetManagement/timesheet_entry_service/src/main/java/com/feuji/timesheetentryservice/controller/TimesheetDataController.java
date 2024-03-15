@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.feuji.timesheetentryservice.bean.WeekAndDayDataBean;
+import com.feuji.timesheetentryservice.dto.SaveAndEditRecordsDto;
 import com.feuji.timesheetentryservice.dto.WeekAndDayDto;
 import com.feuji.timesheetentryservice.entity.TimesheetDayEntity;
 import com.feuji.timesheetentryservice.entity.TimesheetWeekEntity;
@@ -36,6 +37,10 @@ public class TimesheetDataController {
 
 	@Autowired
 	TimesheetWeekService timesheetWeekService;
+	
+	
+	
+
 
 	/**
 	 * Handles the HTTP POST request to save a list of timesheet data for multiple
@@ -46,26 +51,36 @@ public class TimesheetDataController {
 	 * @return ResponseEntity containing the saved TimesheetWeekEntity objects and
 	 *         HTTP status code.
 	 */
+	
+	@PostMapping("/saveedit/{weekStartDate}")
+	public String saveupdate(
+			@RequestBody SaveAndEditRecordsDto weekAndDayDataBeans ,@PathVariable String weekStartDate) {
+		
 
-	@PostMapping("/saveall")
-
-	public ResponseEntity<List<TimesheetWeekEntity>> saveTimesheetDataAll(
-			@RequestBody List<WeekAndDayDataBean> timesheetData) {
-
-		try {
-
-			List<TimesheetWeekEntity> saveAll = timeSheetDataService.saveAll(timesheetData);
-
-			System.out.println(saveAll);
-
-			return new ResponseEntity<>(saveAll, HttpStatus.CREATED);
-		} catch (Exception e) {
-
-			e.printStackTrace();
-
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		timeSheetDataService.saveOrUpdate(weekAndDayDataBeans, weekStartDate);
+		return "came to controller ";
+				
 	}
+
+//	@PostMapping("/saveall")
+//
+//	public ResponseEntity<List<TimesheetWeekEntity>> saveTimesheetDataAll(
+//			@RequestBody List<WeekAndDayDataBean> timesheetData) {
+//
+//		try {
+//
+//			List<TimesheetWeekEntity> saveAll = timeSheetDataService.saveAll(timesheetData);
+//
+//			System.out.println(saveAll);
+//
+//			return new ResponseEntity<>(saveAll, HttpStatus.CREATED);
+//		} catch (Exception e) {
+//
+//			e.printStackTrace();
+//
+//			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
+//	}
 
 	/**
 	 * Handles the HTTP GET request to retrieve the timesheet data for a specific
@@ -109,7 +124,7 @@ public class TimesheetDataController {
 	@PostMapping("/delete")
 	public ResponseEntity<List<TimesheetDayEntity>> deleteTheRecord(@RequestBody WeekAndDayDto weekAndDayDto) {
 		try {
-
+			System.out.println("hi delete");
 			List<TimesheetDayEntity> deleteDayRecord = timeSheetDataService.deleteDayRecord(weekAndDayDto);
 
 			if (deleteDayRecord == null || deleteDayRecord.isEmpty()) {
