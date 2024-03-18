@@ -21,7 +21,7 @@ public class WeekAndDayDto {
 	private Integer timesheetWeekId;
 	private Integer accountId;
     private Integer employeeId;
-    private Integer projectId;
+    private Integer accountProjectId;
     private String projectName;
    
     private Integer taskTypeId;

@@ -21,6 +21,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -180,19 +181,27 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 			for (TimesheetDayEntity day : listOfDayEntity) {
 				existingDates.put(formatter.format(day.getDate()), day);
 			}
-			this.processWeekDays(weekAndDayDto.getDateMon(), existingDates, formatter, weekAndDayDto.getHoursMon(),weekAndDayDto);
-			this.processWeekDays(weekAndDayDto.getDateTue(), existingDates, formatter, weekAndDayDto.getHoursTue(),weekAndDayDto);
-			this.processWeekDays(weekAndDayDto.getDateWed(), existingDates, formatter, weekAndDayDto.getHoursWed(),weekAndDayDto);
-			this.processWeekDays(weekAndDayDto.getDateThu(), existingDates, formatter, weekAndDayDto.getHoursThu(),weekAndDayDto);
-			this.processWeekDays(weekAndDayDto.getDateFri(), existingDates, formatter, weekAndDayDto.getHoursFri(),weekAndDayDto);
-			this.processWeekDays(weekAndDayDto.getDateSat(), existingDates, formatter, weekAndDayDto.getHoursSat(),weekAndDayDto);
-			this.processWeekDays(weekAndDayDto.getDateSun(), existingDates, formatter, weekAndDayDto.getHoursSun(),weekAndDayDto);
+			this.processWeekDays(weekAndDayDto.getDateMon(), existingDates, formatter, weekAndDayDto.getHoursMon(),
+					weekAndDayDto, 0);
+			this.processWeekDays(weekAndDayDto.getDateTue(), existingDates, formatter, weekAndDayDto.getHoursTue(),
+					weekAndDayDto, 1);
+			this.processWeekDays(weekAndDayDto.getDateWed(), existingDates, formatter, weekAndDayDto.getHoursWed(),
+					weekAndDayDto, 2);
+			this.processWeekDays(weekAndDayDto.getDateThu(), existingDates, formatter, weekAndDayDto.getHoursThu(),
+					weekAndDayDto, 3);
+			this.processWeekDays(weekAndDayDto.getDateFri(), existingDates, formatter, weekAndDayDto.getHoursFri(),
+					weekAndDayDto, 4);
+			this.processWeekDays(weekAndDayDto.getDateSat(), existingDates, formatter, weekAndDayDto.getHoursSat(),
+					weekAndDayDto, 5);
+			this.processWeekDays(weekAndDayDto.getDateSun(), existingDates, formatter, weekAndDayDto.getHoursSun(),
+					weekAndDayDto, 6);
 		}
 
 	}
 
 	private void processWeekDays(Date dateValue, Map<String, TimesheetDayEntity> existingDates,
-			SimpleDateFormat formatter, Integer num,WeekAndDayDto weekAndDayDto) {
+			SimpleDateFormat formatter, Integer num, WeekAndDayDto weekAndDayDto, Integer count) {
+
 		if (dateValue != null) {
 			String date = formatter.format(dateValue);
 			if (existingDates.containsKey(date)) {
@@ -206,25 +215,27 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 			}
 
 		} else {
-			Integer timesheetWeekId = weekAndDayDto.getTimesheetWeekId();
-			 List<TimesheetDayEntity> timesheetWeekId1 = timesheetDayRepo.findAllByTimesheetWeekEntityTimesheetWeekId(timesheetWeekId);
 			
-			//Date weekStartDate = timesheetWeekId1.get(0);
-			//Date weekEndDate = timesheetDayEntity.getTimesheetWeekEntity().getWeekEndDate();
-			//List<String> dateList = getDatesBetweenWeekStartAndEnd(weekStartDate, weekEndDate);
+			Integer timesheetWeekId = weekAndDayDto.getTimesheetWeekId();
+			// List<TimesheetDayEntity> timesheetWeekId1 =
+			// timesheetDayRepo.findAllByTimesheetWeekEntityTimesheetWeekId(timesheetWeekId);
+			TimesheetWeekEntity timesheetWeekEntity = timesheetWeekRepo.findById(timesheetWeekId).get();
+
+			Date weekStartDate = timesheetWeekEntity.getWeekStartDate();
+
+			Date weekEndDate = timesheetWeekEntity.getWeekEndDate();
+			List<String> dateList = getDatesBetweenWeekStartAndEnd(weekStartDate, weekEndDate);
 			if (num != 0) {
-				System.out.println(num);
-				Integer timesheetWeekId2 = weekAndDayDto.getTimesheetWeekId();
-//				TimesheetWeekEntity timesheetWeekEntity = timesheetWeekRepo.findById(timesheetWeekId2).get();
-//				
-//				
-//				
-//				TimesheetDayEntity timeDayEntity = createTimesheetDayEntity1(timesheetWeekEntity,
-//						//weekAndDayDto, dateOfWeek, num.get(i));
-//				System.out.println(timeDayEntity);
-////				 timesheetDayRepo.save(timeDayEntity);
-				
+				String string = dateList.get(count);
+				Date convertDateStringToDate = convertDateStringToDate(string);
+				System.out.println(convertDateStringToDate);
+				TimesheetDayEntity createTimesheetDayEntity1 = createTimesheetDayEntity1(timesheetWeekEntity,
+						weekAndDayDto, convertDateStringToDate, num);
+				System.out.println(createTimesheetDayEntity1);
+				timesheetDayRepo.save(createTimesheetDayEntity1);
+
 			}
+
 		}
 	}
 
@@ -437,7 +448,7 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 							.timesheetWeekId(timesheetWeekDayDetailDto.getTimesheetWeekId())
 							.employeeId(timesheetWeekDayDetailDto.getEmployeeId())
 							.accountId(timesheetWeekDayDetailDto.getAccountId())
-							.projectId(timesheetWeekDayDetailDto.getAccountProjectId())
+							.accountProjectId(timesheetWeekDayDetailDto.getAccountProjectId())
 							.projectName(getAccountIdFromProjectId(timesheetWeekDayDetailDto.getAccountProjectId())
 									.getProjectName())
 							.taskId(timesheetWeekDayDetailDto.getTaskId())
@@ -447,7 +458,7 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 							.attendanceTypeName(getAttendanceType(timesheetWeekDayDetailDto.getAttendanceType())
 									.getReferenceDetailValue())
 							.attendanceType(timesheetWeekDayDetailDto.getAttendanceType())
-
+							
 							.weekStartDate(timesheetWeekDayDetailDto.getWeekStartDate()).build();
 					if (dayOfWeek.equalsIgnoreCase("MONDAY")) {
 						timesheetWeekDayDto.setHoursMon(timesheetWeekDayDetailDto.getNumberOfHours());
@@ -619,6 +630,19 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 	public static String convertToString(Date date) {
 		return new java.text.SimpleDateFormat("dd-MMM-yyyy").format(date);
 	}
+
+//	public static void setDatesToWeekAndDayDto(Date weekStartDate, WeekAndDayDto weekAndDayDto) {
+//	    weekAndDayDto.setWeekStartDate(weekStartDate);
+//	    weekAndDayDto.setDateMon(weekStartDate);
+//	    weekAndDayDto.setDateTue(DateUtils.addDays(weekStartDate, 1));
+//	    weekAndDayDto.setDateWed(DateUtils.addDays(weekStartDate, 2));
+//	    weekAndDayDto.setDateThu(DateUtils.addDays(weekStartDate, 3));
+//	    weekAndDayDto.setDateFri(DateUtils.addDays(weekStartDate, 4));
+//	    weekAndDayDto.setDateSat(DateUtils.addDays(weekStartDate, 5));
+//	    weekAndDayDto.setDateSun(DateUtils.addDays(weekStartDate, 6));
+//	   // System.out.println(weekAndDayDto.getDateSun());
+//	}
+
 }
 
 //Date weekStartDate = timesheetDayEntity.getTimesheetWeekEntity().getWeekStartDate();
