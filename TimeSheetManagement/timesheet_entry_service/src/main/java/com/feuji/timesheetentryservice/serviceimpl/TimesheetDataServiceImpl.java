@@ -7,6 +7,7 @@ import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -15,13 +16,11 @@ import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +49,6 @@ import com.feuji.timesheetentryservice.repository.TimesheetWeekRepo;
 import com.feuji.timesheetentryservice.service.TimeSheetDataService;
 import com.feuji.timesheetentryservice.util.Constants;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -176,7 +174,8 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 			List<TimesheetDayEntity> listOfDayEntity = timesheetDayRepo
 					.findByWeekIdAndAttendanceTypeAndTaskId(timesheetWeekId, attendanceType, taskId);
 
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			//SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			Map<String, TimesheetDayEntity> existingDates = new HashMap<>();
 			for (TimesheetDayEntity day : listOfDayEntity) {
 				existingDates.put(formatter.format(day.getDate()), day);
@@ -226,8 +225,9 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 			Date weekEndDate = timesheetWeekEntity.getWeekEndDate();
 			List<String> dateList = getDatesBetweenWeekStartAndEnd(weekStartDate, weekEndDate);
 			if (num != 0) {
+				System.out.println("number is not equal to zero");
 				String string = dateList.get(count);
-				Date convertDateStringToDate = convertDateStringToDate(string);
+				Date convertDateStringToDate = convertUserSpecificFormateDate(string);
 				System.out.println(convertDateStringToDate);
 				TimesheetDayEntity createTimesheetDayEntity1 = createTimesheetDayEntity1(timesheetWeekEntity,
 						weekAndDayDto, convertDateStringToDate, num);
@@ -289,6 +289,8 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 
 		TimesheetDayEntity timeDayEntity = new TimesheetDayEntity();
 		timeDayEntity.setTimesheetWeekEntity(timesheetWeekEntity);
+		date.setHours(5);
+		date.setMinutes(30);
 		timeDayEntity.setDate(date);
 		timeDayEntity.setNumberOfHours(hours);
 		timeDayEntity.setAttendanceType(weekAndDayDatoWeekAndDayDto.getAttendanceType());
@@ -604,6 +606,30 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 			return null;
 		}
 
+	}
+	
+	private static Date convertUserSpecificFormateDate(String dateStr)
+	{
+		
+		// Define input and output date formats
+        SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MMM-yyyy");
+        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date d = null;
+        try {
+            // Parse the input date string to java.util.Date
+            Date date = inputFormat.parse(dateStr);
+            
+            // Format java.util.Date to the desired string format
+            String formattedDate = outputFormat.format(date);
+            
+            d = outputFormat.parse(formattedDate);
+            
+            System.out.println("Formatted date and time: " + formattedDate);
+        } catch (ParseException e) {
+            // Handle parse exception
+            e.printStackTrace();
+        }
+        return d;
 	}
 
 	public static List<String> getDatesBetweenWeekStartAndEnd(Date weekStartDate, Date weekEndDate) {
