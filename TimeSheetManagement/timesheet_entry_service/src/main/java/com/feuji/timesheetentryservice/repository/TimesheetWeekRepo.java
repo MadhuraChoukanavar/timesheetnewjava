@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -66,20 +67,14 @@ public interface TimesheetWeekRepo extends JpaRepository<TimesheetWeekEntity, In
 			+ " JOIN UserLoginEntity ud ON ud.userEmpId=arm.employeeId" + " WHERE ud.userEmpId=:userEmpId")
 	List<AccountProjectResourceMappingDto> findAccountNameByUserEmpId(@Param("userEmpId") Integer userEmpId);
 
+	@Modifying
+	@Query(value="update project_week_timesheet set timesheet_status=59 where employee_id=:employeeId and account_project_id=:accountProjectId and week_number=:weekNumber",nativeQuery=true)
+	public void updateTimesheetStatus(Integer employeeId,Integer accountProjectId,Integer weekNumber);
+	
+	@Modifying
+	@Query(value="update project_week_timesheet set timesheet_status=60 where employee_id=:employeeId and account_project_id=:accountProjectId and week_number=:weekNumber",nativeQuery=true)
+	public void rejectedTimesheet(Integer employeeId,Integer accountProjectId,Integer weekNumber);
 
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	@Query("SELECT new com.feuji.timesheetentryservice.dto.TimeSheetHistoryDto(" +
 	           "   pwt.weekStartDate, " +

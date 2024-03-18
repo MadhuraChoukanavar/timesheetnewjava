@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.feuji.employeeservice.bean.EmployeeBean;
+import com.feuji.employeeservice.dto.AddEmployee;
 import com.feuji.employeeservice.dto.EmployeeDto;
 import com.feuji.employeeservice.entity.EmployeeEntity;
 import com.feuji.employeeservice.service.EmployeeService;
@@ -59,7 +60,32 @@ public class EmployeeController {
 		return employee;
     }
 	
-	
+	 @GetMapping("/gender/{referenceTypeId}")
+	    public List<AddEmployee> getGender(@PathVariable Integer referenceTypeId) {
+	        return employeeService.getGender(referenceTypeId);
+	    }
+	 
+	 
+	 @GetMapping("/EmploymentType/{referenceTypeId}")
+	    public List<AddEmployee> getEmploymentType(@PathVariable Integer referenceTypeId) {
+	        return employeeService.getEmploymentType(referenceTypeId);
+	    }
+
+	 
+	 @GetMapping("/referenceTypeId/{referenceTypeId}")
+	    public List<AddEmployee> getByReferenceTypeId(@PathVariable Integer referenceTypeId) {
+	        return employeeService.getByReferenceTypeId(referenceTypeId);
+	    }
+//	 
+//	 @GetMapping("/Designation/{referenceTypeId}")
+//	    public List<AddEmployee> getDesignation(@PathVariable Integer referenceTypeId) {
+//	        return employeeService.getEmploymentType(referenceTypeId);
+//	    }
+//	 
+//	 @GetMapping("/BusinessUnit/{referenceTypeId}")
+//	    public List<AddEmployee> getBusinessUnit(@PathVariable Integer referenceTypeId) {
+//	        return employeeService.getEmploymentType(referenceTypeId);
+//	    }
 //	@GetMapping("/getByEmail/{email}")
 //	public ResponseEntity<EmployeeBean> getByEmail(@PathVariable String email)
 //	{

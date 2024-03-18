@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.feuji.accountprojectservice.bean.AccountBean;
 import com.feuji.accountprojectservice.bean.AccountProjectsBean;
+import com.feuji.accountprojectservice.bean.EmployeeBean;
 import com.feuji.accountprojectservice.entity.AccountProjectsEntity;
 import com.feuji.accountprojectservice.exception.UUIDNotFoundException;
 import com.feuji.accountprojectservice.repository.AccountProjectsRepo;
@@ -51,15 +53,15 @@ public class AccountProjectsController {
 	
 	@GetMapping("/getAccountProject/{id}")
 	 public ResponseEntity<AccountProjectsBean> getAccountBeanByEmpId(@PathVariable Integer id) {
-       
-       AccountProjectsBean accountProjectsBean = accountProjectsService.getAccountProjectBean(id);
       
-       if (accountProjectsBean!= null) {
-           log.info("reporting manager id: {}", accountProjectsBean);
-           return new ResponseEntity<>(accountProjectsBean, HttpStatus.OK);
-       } else {
-           return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-       }
+      AccountProjectsBean accountProjectsBean = accountProjectsService.getAccountProjectBean(id);
+     
+      if (accountProjectsBean!= null) {
+          log.info("reporting manager id: {}", accountProjectsBean);
+          return new ResponseEntity<>(accountProjectsBean, HttpStatus.OK);
+      } else {
+          return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      }
 	}
 	
 
@@ -99,33 +101,27 @@ public class AccountProjectsController {
 	    } 
 	}
 
-//	@PutMapping("/updateAccountProject")
-//	public ResponseEntity<AccountProjectsBean> updateAccountProject(@RequestBody AccountProjectsBean accountProjectsBean) {
-//	    log.info("updateAccountProject in controller start");
-//	    log.info("accountProjectsBean object: {}", accountProjectsBean);
-//	    
-//	    try {
-//	        // Call the service method to update the account project
-//	        AccountProjectsBean updatedProject = accountProjectsService.updateAccountProject(accountProjectsBean);
-//	        
-//	        log.info("updateAccountProject in controller end");
-//	        return new ResponseEntity<>(updatedProject, HttpStatus.OK);
-//	    } catch (IllegalArgumentException e) {
-//	        // Handle case where the request body is null or invalid
-//	        log.error("Invalid request: {}", e.getMessage());
-//	        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//	    } catch (UUIDNotFoundException e) {
-//	        // Handle case where the project UUID is not found
-//	        log.error("Project not found: {}", e.getMessage());
-//	        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//	    }
-//	}
+
+	@GetMapping(path="/getaccount")
+	public ResponseEntity<List<AccountBean>> getAccount() {
+	    List<AccountBean> beans = accountProjectsService.getAccountBean();
+	    return new ResponseEntity<>(beans, HttpStatus.OK);
+	}
 	
-	@GetMapping(path = "/getAll")
-    public ResponseEntity<List<AccountProjectsBean>> getAllAccountProjects() {
-        List<AccountProjectsBean> accountProjects = accountProjectsService.getAllAccountProjects();
-        return new ResponseEntity<>(accountProjects, HttpStatus.OK);
-    }
+
+	@GetMapping(path="/getEmployee")
+	public ResponseEntity<List<EmployeeBean>> getAllEmployees() {
+	    List<EmployeeBean> beans = accountProjectsService.getEmployeeBean();
+	    return new ResponseEntity<>(beans, HttpStatus.OK);
+	}
+	
+	@PutMapping("delete/{accountProjectId}")
+	public ResponseEntity<String> deleteProject(@PathVariable Integer accountProjectId){
+		String result=null;
+		result=accountProjectsService.updateDeleteStatus(accountProjectId);
+		return new ResponseEntity<String>(result,HttpStatus.NO_CONTENT );
+	}
+
 
 
 	

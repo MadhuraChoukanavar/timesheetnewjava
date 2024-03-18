@@ -2,6 +2,7 @@ package com.feuji.accountprojectservice.entity;
 
 import java.sql.Timestamp;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -12,11 +13,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
+@Builder
 @Setter
 @Getter
 @AllArgsConstructor
@@ -28,7 +30,7 @@ import lombok.ToString;
 @DynamicUpdate
 public class AccountEntity {
 	@Id	
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="account_id")
 	private Integer accountId;
 	@Column(name="account_name")
@@ -44,12 +46,17 @@ public class AccountEntity {
 	private Integer parentAccountId;
 	@Column(name="account_bu_id")
 	private Integer accountBuId;
+	
+	@CreationTimestamp
 	@Column(name="planned_start_date")
 	private Timestamp plannedStartDate;
+	@CreationTimestamp
 	@Column(name="planned_end_date")
 	private Timestamp plannedEndDate;
+	@CreationTimestamp
 	@Column(name="actual_start_date")
 	private Timestamp actualStartDate;
+	@CreationTimestamp
 	@Column(name="actual_end_date")
 	private Timestamp actualEndDate;
 	@Column(name="address")

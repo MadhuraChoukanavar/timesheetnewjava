@@ -1,66 +1,44 @@
 package com.feuji.accountprojectservice.bean;
 
 import java.sql.Timestamp;
-import java.util.UUID;
 
-import org.hibernate.annotations.CreationTimestamp;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-@Builder
+
 @Setter
 @Getter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-public class AccountProjectsBean {
-
-	private Integer accountProjectId;
-
-	private String projectPId;
-
-	private String projectName;
-
+public class AccountBean {
 	private Integer accountId;
-
-	private Integer priority;
-
-	private Integer projectManagerId;
-
-	private float noOfBillingHours;
-
+	private String accountName;
+	private Integer ownerId;
+	private Integer relationshipManagerId;
+	private Integer businessDevelopmentManagerId;
+	private Integer parentAccountId;
+	private Integer accountBuId;
 	private Timestamp plannedStartDate;
-
 	private Timestamp plannedEndDate;
-
 	private Timestamp actualStartDate;
-
 	private Timestamp actualEndDate;
-
-	private Integer projectStatus;
-
-	private Boolean isActive;
-
+	private String address;
+	private String city;
+	private String state;
+	private String zipcode;
+	private String country;
 	private Boolean isRed;
-
+	private Long accountStatus;
+	private String comments;
 	private Boolean isDeleted;
 
-	private String uuid;
-
+	private String uuId;
 	private String createdBy;
-
 	private Timestamp createdOn;
-
 	private String modifiedBy;
-
 	private Timestamp modifiedOn;
 
 }

@@ -35,4 +35,6 @@ public interface TimesheetWeekService {
 		
 	public List<Integer> getYear(int employeeId);
 
+
+	String updateTimesheetStatus (Integer employeeId,Integer accountProjectId,Integer weekNumber);
 }

@@ -1,10 +1,7 @@
 package com.feuji.accountprojectservice.entity;
 
 import java.math.BigDecimal;
-
 import java.sql.Timestamp;
-
-
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,23 +9,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
+import lombok.Builder;
+@Builder
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
-@Setter
-@Getter
 @Table(name = "account_resource_mapping")
 public class AccountProjectResourceMappingEntity {
-
+	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "mapping_id")
-    private Integer mappingId;
+    private Long mappingId;
 
     @Column(name = "account_project_id")
     private Integer accountProjectId;
