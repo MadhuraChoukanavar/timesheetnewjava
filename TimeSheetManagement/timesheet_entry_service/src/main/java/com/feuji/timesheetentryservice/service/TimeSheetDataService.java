@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.feuji.timesheetentryservice.bean.WeekAndDayDataBean;
+import com.feuji.timesheetentryservice.dto.EmployeeDataDto;
 import com.feuji.timesheetentryservice.dto.SaveAndEditRecordsDto;
 import com.feuji.timesheetentryservice.dto.WeekAndDayDto;
 import com.feuji.timesheetentryservice.entity.TimesheetDayEntity;
@@ -32,4 +33,11 @@ public interface TimeSheetDataService {
 	// weekStartDate);
 
 	public void saveOrUpdate(SaveAndEditRecordsDto weekAndDayDataBeans, String dateMon);
+	
+	public List<EmployeeDataDto> getEmployeeDetailsByIdAndAccountId(Integer accountId, Integer employeeId);
+
+	public List<EmployeeDataDto> getReportingManagerByIdAndAccountId(Integer accountId, Integer employeeId);
+
+	public void processPendingTimesheetsBySubmittedStatus() throws Exception;
+
 }
