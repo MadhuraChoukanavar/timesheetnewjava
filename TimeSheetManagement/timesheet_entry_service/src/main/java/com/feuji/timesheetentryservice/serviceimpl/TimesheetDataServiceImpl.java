@@ -7,7 +7,6 @@ import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -39,8 +38,8 @@ import com.feuji.timesheetentryservice.bean.AccountTaskBean;
 import com.feuji.timesheetentryservice.bean.CommonReferenceDetailsBean;
 import com.feuji.timesheetentryservice.bean.EmployeeBean;
 import com.feuji.timesheetentryservice.bean.WeekAndDayDataBean;
-import com.feuji.timesheetentryservice.dto.SaveAndEditRecordsDto;
 import com.feuji.timesheetentryservice.dto.EmployeeDataDto;
+import com.feuji.timesheetentryservice.dto.SaveAndEditRecordsDto;
 import com.feuji.timesheetentryservice.dto.TimesheetWeekDayDetailDto;
 import com.feuji.timesheetentryservice.dto.WeekAndDayDto;
 import com.feuji.timesheetentryservice.entity.TimesheetDayEntity;
@@ -582,6 +581,7 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 	public List<TimesheetWeekEntity> submittingTimesheet(String weekStartDate, Integer timesheetStatus) {
 
 		try {
+			System.out.println(weekStartDate);
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date convertedWeekStartDate = dateFormat.parse(weekStartDate);
 
@@ -590,7 +590,7 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 
 			for (TimesheetWeekEntity timesheetWeekEntity : findByWeekStartDate) {
 				timesheetWeekEntity.setTimesheetStatus(timesheetStatus);
-
+				timesheetWeekRepo.save(timesheetWeekEntity);
 			}
 
 			return findByWeekStartDate;

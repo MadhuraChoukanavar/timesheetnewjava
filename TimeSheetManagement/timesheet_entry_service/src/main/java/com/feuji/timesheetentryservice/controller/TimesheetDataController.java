@@ -24,6 +24,7 @@ import com.feuji.timesheetentryservice.entity.TimesheetDayEntity;
 import com.feuji.timesheetentryservice.entity.TimesheetWeekEntity;
 import com.feuji.timesheetentryservice.service.TimeSheetDataService;
 import com.feuji.timesheetentryservice.service.TimesheetWeekService;
+import com.feuji.timesheetentryservice.util.Constants;
 import com.feuji.timesheetentryservice.util.EmailSender;
 
 import lombok.extern.slf4j.Slf4j;
@@ -152,18 +153,19 @@ public class TimesheetDataController {
 	 *         representing the submitted timesheet and HTTP status code.
 	 */
 	@PostMapping("submitAction")
-	public ResponseEntity<List<TimesheetWeekEntity>> submitTimesheet(@RequestParam String weekStartDate,
-			@RequestParam Integer timesheetStatus) {
+	public ResponseEntity<List<TimesheetWeekEntity>> submitTimesheet(@RequestParam Integer employeeId,@RequestParam Integer accountId, @RequestParam String weekStartDate
+		) {
+		log.info("weekStartDate:::"+ weekStartDate);
 		try {
 
-			log.info("Submitting timesheet for week starting on {} with status: {}", weekStartDate, timesheetStatus);
+			log.info("Submitting timesheet for week starting on {} with status: {}", weekStartDate, Constants.TIME_SHEET_STATUS_SAVED);
 
 			List<TimesheetWeekEntity> submittingTimesheet = timeSheetDataService.submittingTimesheet(weekStartDate,
-					timesheetStatus);
+					Constants.TIME_SHEET_STATUS_SUBMITTED);
 
 			if (submittingTimesheet != null && !submittingTimesheet.isEmpty()) {
 
-				this.sendEmails(108, 3, weekStartDate);
+				this.sendEmails(employeeId, accountId, weekStartDate);
 				return new ResponseEntity<>(submittingTimesheet, HttpStatus.OK);
 			} else {
 
@@ -176,9 +178,8 @@ public class TimesheetDataController {
 		}
 	}
 
-	@PostMapping("sendEmailAction")
-	public ResponseEntity<List<TimesheetWeekEntity>> sendEmails(@RequestParam Integer employeeId,
-			@RequestParam Integer accountId, @RequestParam String weekStartDate) {
+	public ResponseEntity<List<TimesheetWeekEntity>> sendEmails(Integer employeeId,
+			 Integer accountId,  String weekStartDate) {
 		try {
 
 			log.info("Submitting timesheet for employeeId : {} and account Id: {}", employeeId, accountId,
