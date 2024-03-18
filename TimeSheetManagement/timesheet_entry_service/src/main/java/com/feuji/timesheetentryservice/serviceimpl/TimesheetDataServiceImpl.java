@@ -79,11 +79,12 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 	public void saveOrUpdate(SaveAndEditRecordsDto saveAndEditRecordsDto, String mondayDate) {
 		List<WeekAndDayDataBean> dto = saveAndEditRecordsDto.getTimesheetWeekDayDetailDto();
 
-		update(saveAndEditRecordsDto.getWeekAndDayDto());
 		Date date = convertDateStringToDate(mondayDate);
-
+		System.out.println(date);
 		List<TimesheetWeekEntity> saveAll = saveAll(saveAndEditRecordsDto.getTimesheetWeekDayDetailDto(), date);
 		saveAll.forEach(e -> System.out.println(e));
+		update(saveAndEditRecordsDto.getWeekAndDayDto());
+		
 	}
 
 	@Override
