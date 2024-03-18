@@ -163,5 +163,7 @@ public interface TimesheetWeekRepo extends JpaRepository<TimesheetWeekEntity, In
 	@Query(value="select  distinct  year(week_end_date) from project_week_timesheet\r\n"
 			+ "where employee_id=:employeeId",nativeQuery = true)
 	List<Integer> getYear(@Param("employeeId") int employeeId);
+	
+	public List<TimesheetWeekEntity> findByTimesheetStatus(Integer status);
  
 }
