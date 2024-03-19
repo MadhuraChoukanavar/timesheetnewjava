@@ -581,6 +581,7 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 	public List<TimesheetWeekEntity> submittingTimesheet(String weekStartDate, Integer timesheetStatus) {
 
 		try {
+			System.out.println(weekStartDate);
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date convertedWeekStartDate = dateFormat.parse(weekStartDate);
 

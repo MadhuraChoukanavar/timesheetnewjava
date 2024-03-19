@@ -21,4 +21,6 @@ public interface TimesheetDayRepo extends JpaRepository<TimesheetDayEntity, Inte
 	@Query("SELECT p FROM TimesheetDayEntity p WHERE p.date = :dateOfWeek")
 	TimesheetDayEntity findByDate(@Param("dateOfWeek") Date dateOfWeek);
 
+    @Query( value="select reference_details_id,reference_details_values  FROM common_reference_details rd where rd.reference_type_id=(select reference_type_id FROM common_reference_type WHERE reference_type_name=:minHoursDay) ",nativeQuery=true)
+    List<String> getDetailsByTypeName(String minHoursDay);
 }
