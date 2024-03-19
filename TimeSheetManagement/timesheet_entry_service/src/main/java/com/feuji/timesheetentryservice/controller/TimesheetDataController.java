@@ -154,11 +154,6 @@ public class TimesheetDataController {
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
 
-		} catch (Exception e) {
-
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
 
 	public ResponseEntity<List<TimesheetWeekEntity>> sendEmails(Integer employeeId,
 			 Integer accountId,  String weekStartDate) {
@@ -184,6 +179,7 @@ public class TimesheetDataController {
 		}
 	}
 
+
 	private String composeBody(EmployeeDataDto emp, String weekStartDate) throws Exception {
 
 		log.info("composeBody for employee:" + emp.getEmail());
@@ -200,3 +196,6 @@ public class TimesheetDataController {
 	}
 
 }
+
+}
+

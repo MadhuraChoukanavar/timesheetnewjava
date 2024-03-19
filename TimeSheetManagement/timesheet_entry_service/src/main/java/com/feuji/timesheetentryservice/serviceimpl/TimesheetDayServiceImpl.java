@@ -1,5 +1,8 @@
 package com.feuji.timesheetentryservice.serviceimpl;
 
+
+import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.feuji.timesheetentryservice.bean.CommonReferenceDetailsBean;
 import com.feuji.timesheetentryservice.bean.TimesheetDayBean;
 import com.feuji.timesheetentryservice.dto.TimeSheetDayHistoryDto;
 import com.feuji.timesheetentryservice.entity.TimesheetDayEntity;
@@ -52,6 +56,28 @@ public class TimesheetDayServiceImpl implements TimesheetDayService {
 			log.error("Day not found: {}", e.getMessage());
 			return null;
 		}
+	}
+	@Override
+	public List<CommonReferenceDetailsBean> getDetailsByTypeId(String typeName) {
+		log.info("getDetailsByTypeId start");
+		List<String> detailsByTypeName = timesheetDayRepo.getDetailsByTypeName(typeName);
+		if (detailsByTypeName != null) {
+			List<CommonReferenceDetailsBean> list = new ArrayList<>();
+			for (String item : detailsByTypeName) {
+				CommonReferenceDetailsBean bean = new CommonReferenceDetailsBean();
+				String[] split = item.split(",");
+				
+			bean.setReferenceDetailValue(split[1]);
+//				
+//				bean.setReferenceDetailId(Integer.parseInt(split[CommonConstants.TRUE]));
+				list.add(bean);
+			}
+			log.info("getDetailsByTypeId end");
+			return list;
+		} else {
+//			throw new TechnicalSkillsNotFoundException("no record found with type name: " + typeName);
+		}
+		return null;
 	}
 
 	@Override
