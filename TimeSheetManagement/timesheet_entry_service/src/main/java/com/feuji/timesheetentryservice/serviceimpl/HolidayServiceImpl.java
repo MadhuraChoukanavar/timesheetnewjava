@@ -1,11 +1,7 @@
 package com.feuji.timesheetentryservice.serviceimpl;
 
-import com.feuji.timesheetentryservice.service.HolidayService;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,14 +34,47 @@ public class HolidayServiceImpl implements HolidayService {
 		log.info("Holiday details are save", holidayEntity);
 
 	}
-	
-
 
 	@Override
 	public List<HolidayEntity> getAll() {
 		// Fetch all holidays from the repository and filter by is_delete = false
 		return holidayRepository.findAll().stream().filter(holiday -> !holiday.isDeleted())
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<Integer> getWeekHolidaysDayIds(String startweekofDate) {
+		// Fetch all holidays from the repository and filter by is_delete = false
+
+//				 List<HolidayEntity>  holdayList = holidayRepository.findAll().stream().filter(holiday -> !holiday.isDeleted())
+//				.collect(Collectors.toList());
+
+		DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+		LocalDate startDate = LocalDate.parse(startweekofDate, formatter1);
+
+		// Calculate the end date of the week
+		LocalDate endDate = startDate.plusDays(6);
+
+		List<HolidayEntity> holdayList = holidayRepository.findAll().stream()
+				.filter(holiday -> holiday.getHolidayDate().isAfter(startDate.minusDays(1))
+						&& holiday.getHolidayDate().isBefore(endDate.plusDays(1)))
+				.collect(Collectors.toList());
+
+		List<Integer> weekHolidaysDayIdList = new ArrayList<>();
+		// Iterate over the list of date strings
+		for (HolidayEntity holidayEntity : holdayList) {
+
+			LocalDate holidayDate = holidayEntity.getHolidayDate();
+			// Parse the date string into a LocalDate object
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+
+			// Get the day of the week as a numerical representation
+			int dayOfWeekValue = holidayDate.getDayOfWeek().getValue() - 1;
+			weekHolidaysDayIdList.add(dayOfWeekValue);
+
+		}
+
+		return weekHolidaysDayIdList;
 	}
 
 	@Override
@@ -67,12 +96,13 @@ public class HolidayServiceImpl implements HolidayService {
 	}
 
 	@Override
-	public HolidayEntity delete (Integer holidayId) {
-		log.info("service method{}",holidayId);
-	HolidayEntity optional = holidayRepository.findById(holidayId).orElseThrow(()->new IllegalArgumentException("id not found"));
-	  optional.setDeleted(true);
-	update(optional);
-	
+	public HolidayEntity delete(Integer holidayId) {
+		log.info("service method{}", holidayId);
+		HolidayEntity optional = holidayRepository.findById(holidayId)
+				.orElseThrow(() -> new IllegalArgumentException("id not found"));
+		optional.setDeleted(true);
+		update(optional);
+
 //		if (optional.isPresent()) {
 //			
 //			holidayRepository.updateIsDeleted(holidayId);
@@ -86,7 +116,7 @@ public class HolidayServiceImpl implements HolidayService {
 	}
 
 
-
-	
+}
 
 }
+

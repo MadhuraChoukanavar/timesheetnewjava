@@ -15,11 +15,12 @@ import lombok.ToString;
 @ToString
 public class AccountProjectTaskTypeBean {
 
-	private long taskTypeId;
 
-	private long accountId;
+	private Integer taskTypeId;
 
-	private long accountProjectId;
+	private Integer accountId;
+
+	private Integer accountProjectId;
 
 	private String taskType;
 
@@ -29,10 +30,10 @@ public class AccountProjectTaskTypeBean {
 
 	private Boolean isDeleted;
 
-	private UUID uuid = UUID.randomUUID();
+//	private UUID uuid = UUID.randomUUID();
 
-//	@Column(name = "uuid")
-//	private String uuid;
+
+	private String uuid;
 
 	private String createdBy;
 

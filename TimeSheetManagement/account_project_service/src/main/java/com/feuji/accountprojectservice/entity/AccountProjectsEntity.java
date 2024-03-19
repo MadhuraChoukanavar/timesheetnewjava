@@ -2,11 +2,9 @@ package com.feuji.accountprojectservice.entity;
 
 import java.sql.Timestamp;
 import java.util.UUID;
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-
 import jakarta.annotation.Generated;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,10 +13,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+@Builder
 @Setter
 @Getter
 @AllArgsConstructor
@@ -49,21 +48,21 @@ public class AccountProjectsEntity {
 	private int projectManagerId;
 
 	@Column(name = "no_of_billing_hours")
-	private Float noOfBillingHours;
+	private float noOfBillingHours;
 
-	@CreationTimestamp
+//	@CreationTimestamp
 	@Column(name = "planned_start_date")
 	private Timestamp plannedStartDate;
 
-	@CreationTimestamp
+//	@CreationTimestamp
 	@Column(name = "planned_end_date")
 	private Timestamp plannedEndDate;
 
-	@CreationTimestamp
+//	@CreationTimestamp
 	@Column(name = "actual_start_date")
 	private Timestamp actualStartDate;
 
-	@CreationTimestamp
+//	@CreationTimestamp
 	@Column(name = "actual_end_date")
 	private Timestamp actualEndDate;
 

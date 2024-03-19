@@ -1,5 +1,4 @@
 package com.feuji.accountprojectservice.bean;
-
 import java.sql.Timestamp;
 
 import lombok.AllArgsConstructor;
@@ -7,9 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-@Setter
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString

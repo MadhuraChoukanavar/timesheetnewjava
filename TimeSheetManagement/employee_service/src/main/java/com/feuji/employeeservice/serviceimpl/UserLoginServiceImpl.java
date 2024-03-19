@@ -31,6 +31,12 @@ public class UserLoginServiceImpl implements UserLoginService {
 	    }
 	}
 
+	@Override
+	public boolean isEmailUnique(String email) {
+		 UserLoginEntity existingEmployee = userLoginRepo.findByUserEmail(email);
+	        return existingEmployee == null;
+	}
+
 
 //	public boolean forgotPassword(String userEmail) {
 //		UserLoginEntity user = userLoginRepo.findByUserEmail(userEmail);

@@ -1,9 +1,6 @@
 package com.feuji.accountprojectservice.entity;
 
-
-
-
-
+import java.sql.Date;
 import java.sql.Timestamp;
 
 import jakarta.persistence.Column;
@@ -25,7 +22,7 @@ import lombok.Setter;
 @Builder
 @Table(name = "user_details")
 public class UserLoginEntity {
-
+	
 	  @Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	  @Column(name="user_id")
@@ -58,7 +55,6 @@ public class UserLoginEntity {
 	    private Timestamp modifiedOn;
 	  @Column(name="flag")
 	    private String flag;
-
 
 
 
