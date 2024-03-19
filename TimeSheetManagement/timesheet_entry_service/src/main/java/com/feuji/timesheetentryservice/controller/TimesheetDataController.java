@@ -62,25 +62,7 @@ public class TimesheetDataController {
 
 	}
 
-//	@PostMapping("/saveall")
-//
-//	public ResponseEntity<List<TimesheetWeekEntity>> saveTimesheetDataAll(
-//			@RequestBody List<WeekAndDayDataBean> timesheetData) {
-//
-//		try {
-//
-//			List<TimesheetWeekEntity> saveAll = timeSheetDataService.saveAll(timesheetData);
-//
-//			System.out.println(saveAll);
-//
-//			return new ResponseEntity<>(saveAll, HttpStatus.CREATED);
-//		} catch (Exception e) {
-//
-//			e.printStackTrace();
-//
-//			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
-//	}
+
 
 	/**
 	 * Handles the HTTP GET request to retrieve the timesheet data for a specific
@@ -172,11 +154,6 @@ public class TimesheetDataController {
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
 
-		} catch (Exception e) {
-
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
 
 	public ResponseEntity<List<TimesheetWeekEntity>> sendEmails(Integer employeeId,
 			 Integer accountId,  String weekStartDate) {
@@ -202,6 +179,7 @@ public class TimesheetDataController {
 		}
 	}
 
+
 	private String composeBody(EmployeeDataDto emp, String weekStartDate) throws Exception {
 
 		log.info("composeBody for employee:" + emp.getEmail());
@@ -218,3 +196,6 @@ public class TimesheetDataController {
 	}
 
 }
+
+}
+

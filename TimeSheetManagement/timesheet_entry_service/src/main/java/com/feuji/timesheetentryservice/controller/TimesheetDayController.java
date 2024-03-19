@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.feuji.timesheetentryservice.bean.CommonReferenceDetailsBean;
 import com.feuji.timesheetentryservice.bean.TimesheetDayBean;
 import com.feuji.timesheetentryservice.bean.TimesheetWeekBean;
+import com.feuji.timesheetentryservice.dto.TimeSheetDayHistoryDto;
 import com.feuji.timesheetentryservice.entity.TimesheetDayEntity;
 import com.feuji.timesheetentryservice.entity.TimesheetWeekEntity;
 import com.feuji.timesheetentryservice.repository.TimesheetDayRepo;
@@ -78,6 +79,19 @@ public class TimesheetDayController {
 
 	}
 	
+
+	@GetMapping(path = "/gettimeSheetDayHistory/{uuId}")
+	public ResponseEntity<List<TimeSheetDayHistoryDto>> getAccountByMonthAndYear(@PathVariable String uuId)
+	{
+		
+		
+		List<TimeSheetDayHistoryDto> timeSheetHistory= timesheetDayService.getTimeSheetDayHistory(uuId);
+		log.info("Fetching timeSheetHistory {}", timeSheetHistory);
+		//ResponseEntity<List<TimeSheetDayHistoryDto>>  timeSheetHistory1= new ResponseEntity<List<TimeSheetDayHistoryDto>>(HttpStatus.OK);
+		return new  ResponseEntity(timeSheetHistory,HttpStatus.OK);
+
+	}
+
 	@GetMapping("/getref/{typeName}")
 	public ResponseEntity<List<CommonReferenceDetailsBean>> getReferenceTypeByName(@PathVariable String typeName) {
 		log.info("getReferenceTypeByName start");
@@ -92,6 +106,6 @@ public class TimesheetDayController {
 			return new ResponseEntity<>(getbyreferenceType, HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
 	
 }

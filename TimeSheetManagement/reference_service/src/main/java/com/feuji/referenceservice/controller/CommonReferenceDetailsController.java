@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.feuji.referenceservice.bean.CommonReferenceDetailsBean;
 import com.feuji.referenceservice.bean.CommonReferenceTypeBean;
 import com.feuji.referenceservice.bean.ReferenceDetailsBean;
+import com.feuji.referenceservice.entity.CommonReferenceDetailsEntity;
 import com.feuji.referenceservice.entity.CommonReferenceTypeEntity;
 import com.feuji.referenceservice.repository.CommonReferenceDetailsRepo;
 import com.feuji.referenceservice.repository.CommonReferenceTypeRepo;
@@ -67,5 +68,15 @@ public class CommonReferenceDetailsController {
     return null;
 	}
 	}
+//	@GetMapping("/{referenceTypeId}")
+//    public List<CommonReferenceDetailsEntity> getByReferenceTypeId(@PathVariable Integer referenceTypeId) {
+//        log.info("Fetching Common Reference Details for Reference Type ID: {}", referenceTypeId);
+//        try {
+//            return commonReferenceDetails.getReferenceTypeById(referenceTypeId);
+//        } catch (Exception e) {
+//            log.error("Error occurred while fetching Common Reference Details: {}", e.getMessage());
+//            throw new RuntimeException("Failed to fetch Common Reference Details. Please try again later.");
+//        }
+//    }
 
 }
