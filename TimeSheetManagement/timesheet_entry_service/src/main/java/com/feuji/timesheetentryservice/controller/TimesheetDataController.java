@@ -192,6 +192,7 @@ public class TimesheetDataController {
 				log.info("mail sending....." + emp.getEmail());
 				emailsender.sendSimpleEmail(emp.getEmail(), "Request for Timesheet Approval",
 						this.composeBody(emp, weekStartDate));
+				System.out.println(emp.getEmail());
 
 			}
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);

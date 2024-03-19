@@ -255,7 +255,7 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 		timesheetWeekEntity.setAccountProjectId(weekDayData.getAccountProjectId());
 		timesheetWeekEntity.setAccountId(getAccountIdFromProjectId(weekDayData.getAccountProjectId()).getAccountId());
 		timesheetWeekEntity
-				.setApprovedBy(getEmployeeManagerByEmpId(weekDayData.getEmployeeId()).getReportingManagerId());
+				.setApprovedBy(getAccountIdFromProjectId(weekDayData.getAccountProjectId()).getProjectManagerId());
 		timesheetWeekEntity.setWeekNumber(currentWeekNumber - 1);
 		Date startDate = mondayDatee;
 //		startDate.setHours(0);
