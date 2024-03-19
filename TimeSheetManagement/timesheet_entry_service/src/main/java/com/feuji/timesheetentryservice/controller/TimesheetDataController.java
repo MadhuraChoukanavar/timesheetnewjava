@@ -1,7 +1,8 @@
 package com.feuji.timesheetentryservice.controller;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,16 +15,17 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import org.springframework.web.bind.annotation.RestController;
 
-import com.feuji.timesheetentryservice.bean.WeekAndDayDataBean;
+import com.feuji.timesheetentryservice.dto.EmployeeDataDto;
 import com.feuji.timesheetentryservice.dto.SaveAndEditRecordsDto;
 import com.feuji.timesheetentryservice.dto.WeekAndDayDto;
 import com.feuji.timesheetentryservice.entity.TimesheetDayEntity;
 import com.feuji.timesheetentryservice.entity.TimesheetWeekEntity;
 import com.feuji.timesheetentryservice.service.TimeSheetDataService;
 import com.feuji.timesheetentryservice.service.TimesheetWeekService;
+import com.feuji.timesheetentryservice.util.Constants;
+import com.feuji.timesheetentryservice.util.EmailSender;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,10 +39,9 @@ public class TimesheetDataController {
 
 	@Autowired
 	TimesheetWeekService timesheetWeekService;
-	
-	
-	
 
+	@Autowired
+	EmailSender emailsender;
 
 	/**
 	 * Handles the HTTP POST request to save a list of timesheet data for multiple
@@ -51,36 +52,17 @@ public class TimesheetDataController {
 	 * @return ResponseEntity containing the saved TimesheetWeekEntity objects and
 	 *         HTTP status code.
 	 */
-	
+
 	@PostMapping("/saveedit/{weekStartDate}")
-	public String saveupdate(
-			@RequestBody SaveAndEditRecordsDto weekAndDayDataBeans ,@PathVariable String weekStartDate) {
-		
+	public String saveupdate(@RequestBody SaveAndEditRecordsDto weekAndDayDataBeans,
+			@PathVariable String weekStartDate) {
 
 		timeSheetDataService.saveOrUpdate(weekAndDayDataBeans, weekStartDate);
 		return "came to controller ";
-				
+
 	}
 
-//	@PostMapping("/saveall")
-//
-//	public ResponseEntity<List<TimesheetWeekEntity>> saveTimesheetDataAll(
-//			@RequestBody List<WeekAndDayDataBean> timesheetData) {
-//
-//		try {
-//
-//			List<TimesheetWeekEntity> saveAll = timeSheetDataService.saveAll(timesheetData);
-//
-//			System.out.println(saveAll);
-//
-//			return new ResponseEntity<>(saveAll, HttpStatus.CREATED);
-//		} catch (Exception e) {
-//
-//			e.printStackTrace();
-//
-//			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
-//	}
+
 
 	/**
 	 * Handles the HTTP GET request to retrieve the timesheet data for a specific
@@ -153,26 +135,68 @@ public class TimesheetDataController {
 	 *         representing the submitted timesheet and HTTP status code.
 	 */
 	@PostMapping("submitAction")
-	public ResponseEntity<List<TimesheetWeekEntity>> submitTimesheet(@RequestParam String weekStartDate,
-			@RequestParam Integer timesheetStatus) {
+	public ResponseEntity<List<TimesheetWeekEntity>> submitTimesheet(@RequestParam Integer employeeId,@RequestParam Integer accountId, @RequestParam String weekStartDate
+		) {
+		log.info("weekStartDate:::"+ weekStartDate);
 		try {
 
-			log.info("Submitting timesheet for week starting on {} with status: {}", weekStartDate, timesheetStatus);
+			log.info("Submitting timesheet for week starting on {} with status: {}", weekStartDate, Constants.TIME_SHEET_STATUS_SAVED);
 
 			List<TimesheetWeekEntity> submittingTimesheet = timeSheetDataService.submittingTimesheet(weekStartDate,
-					timesheetStatus);
+					Constants.TIME_SHEET_STATUS_SUBMITTED);
 
 			if (submittingTimesheet != null && !submittingTimesheet.isEmpty()) {
 
+				this.sendEmails(employeeId, accountId, weekStartDate);
 				return new ResponseEntity<>(submittingTimesheet, HttpStatus.OK);
 			} else {
 
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
+
 		} catch (Exception e) {
 
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	public ResponseEntity<List<TimesheetWeekEntity>> sendEmails(Integer employeeId,
+			 Integer accountId,  String weekStartDate) {
+		try {
+
+			log.info("Submitting timesheet for employeeId : {} and account Id: {}", employeeId, accountId,
+					weekStartDate);
+
+			List<EmployeeDataDto> list = timeSheetDataService.getEmployeeDetailsByIdAndAccountId(accountId, employeeId);
+
+			log.info("List size:" + list.size());
+			for (EmployeeDataDto emp : list) {
+				log.info("mail sending....." + emp.getEmail());
+				emailsender.sendSimpleEmail(emp.getEmail(), "Request for Timesheet Approval",
+						this.composeBody(emp, weekStartDate));
+
+			}
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	private String composeBody(EmployeeDataDto emp, String weekStartDate) throws Exception {
+
+		log.info("composeBody for employee:" + emp.getEmail());
+
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		LocalDate startDate = LocalDate.parse(weekStartDate, dateTimeFormatter);
+		LocalDate endDate = startDate.plusDays(6);
+
+		String emailBody = "Dear " + emp.getFirstName() + " " + emp.getLastName() + ",\n\n"
+				+ "The employee has submitted the timesheet for the period from: " + startDate.toString() + " to: "
+				+ endDate.toString() + " Please review and approve it accordingly.";
+
+		return emailBody;
 	}
 
 }

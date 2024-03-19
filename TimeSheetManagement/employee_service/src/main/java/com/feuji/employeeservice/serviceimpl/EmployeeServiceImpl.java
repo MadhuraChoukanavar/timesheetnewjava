@@ -1,6 +1,9 @@
  package com.feuji.employeeservice.serviceimpl;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.feuji.employeeservice.bean.EmployeeBean;
@@ -13,6 +16,10 @@ import com.feuji.employeeservice.service.EmployeeService;
 public class EmployeeServiceImpl implements EmployeeService {
 	@Autowired
 	public EmployeeRepository employeeRepository;
+	
+	 @Autowired
+	    private ModelMapper modelMapper;
+	
 	
 	// SAVE
 	@Override
@@ -60,37 +67,19 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return entityToBean(entity);
 	}
 	
+	public List<AddEmployee> getAllReportingManager() {
+		 // Assuming you have a method in EmployeeRepository to retrieve employees by designation
+	    List<AddEmployee> employees = employeeRepository.findDesignationsContainingManager();
+	    return employees;
+	}
 		
-		//GET GENDER
-		@Override
-		public List<AddEmployee> getGender(Integer referenceTypeId) {
-			return employeeRepository.getGender(referenceTypeId);
-		}
 		
-      //GET EMPLOYMENT TYPE
-		@Override
-		public List<AddEmployee> getEmploymentType(Integer referenceTypeId) {
-			return employeeRepository.getEmploymentType(referenceTypeId);
-		}
 		
-	// GET DESIGNATION
-		@Override
-		public List<AddEmployee> getDesignation(Integer referenceTypeId) {
-			return employeeRepository.getDesignation(referenceTypeId);
-		}
-		
-//		GET BusinessUnit
-		@Override
-		public List<AddEmployee> getBusinessUnit(Integer referenceTypeId) {
-			// TODO Auto-generated method stub
-			return employeeRepository.getBusinessUnit(referenceTypeId);
-		}
-		
-//		GET BY REFERENCE ID
-		@Override
-		public List<AddEmployee > getByReferenceTypeId(Integer referenceTypeId) {
-			return employeeRepository.getByReferenceTypeId(referenceTypeId);
-		}
+//		@Override
+//		public List<ReferenceDto> getAll() {
+//			
+//			return employeeRepository.getAll();
+//		}
 	// conversion entity to bean and visa versa
 	public EmployeeBean entityToBean(EmployeeEntity entity) {
 		EmployeeBean employeeBean = new EmployeeBean();
@@ -180,4 +169,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 			employeeRepository.save(existingEmployee);
 		}
+
+		
+
+		
 }

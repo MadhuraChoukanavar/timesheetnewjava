@@ -8,8 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@AllArgsConstructor
-@NoArgsConstructor
+
 @Setter
 @Getter
 @ToString
@@ -29,6 +28,32 @@ public class EmployeeDto {
 	private Integer status;
 	private Integer deliveryUnitId;
 	private Integer businessUnitId;
+	
+	public EmployeeDto(Integer userEmpId, String employeeCode, String firstName, String middleName, String lastName,
+			String image, String designation, String email, Integer gender, Timestamp dateOfJoining,
+			Integer reportingManagerId, Integer employmentType, Integer status, Integer deliveryUnitId,
+			Integer businessUnitId) {
+		super();
+		this.userEmpId = userEmpId;
+		this.employeeCode = employeeCode;
+		this.firstName = firstName;
+		this.middleName = middleName;
+		this.lastName = lastName;
+		this.image = image;
+		this.designation = designation;
+		this.email = email;
+		this.gender = gender;
+		this.dateOfJoining = dateOfJoining;
+		this.reportingManagerId = reportingManagerId;
+		this.employmentType = employmentType;
+		this.status = status;
+		this.deliveryUnitId = deliveryUnitId;
+		this.businessUnitId = businessUnitId;
+	}
+	public EmployeeDto() {
+		super();
+	}
 
+	
 
 }

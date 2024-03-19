@@ -15,13 +15,11 @@ import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,17 +38,19 @@ import com.feuji.timesheetentryservice.bean.AccountTaskBean;
 import com.feuji.timesheetentryservice.bean.CommonReferenceDetailsBean;
 import com.feuji.timesheetentryservice.bean.EmployeeBean;
 import com.feuji.timesheetentryservice.bean.WeekAndDayDataBean;
+import com.feuji.timesheetentryservice.dto.EmployeeDataDto;
 import com.feuji.timesheetentryservice.dto.SaveAndEditRecordsDto;
 import com.feuji.timesheetentryservice.dto.TimesheetWeekDayDetailDto;
 import com.feuji.timesheetentryservice.dto.WeekAndDayDto;
 import com.feuji.timesheetentryservice.entity.TimesheetDayEntity;
 import com.feuji.timesheetentryservice.entity.TimesheetWeekEntity;
+import com.feuji.timesheetentryservice.repository.EmployeeDetailsRepo;
 import com.feuji.timesheetentryservice.repository.TimesheetDayRepo;
 import com.feuji.timesheetentryservice.repository.TimesheetWeekRepo;
 import com.feuji.timesheetentryservice.service.TimeSheetDataService;
 import com.feuji.timesheetentryservice.util.Constants;
+import com.feuji.timesheetentryservice.util.EmailSender;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -68,15 +68,22 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 	@Autowired
 	TimesheetWeekRepo timesheetWeekRepo;
 
+	@Autowired
+	private EmployeeDetailsRepo employeeDetailsRepo;
+
+	@Autowired
+	EmailSender emailSender;
+
 	@Override
 	public void saveOrUpdate(SaveAndEditRecordsDto saveAndEditRecordsDto, String mondayDate) {
 		List<WeekAndDayDataBean> dto = saveAndEditRecordsDto.getTimesheetWeekDayDetailDto();
 
-		update(saveAndEditRecordsDto.getWeekAndDayDto());
 		Date date = convertDateStringToDate(mondayDate);
-
+		System.out.println(date);
 		List<TimesheetWeekEntity> saveAll = saveAll(saveAndEditRecordsDto.getTimesheetWeekDayDetailDto(), date);
 		saveAll.forEach(e -> System.out.println(e));
+		update(saveAndEditRecordsDto.getWeekAndDayDto());
+		
 	}
 
 	@Override
@@ -176,7 +183,8 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 			List<TimesheetDayEntity> listOfDayEntity = timesheetDayRepo
 					.findByWeekIdAndAttendanceTypeAndTaskId(timesheetWeekId, attendanceType, taskId);
 
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			// SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			Map<String, TimesheetDayEntity> existingDates = new HashMap<>();
 			for (TimesheetDayEntity day : listOfDayEntity) {
 				existingDates.put(formatter.format(day.getDate()), day);
@@ -215,7 +223,7 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 			}
 
 		} else {
-			
+
 			Integer timesheetWeekId = weekAndDayDto.getTimesheetWeekId();
 			// List<TimesheetDayEntity> timesheetWeekId1 =
 			// timesheetDayRepo.findAllByTimesheetWeekEntityTimesheetWeekId(timesheetWeekId);
@@ -226,8 +234,9 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 			Date weekEndDate = timesheetWeekEntity.getWeekEndDate();
 			List<String> dateList = getDatesBetweenWeekStartAndEnd(weekStartDate, weekEndDate);
 			if (num != 0) {
+				System.out.println("number is not equal to zero");
 				String string = dateList.get(count);
-				Date convertDateStringToDate = convertDateStringToDate(string);
+				Date convertDateStringToDate = convertUserSpecificFormateDate(string);
 				System.out.println(convertDateStringToDate);
 				TimesheetDayEntity createTimesheetDayEntity1 = createTimesheetDayEntity1(timesheetWeekEntity,
 						weekAndDayDto, convertDateStringToDate, num);
@@ -289,6 +298,8 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 
 		TimesheetDayEntity timeDayEntity = new TimesheetDayEntity();
 		timeDayEntity.setTimesheetWeekEntity(timesheetWeekEntity);
+		date.setHours(5);
+		date.setMinutes(30);
 		timeDayEntity.setDate(date);
 		timeDayEntity.setNumberOfHours(hours);
 		timeDayEntity.setAttendanceType(weekAndDayDatoWeekAndDayDto.getAttendanceType());
@@ -458,7 +469,7 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 							.attendanceTypeName(getAttendanceType(timesheetWeekDayDetailDto.getAttendanceType())
 									.getReferenceDetailValue())
 							.attendanceType(timesheetWeekDayDetailDto.getAttendanceType())
-							
+
 							.weekStartDate(timesheetWeekDayDetailDto.getWeekStartDate()).build();
 					if (dayOfWeek.equalsIgnoreCase("MONDAY")) {
 						timesheetWeekDayDto.setHoursMon(timesheetWeekDayDetailDto.getNumberOfHours());
@@ -570,6 +581,7 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 	public List<TimesheetWeekEntity> submittingTimesheet(String weekStartDate, Integer timesheetStatus) {
 
 		try {
+			System.out.println(weekStartDate);
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date convertedWeekStartDate = dateFormat.parse(weekStartDate);
 
@@ -578,7 +590,7 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 
 			for (TimesheetWeekEntity timesheetWeekEntity : findByWeekStartDate) {
 				timesheetWeekEntity.setTimesheetStatus(timesheetStatus);
-
+				timesheetWeekRepo.save(timesheetWeekEntity);
 			}
 
 			return findByWeekStartDate;
@@ -604,6 +616,29 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 			return null;
 		}
 
+	}
+
+	private static Date convertUserSpecificFormateDate(String dateStr) {
+
+		// Define input and output date formats
+		SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MMM-yyyy");
+		SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date d = null;
+		try {
+			// Parse the input date string to java.util.Date
+			Date date = inputFormat.parse(dateStr);
+
+			// Format java.util.Date to the desired string format
+			String formattedDate = outputFormat.format(date);
+
+			d = outputFormat.parse(formattedDate);
+
+			System.out.println("Formatted date and time: " + formattedDate);
+		} catch (ParseException e) {
+			// Handle parse exception
+			e.printStackTrace();
+		}
+		return d;
 	}
 
 	public static List<String> getDatesBetweenWeekStartAndEnd(Date weekStartDate, Date weekEndDate) {
@@ -642,8 +677,6 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 //	    weekAndDayDto.setDateSun(DateUtils.addDays(weekStartDate, 6));
 //	   // System.out.println(weekAndDayDto.getDateSun());
 //	}
-
-}
 
 //Date weekStartDate = timesheetDayEntity.getTimesheetWeekEntity().getWeekStartDate();
 //Date weekEndDate = timesheetDayEntity.getTimesheetWeekEntity().getWeekEndDate();
@@ -690,3 +723,83 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 //
 //		}
 //	}
+
+	public List<EmployeeDataDto> getEmployeeDetailsByIdAndAccountId(Integer accountId, Integer employeeId) {
+
+		List<Object[]> list = employeeDetailsRepo.getAccountManagerDetails(accountId, employeeId);
+		List<EmployeeDataDto> empList = new ArrayList<>();
+		for (Object[] o : list) {
+			System.out.println(o.toString());
+			EmployeeDataDto emp = new EmployeeDataDto();
+			emp.setFirstName((String) o[0]);
+			emp.setLastName((String) o[1]);
+			emp.setEmail((String) o[2]);
+			empList.add(emp);
+
+		}
+		return empList;
+	}
+
+	public List<EmployeeDataDto> getReportingManagerByIdAndAccountId(Integer accountId, Integer employeeId) {
+
+		List<Object[]> list = employeeDetailsRepo.getReportingManagerDetails(accountId, employeeId);
+		List<EmployeeDataDto> empList = new ArrayList<>();
+		for (Object[] o : list) {
+			System.out.println(o.toString());
+			EmployeeDataDto emp = new EmployeeDataDto();
+			emp.setFirstName((String) o[0]);
+			emp.setLastName((String) o[1]);
+			emp.setEmail((String) o[2]);
+			empList.add(emp);
+		}
+		return empList;
+	}
+
+	public void processPendingTimesheetsBySubmittedStatus() throws Exception {
+		System.out.println("processPendingTimesheetsBySubmittedStatus");
+
+		// Submitted status value is 58
+		List<TimesheetWeekEntity> weekList = timesheetWeekRepo
+				.findByTimesheetStatus(Constants.TIME_SHEET_STATUS_SUBMITTED);
+
+		System.out.println("processPendingTimesheetsBySubmittedStatus::" + weekList.size());
+		LocalDate currentDate = LocalDate.now();
+		for (TimesheetWeekEntity entity : weekList) {
+
+			Instant instant = Instant.ofEpochMilli(entity.getModifiedOn().getTime());
+
+			ZoneId zoneId = ZoneId.of("UTC"); // Adjust to your desired time zone
+			LocalDate modifiedDate = instant.atZone(zoneId).toLocalDate();
+			modifiedDate = modifiedDate.plusDays(Constants.TIME_SHEET_GRACE_NUMBER_OF_DAYS);
+			if (modifiedDate.compareTo(currentDate) < 0) {
+				System.out.println(entity);
+				List<EmployeeDataDto> empList = this.getReportingManagerByIdAndAccountId(
+						entity.getAccountId(),entity.getEmployeeId());
+				if (!empList.isEmpty()) {
+					for (EmployeeDataDto emp : empList) {
+
+						emailSender.sendSimpleEmail(emp.getEmail(),
+								"Request for Timesheet Approval from Reporting Manager",
+								this.composeBody(emp, entity.getWeekStartDate(), entity.getWeekEndDate()));
+					}
+				} else {
+					System.out.println("Employee list is empty.");
+				}
+			}
+		}
+
+	}
+
+	private String composeBody(EmployeeDataDto emp, Date startDate, Date endDate) throws Exception {
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneId.systemDefault());
+		String startDateLocal = formatter.format(startDate.toInstant());
+		String endDateLocal = formatter.format(endDate.toInstant());
+
+		String emailBody = "Dear " + emp.getFirstName() + " " + emp.getLastName() + ",\n\n"
+				+ "The Project Manager not yet approve the timesheet for the period from: " + startDateLocal.toString()
+				+ " to: " + endDateLocal.toString() + " Please review and approve it accordingly.";
+
+		return emailBody;
+	}
+}

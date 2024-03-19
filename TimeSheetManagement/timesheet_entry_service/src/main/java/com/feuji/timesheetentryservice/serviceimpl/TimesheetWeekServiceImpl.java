@@ -187,15 +187,4 @@ public class TimesheetWeekServiceImpl implements TimesheetWeekService {
 		}
 		return null;
 	}
-	@Override
-	public String updateTimesheetStatus(Integer employeeId,Integer accountProjectId,Integer weekNumber) {
-		try {
-			timesheetWeekRepo.updateTimesheetStatus(employeeId,accountProjectId,weekNumber);
-			return "Update timesheetStatus successfully";
-		}catch(Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-		
-	}
 }

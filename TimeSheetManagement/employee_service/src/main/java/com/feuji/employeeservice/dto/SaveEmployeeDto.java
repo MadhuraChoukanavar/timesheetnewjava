@@ -11,9 +11,11 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddEmployee {
-	private String firstName;
-	private String designation;
-	private Integer employeeId;
+
+public class SaveEmployeeDto {
+	private Integer referenceDetailId;
+	private String referenceDetailValue;
+	private Integer referenceTypeId;
+	
 
 }

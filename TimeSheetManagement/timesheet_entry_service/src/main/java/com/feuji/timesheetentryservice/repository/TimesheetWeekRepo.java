@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -67,17 +66,22 @@ public interface TimesheetWeekRepo extends JpaRepository<TimesheetWeekEntity, In
 			+ " JOIN UserLoginEntity ud ON ud.userEmpId=arm.employeeId" + " WHERE ud.userEmpId=:userEmpId")
 	List<AccountProjectResourceMappingDto> findAccountNameByUserEmpId(@Param("userEmpId") Integer userEmpId);
 
-	@Modifying
-	@Query(value="update project_week_timesheet set timesheet_status=59 where employee_id=:employeeId and account_project_id=:accountProjectId and week_number=:weekNumber",nativeQuery=true)
-	public void updateTimesheetStatus(Integer employeeId,Integer accountProjectId,Integer weekNumber);
-	
-	@Modifying
-	@Query(value="update project_week_timesheet set timesheet_status=60 where employee_id=:employeeId and account_project_id=:accountProjectId and week_number=:weekNumber",nativeQuery=true)
-	public void rejectedTimesheet(Integer employeeId,Integer accountProjectId,Integer weekNumber);
+
 
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	@Query("SELECT new com.feuji.timesheetentryservice.dto.TimeSheetHistoryDto(" +
-	           "   pwt.weekStartDate, " +
+	           "  pwt.uuid,  pwt.weekStartDate, " +
 	           "   pwt.weekEndDate, " +
 	           "   ap.projectName, " +
 	           "   acc.accountName, " +
@@ -99,12 +103,12 @@ public interface TimesheetWeekRepo extends JpaRepository<TimesheetWeekEntity, In
 	           "AND MONTHNAME(pdt.date) = :month " +
 	           "AND acc.accountName = :accountName " +
 	           "AND pwt.employeeId=:employeeId "+
-	           "GROUP BY pwt.weekStartDate,ep.lastName,ep.firstName, pwt.weekEndDate, ap.projectName, acc.accountName, crdStatus.referenceDetailValue")
+	           "GROUP BY pwt.uuid,pwt.weekStartDate,ep.lastName,ep.firstName, pwt.weekEndDate, ap.projectName, acc.accountName, crdStatus.referenceDetailValue")
 	    List<TimeSheetHistoryDto> getTimeSheetHistory(@Param("month") String month, @Param("year") int year, @Param("accountName") String accountName ,@Param("employeeId") int employeeId);
 
 	
 	@Query("SELECT new com.feuji.timesheetentryservice.dto.TimeSheetHistoryDto(" +
-	           "   pwt.weekStartDate, " +
+	           "   pwt.uuid,pwt.weekStartDate, " +
 	           "   pwt.weekEndDate, " +
 	           "   ap.projectName, " +
 	           "   acc.accountName, " +
@@ -125,13 +129,13 @@ public interface TimesheetWeekRepo extends JpaRepository<TimesheetWeekEntity, In
 	           "WHERE YEAR(pdt.date) = :year " +
 	           "AND acc.accountName = :accountName " +
 	           "AND pwt.employeeId=:employeeId "+
-	           "GROUP BY pwt.weekStartDate, pwt.weekEndDate,ep.lastName,ep.firstName, ap.projectName, acc.accountName, crdStatus.referenceDetailValue")
+	           "GROUP BY pwt.uuid,pwt.weekStartDate, pwt.weekEndDate,ep.lastName,ep.firstName, ap.projectName, acc.accountName, crdStatus.referenceDetailValue")
 	    List<TimeSheetHistoryDto> getTimeSheetHistoryByYear( @Param("year") int year, @Param("accountName") String accountName ,@Param("employeeId") int employeeId);
 
 	
 
 	@Query("SELECT new com.feuji.timesheetentryservice.dto.TimeSheetHistoryDto(" +
-	           "   pwt.weekStartDate, " +
+	           " pwt.uuid,  pwt.weekStartDate, " +
 	           "   pwt.weekEndDate, " +
 	           "   ap.projectName, " +
 	           "   acc.accountName, " +
@@ -152,11 +156,17 @@ public interface TimesheetWeekRepo extends JpaRepository<TimesheetWeekEntity, In
 	           "WHERE YEAR(pdt.date) = :year " +
 	           "AND MONTHNAME(pdt.date) = :month " +
 	           "AND pwt.employeeId=:employeeId "+
-			 "GROUP BY pwt.weekStartDate, pwt.weekEndDate,ep.lastName,ep.firstName, ap.projectName, acc.accountName, crdStatus.referenceDetailValue")
+			 "GROUP BY pwt.uuid,pwt.weekStartDate, pwt.weekEndDate,ep.lastName,ep.firstName, ap.projectName, acc.accountName, crdStatus.referenceDetailValue")
 	    List<TimeSheetHistoryDto> getAccountByMonthAndYear(@Param("month") String month, @Param("year") int year,@Param("employeeId") int employeeId);
 
 	@Query(value="select  distinct  year(week_end_date) from project_week_timesheet\r\n"
 			+ "where employee_id=:employeeId",nativeQuery = true)
 	List<Integer> getYear(@Param("employeeId") int employeeId);
+	
+
+	
+
+	
+	public List<TimesheetWeekEntity> findByTimesheetStatus(Integer status);
  
 }

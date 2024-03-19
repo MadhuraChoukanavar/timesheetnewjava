@@ -1,5 +1,6 @@
 package com.feuji.referenceservice.serviceImpl;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +34,7 @@ public class CommonReferenceDetailsImpl implements CommonReferenceDetails {
 		List<String> detailsByTypeName = commonReferenceDetailsRepo.getDetailsByTypeName(typeName);
 		log.info("result"+detailsByTypeName);
 		
-		 List<ReferenceDetailsBean> list = new ArrayList<>();
+		 List<ReferenceDetailsBean> list = new ArrayList<ReferenceDetailsBean>();
 		 
 		
 		for(String item:detailsByTypeName)

@@ -1,5 +1,6 @@
 package com.feuji.timesheetentryservice.serviceimpl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
@@ -9,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.feuji.timesheetentryservice.bean.TimesheetDayBean;
-
+import com.feuji.timesheetentryservice.dto.TimeSheetDayHistoryDto;
 import com.feuji.timesheetentryservice.entity.TimesheetDayEntity;
 import com.feuji.timesheetentryservice.entity.TimesheetWeekEntity;
 import com.feuji.timesheetentryservice.exception.WeekNotFoundException;
@@ -53,4 +54,20 @@ public class TimesheetDayServiceImpl implements TimesheetDayService {
 		}
 	}
 
+	@Override
+	public List<TimeSheetDayHistoryDto> getTimeSheetDayHistory(String uuId) {
+		try
+		{
+		System.out.println(uuId);
+		List<TimeSheetDayHistoryDto>   timeSheetHistory =timesheetDayRepo.getTimeSheetDayHistory(uuId);
+
+		log.info("timeSheetHistory :" ,timeSheetHistory);
+		return timeSheetHistory;
+		}
+		catch (Exception e) {
+//			System.out.println(e.getMessage());
+			log.info(e.getMessage());
+		}
+		return null;
+	}
 }

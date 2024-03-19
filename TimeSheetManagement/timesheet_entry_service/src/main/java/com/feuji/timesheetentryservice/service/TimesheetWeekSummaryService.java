@@ -23,7 +23,7 @@ public interface TimesheetWeekSummaryService {
 	  
 	  public List<ProjectNameDto> getAccountProjects( Integer accountId);
 	  
-	  List<AccountNameDto> getAccounts(Integer approvedBy);
+	  List<AccountNameDto> getAccounts(String approvedBy);
 	  
 	  public Integer getTotalHours( Integer employeeId, Integer accountProjectId,Integer weekNumber);
 

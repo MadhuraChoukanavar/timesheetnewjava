@@ -42,7 +42,7 @@ public class TimesheetWeekSummaryViewServiceImpl implements TimesheetWeekSummary
 	     }
 	 }
 	 @Override
-	 public List<AccountNameDto> getAccounts(Integer approvedBy) {
+	 public List<AccountNameDto> getAccounts(String approvedBy) {
 	     try {
 	         log.info("Fetching accounts for approvedBy: {}", approvedBy);
 	         List<AccountNameDto> accounts = timesheetWeekSummaryRepo.getAccounts(approvedBy);

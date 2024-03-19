@@ -69,7 +69,7 @@ public class TimesheetWeekSummaryViewController {
 	    }
 	 
 	 @GetMapping("/accounts/{approvedBy}")
-	 public ResponseEntity<List<AccountNameDto>> getAccounts(@PathVariable Integer approvedBy){
+	 public ResponseEntity<List<AccountNameDto>> getAccounts(@PathVariable String approvedBy){
 		 log.info("Fetching account for approvedBy: {}", approvedBy);
 	        List<AccountNameDto> accounts = timesheetWeekSummaryService.getAccounts(approvedBy);
 	        if (accounts != null && !accounts.isEmpty()) {

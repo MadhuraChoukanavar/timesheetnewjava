@@ -21,6 +21,7 @@ import com.feuji.accountservice.bean.EmployeeBean;
 import com.feuji.accountservice.dto.AccountDTO;
 import com.feuji.accountservice.dto.UpdateAccountDto;
 import com.feuji.accountservice.entity.AccountEntity;
+import com.feuji.accountservice.exception.SaveUniqueAccountException;
 import com.feuji.accountservice.exception.UUIDNotFoundException;
 import com.feuji.accountservice.service.AccountService;
 
@@ -36,22 +37,15 @@ public class AccountController {
 	private AccountService accountService;
 
 	@PostMapping("/save")
-	public ResponseEntity<AccountEntity> save(@RequestBody AccountBean accountBean) {
-		
-		
-		try {
-			log.info("Saving Account  {}", accountBean);
-			AccountEntity saveAccountEntity = accountService.saveAccount(accountBean);
-
-			ResponseEntity<AccountEntity> responseEntity = new ResponseEntity<>(saveAccountEntity, HttpStatus.CREATED);
-			System.out.println("Data inserted");
-			return responseEntity;
-		} catch (Exception e) {
-
-			System.out.println(e.getMessage());
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-	}
+    public ResponseEntity<Object> saveAccount(@RequestBody AccountBean accountBean) {
+        try {
+            AccountEntity savedAccount = accountService.saveAccount(accountBean);
+            return ResponseEntity.ok(savedAccount);
+        } catch (SaveUniqueAccountException e) {
+        String message	=e.getMessage();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
+        }
+    }
 
 	
 	

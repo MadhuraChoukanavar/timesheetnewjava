@@ -6,6 +6,7 @@ import com.feuji.employeeservice.bean.EmployeeBean;
 import com.feuji.employeeservice.dto.AddEmployee;
 import com.feuji.employeeservice.dto.EmployeeDto;
 import com.feuji.employeeservice.entity.CommonReferenceDetailsEntity;
+import com.feuji.employeeservice.entity.CommonReferenceTypeEntity;
 import com.feuji.employeeservice.entity.EmployeeEntity;
 
 public interface EmployeeService {
@@ -23,14 +24,8 @@ public interface EmployeeService {
 	public boolean isEmployeeCodeUnique(String empCode);
 
 	public EmployeeBean getReportingMngIdByEmpId(Integer id);
-
-	public List<AddEmployee> getGender(Integer referenceTypeId);
-
-	public List<AddEmployee> getEmploymentType(Integer referenceTypeId);
-
-	public List<AddEmployee> getDesignation(Integer referenceTypeId);
-
-	public List<AddEmployee> getBusinessUnit(Integer referenceTypeId);
 	
-	public List<AddEmployee> getByReferenceTypeId(Integer referenceTypeId);
+	public List<AddEmployee> getAllReportingManager();
+	
+//	public List<ReferenceDto> getAll();
 }
