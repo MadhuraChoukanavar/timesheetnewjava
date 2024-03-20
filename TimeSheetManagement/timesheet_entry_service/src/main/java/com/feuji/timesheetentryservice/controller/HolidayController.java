@@ -1,8 +1,5 @@
 package com.feuji.timesheetentryservice.controller;
 
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -19,8 +16,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.feuji.timesheetentryservice.entity.HolidayEntity;
-import com.feuji.timesheetentryservice.exception.HolidayNotFoundException;
 import com.feuji.timesheetentryservice.exception.HolidayNotFoundException;
 import com.feuji.timesheetentryservice.service.HolidayService;
 
@@ -34,8 +31,6 @@ public class HolidayController {
 	private static Logger log = LoggerFactory.getLogger(HolidayController.class);
 	@Autowired
 	private HolidayService holidayService;
-
-
 
 	@PostMapping
 	public ResponseEntity<HolidayEntity> save(@RequestBody HolidayEntity holidayEntity) {
@@ -69,20 +64,17 @@ public class HolidayController {
 
 	@PutMapping
 	public ResponseEntity<String> handlePutRequestupdate(@RequestBody HolidayEntity holidayEntity) {
-		
-			log.info("start the holiday_details Controller:update");
-			try {
-				holidayService.update(holidayEntity);
-				log.info("Update holiday_details {}", holidayEntity);
-				return ResponseEntity.status(HttpStatus.OK).body("updated");
-			}
-			catch(HolidayNotFoundException e){
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-			}
-			
+
+		log.info("start the holiday_details Controller:update");
+		try {
+			holidayService.update(holidayEntity);
+			log.info("Update holiday_details {}", holidayEntity);
+			return ResponseEntity.status(HttpStatus.OK).body("updated");
+		} catch (HolidayNotFoundException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		}
 
 	}
-	
 
 	@DeleteMapping("/{holidayId}")
 	public ResponseEntity<HolidayEntity> delate(@PathVariable Integer holidayId) {
@@ -93,4 +85,17 @@ public class HolidayController {
 		return responseEntity;
 
 	}
+
+	@GetMapping("/getWeekHolidaysDayIds/{startweekofDate}")
+	public List<Integer> getWeekHolidaysDayIds(@PathVariable String startweekofDate) {
+		// log.info("holiday delete",holidayId);)
+		System.out.println(startweekofDate);
+		List<Integer> holidayList = holidayService.getWeekHolidaysDayIds(startweekofDate);
+
+		return holidayList;
+
+	}
+
+
 }
+

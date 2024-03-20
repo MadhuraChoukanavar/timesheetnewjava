@@ -1,5 +1,7 @@
 package com.feuji.referenceservice.serviceImpl;
 
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 
 import org.slf4j.Logger;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.feuji.referenceservice.bean.CommonReferenceTypeBean;
+import com.feuji.referenceservice.dto.ReferenceDto;
 import com.feuji.referenceservice.entity.CommonReferenceTypeEntity;
 import com.feuji.referenceservice.repository.CommonReferenceTypeRepo;
 import com.feuji.referenceservice.service.CommonReferenceType;
@@ -42,5 +45,10 @@ public class CommonReferenceTypeImpl  implements CommonReferenceType{
 		commonReferenceTypeEntity = commonReferenceTypeRepo.save(commonReferenceTypeEntity);
 		return commonReferenceTypeEntity;
 	}
+	
+	 @Override
+	    public List<ReferenceDto> getAllReferences() {
+	        return commonReferenceTypeRepo.findAllReferences();
+	    }
 
 }

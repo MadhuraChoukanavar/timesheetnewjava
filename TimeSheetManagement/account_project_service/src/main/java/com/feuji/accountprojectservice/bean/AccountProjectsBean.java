@@ -15,13 +15,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
+@Builder
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Builder
 public class AccountProjectsBean {
 
 	private Integer accountProjectId;
@@ -32,11 +31,11 @@ public class AccountProjectsBean {
 
 	private Integer accountId;
 
-	private int priority;
+	private Integer priority;
 
-	private int projectManagerId;
+	private Integer projectManagerId;
 
-	private double noOfBillingHours;
+	private float noOfBillingHours;
 
 	private Timestamp plannedStartDate;
 
@@ -46,7 +45,7 @@ public class AccountProjectsBean {
 
 	private Timestamp actualEndDate;
 
-	private int projectStatus;
+	private Integer projectStatus;
 
 	private Boolean isActive;
 

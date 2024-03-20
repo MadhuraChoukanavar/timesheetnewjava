@@ -1,9 +1,13 @@
  package com.feuji.employeeservice.serviceimpl;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.feuji.employeeservice.bean.EmployeeBean;
+import com.feuji.employeeservice.dto.AddEmployee;
 import com.feuji.employeeservice.dto.EmployeeDto;
 import com.feuji.employeeservice.entity.EmployeeEntity;
 import com.feuji.employeeservice.repository.EmployeeRepository;
@@ -12,7 +16,11 @@ import com.feuji.employeeservice.service.EmployeeService;
 public class EmployeeServiceImpl implements EmployeeService {
 	@Autowired
 	public EmployeeRepository employeeRepository;
-
+	
+	 @Autowired
+	    private ModelMapper modelMapper;
+	
+	
 	// SAVE
 	@Override
 
@@ -44,35 +52,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 
-	// UPDATE
-	@Override
-	public void updateEmployeeDetails(EmployeeEntity updateEmployee, Integer id) throws Throwable {
-		EmployeeEntity existingEmployee = employeeRepository.findById(id)
-				.orElseThrow(() -> new Exception("Employee not found with id: " + id));
-
-		existingEmployee.setFirstName(updateEmployee.getFirstName());
-		existingEmployee.setMiddleName(updateEmployee.getMiddleName());
-		existingEmployee.setLastName(updateEmployee.getLastName());
-		existingEmployee.setDesignation(updateEmployee.getDesignation());
-		existingEmployee.setEmail(updateEmployee.getEmail());
-		existingEmployee.setGender(updateEmployee.getGender());
-		existingEmployee.setDateOfJoining(updateEmployee.getDateOfJoining());
-		existingEmployee.setReportingManagerId(updateEmployee.getReportingManagerId());
-		existingEmployee.setEmploymentType(updateEmployee.getEmploymentType());
-		existingEmployee.setStatus(updateEmployee.getStatus());
-		existingEmployee.setDeliveryUnitId(updateEmployee.getDeliveryUnitId());
-		existingEmployee.setBusinessUnitId(updateEmployee.getBusinessUnitId());
-		existingEmployee.setExitDate(updateEmployee.getExitDate());
-		existingEmployee.setExitRemarks(updateEmployee.getExitRemarks());
-		existingEmployee.setIsDeleted(updateEmployee.getIsDeleted());
-		existingEmployee.setUuid(updateEmployee.getUuid());
-		existingEmployee.setCreatedBy(updateEmployee.getCreatedBy());
-		existingEmployee.setCreatedOn(updateEmployee.getCreatedOn());
-		existingEmployee.setModifiedBy(updateEmployee.getModifiedBy());
-		existingEmployee.setModifiedOn(updateEmployee.getModifiedOn());
-
-		employeeRepository.save(existingEmployee);
-	}
+	
 	
 	//CHECK IF EMPCODE IS UNIQUE OR NOT
 	@Override
@@ -87,7 +67,19 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return entityToBean(entity);
 	}
 	
-	
+	public List<AddEmployee> getAllReportingManager() {
+		 // Assuming you have a method in EmployeeRepository to retrieve employees by designation
+	    List<AddEmployee> employees = employeeRepository.findDesignationsContainingManager();
+	    return employees;
+	}
+		
+		
+		
+//		@Override
+//		public List<ReferenceDto> getAll() {
+//			
+//			return employeeRepository.getAll();
+//		}
 	// conversion entity to bean and visa versa
 	public EmployeeBean entityToBean(EmployeeEntity entity) {
 		EmployeeBean employeeBean = new EmployeeBean();
@@ -147,4 +139,38 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return entity;
 	}
 
+
+	// UPDATE
+		@Override
+		public void updateEmployeeDetails(EmployeeEntity updateEmployee, Integer id) throws Throwable {
+			EmployeeEntity existingEmployee = employeeRepository.findById(id)
+					.orElseThrow(() -> new Exception("Employee not found with id: " + id));
+
+			existingEmployee.setFirstName(updateEmployee.getFirstName());
+			existingEmployee.setMiddleName(updateEmployee.getMiddleName());
+			existingEmployee.setLastName(updateEmployee.getLastName());
+			existingEmployee.setDesignation(updateEmployee.getDesignation());
+			existingEmployee.setEmail(updateEmployee.getEmail());
+			existingEmployee.setGender(updateEmployee.getGender());
+			existingEmployee.setDateOfJoining(updateEmployee.getDateOfJoining());
+			existingEmployee.setReportingManagerId(updateEmployee.getReportingManagerId());
+			existingEmployee.setEmploymentType(updateEmployee.getEmploymentType());
+			existingEmployee.setStatus(updateEmployee.getStatus());
+			existingEmployee.setDeliveryUnitId(updateEmployee.getDeliveryUnitId());
+			existingEmployee.setBusinessUnitId(updateEmployee.getBusinessUnitId());
+			existingEmployee.setExitDate(updateEmployee.getExitDate());
+			existingEmployee.setExitRemarks(updateEmployee.getExitRemarks());
+			existingEmployee.setIsDeleted(updateEmployee.getIsDeleted());
+			existingEmployee.setUuid(updateEmployee.getUuid());
+			existingEmployee.setCreatedBy(updateEmployee.getCreatedBy());
+			existingEmployee.setCreatedOn(updateEmployee.getCreatedOn());
+			existingEmployee.setModifiedBy(updateEmployee.getModifiedBy());
+			existingEmployee.setModifiedOn(updateEmployee.getModifiedOn());
+
+			employeeRepository.save(existingEmployee);
+		}
+
+		
+
+		
 }

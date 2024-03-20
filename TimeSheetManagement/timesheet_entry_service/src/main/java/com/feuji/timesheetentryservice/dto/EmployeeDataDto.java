@@ -22,4 +22,8 @@ public class EmployeeDataDto {
 //	private String designation;
 	private String email;
 //	private Integer gender;
+
 }
+
+
+

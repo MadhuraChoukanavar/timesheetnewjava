@@ -25,13 +25,19 @@ public class AccountProjectTaskType {
 	@Id
 	@Column(name = "tasktype_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int taskTypeId;
+   private int taskTypeId;
 
+	@Column(name = "reference_type_id")
+	private Long referenceTypeId;
+	
+	@Column(name = "reference_type_name")
+	private String referenceTypeName;
+		
 	@Column(name = "account_id")
-	private int accountId;
+	private Integer accountId;
 
 	@Column(name = "account_project_id")
-	private int accountProjectId;
+	private Integer accountProjectId;
 
 	@Column(name = "task_type")
 	private String taskType;
@@ -41,6 +47,7 @@ public class AccountProjectTaskType {
 
 	@Column(name = "is_active")
 	private Boolean isActive;
+
 
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;

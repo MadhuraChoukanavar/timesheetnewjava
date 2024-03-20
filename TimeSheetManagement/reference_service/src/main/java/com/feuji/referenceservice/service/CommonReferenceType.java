@@ -1,6 +1,9 @@
 package com.feuji.referenceservice.service;
 
+import java.util.List;
+
 import com.feuji.referenceservice.bean.CommonReferenceTypeBean;
+import com.feuji.referenceservice.dto.ReferenceDto;
 import com.feuji.referenceservice.entity.CommonReferenceTypeEntity;
 
 public interface CommonReferenceType {
@@ -11,4 +14,5 @@ public interface CommonReferenceType {
 
 	public CommonReferenceTypeEntity save(CommonReferenceTypeBean commonReferenceTypeBean);
 
+	 List<ReferenceDto> getAllReferences();
 }
