@@ -2,6 +2,7 @@ package com.feuji.accountservice.serviceimpl;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -31,6 +32,9 @@ public class AccountServiceImpl implements AccountService {
 	
 	@Autowired 
     private RestTemplate restTemplate;
+	
+	@Autowired
+	private ModelMapper modelMapper;
 
 	@Override
 	public AccountEntity saveAccount(AccountBean accountBean) throws SaveUniqueAccountException {
@@ -150,6 +154,20 @@ public class AccountServiceImpl implements AccountService {
 	        throw e; 
 	    }
 }
+	@Override
+	public AccountEntity delete(Integer accountId) {
+		log.info("service method{}", accountId);
+		AccountEntity optional = accountRepository.findById(accountId)
+				.orElseThrow(() -> new IllegalArgumentException("id not found"));
+		optional.setIsDeleted(true);
+		 AccountBean accountBean = modelMapper.map(optional, AccountBean.class);
+		AccountEntity deletedEmployee = updateAccount(accountBean);
+		
+		return deletedEmployee;
+
+
+		
+	}
 
 	
 }

@@ -2,6 +2,9 @@ package com.feuji.employeeservice.entity;
 
 import java.sql.Timestamp;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,6 +23,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@DynamicInsert
+@DynamicUpdate
 @Table(name = "employee")
 public class EmployeeEntity {
 

@@ -43,4 +43,6 @@ public interface EmployeeService {
 	
 	public EmployeeEntity updateEmployee(EmployeeBean employeeBean) ;
 
+	EmployeeEntity delete(Integer employeeId);
+
 }

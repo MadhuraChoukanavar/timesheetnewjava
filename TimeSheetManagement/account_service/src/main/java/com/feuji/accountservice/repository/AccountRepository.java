@@ -23,7 +23,8 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Integer>
 			+ " JOIN EmployeeEntity e_relationship ON a.relationshipManagerId=e_relationship.employeeId "
 			+ " JOIN EmployeeEntity e_businessDevelopment ON a.businessDevelopmentManagerId=e_businessDevelopment.employeeId "
 	        + " JOIN CommonReferenceDetailsEntity crd_accountBuId ON crd_accountBuId.referenceDetailId=a.accountBuId "
-			+" JOIN CommonReferenceDetailsEntity crd_status ON crd_status.referenceDetailId=a.accountStatus ")
+			+" JOIN CommonReferenceDetailsEntity crd_status ON crd_status.referenceDetailId=a.accountStatus "
+	         +"WHERE a.isDeleted=false ")
 	List<AccountDTO> accountDto();
 
 	@Query("SELECT NEW com.feuji.accountservice.dto.UpdateAccountDto(a.accountId,a.accountName,e_owener.employeeId,e_owener.firstName, "

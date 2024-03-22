@@ -64,7 +64,7 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Intege
 	        "JOIN EmployeeEntity e_manager ON e_manager.employeeId = emp.reportingManagerId " +
 	        "JOIN CommonReferenceDetailsEntity crd_gender ON crd_gender.referenceDetailId = emp.gender " +
 	        "JOIN CommonReferenceDetailsEntity crd_status ON crd_status.referenceDetailId = emp.status " +
-	        "")
+	        "WHERE emp.isDeleted=false ")
 	List<EmployeeDisplayDto> getEmployeeDetails();
 	@Query("SELECT new com.feuji.employeeservice.dto.UpadteEmployeeDto(" +
 	        "emp.employeeId, " +
