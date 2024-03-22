@@ -138,7 +138,7 @@ public class TimesheetDataController {
 	public ResponseEntity<List<TimesheetWeekEntity>> submitTimesheet(@RequestParam Integer employeeId,@RequestParam Integer accountId, @RequestParam String weekStartDate
 		) {
 		log.info("weekStartDate:::"+ weekStartDate);
-		try {
+	
 
 			log.info("Submitting timesheet for week starting on {} with status: {}", weekStartDate, Constants.TIME_SHEET_STATUS_SAVED);
 
@@ -153,8 +153,10 @@ public class TimesheetDataController {
 
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
-
-
+	
+		
+	
+		}
 	public ResponseEntity<List<TimesheetWeekEntity>> sendEmails(Integer employeeId,
 			 Integer accountId,  String weekStartDate) {
 		try {
@@ -169,6 +171,7 @@ public class TimesheetDataController {
 				log.info("mail sending....." + emp.getEmail());
 				emailsender.sendSimpleEmail(emp.getEmail(), "Request for Timesheet Approval",
 						this.composeBody(emp, weekStartDate));
+				System.out.println(emp.getEmail());
 
 			}
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -197,5 +200,5 @@ public class TimesheetDataController {
 
 }
 
-}
+
 

@@ -25,6 +25,7 @@ public class EmployeeBean {
 	private String image;
 	private String designation;
 	private String email;
+	private Integer genderId;
 	private Integer gender;
 	private Timestamp dateOfJoining;
 	private Integer reportingManagerId;
