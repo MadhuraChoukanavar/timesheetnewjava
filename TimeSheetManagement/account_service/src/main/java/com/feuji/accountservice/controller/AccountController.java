@@ -2,12 +2,14 @@ package com.feuji.accountservice.controller;
 
 import java.util.List;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +26,7 @@ import com.feuji.accountservice.entity.AccountEntity;
 import com.feuji.accountservice.exception.SaveUniqueAccountException;
 import com.feuji.accountservice.exception.UUIDNotFoundException;
 import com.feuji.accountservice.service.AccountService;
+
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -107,6 +110,16 @@ public class AccountController {
 		        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		    } 
 		}	
+	 
+	 @DeleteMapping("/deleteAcc/{accountId}")
+		public ResponseEntity<AccountEntity> delate(@PathVariable Integer accountId) {
+			// log.info("holiday delete",holidayId);)
+		 AccountEntity accountEntity = accountService.delete(accountId);
+			log.info("Delete department_details {}", accountId);
+			ResponseEntity<AccountEntity> responseEntity = new ResponseEntity<AccountEntity>(accountEntity, HttpStatus.OK);
+			return responseEntity;
+
+		}
 
 }
 

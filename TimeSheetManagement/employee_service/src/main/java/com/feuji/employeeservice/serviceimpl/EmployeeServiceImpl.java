@@ -3,6 +3,7 @@
 import java.util.List;
 
 
+
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -22,7 +23,9 @@ import com.feuji.employeeservice.repository.EmployeeRepository;
 import com.feuji.employeeservice.service.EmployeeService;
 
 import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 @Service
+@Slf4j
 public class EmployeeServiceImpl implements EmployeeService {
 	@Autowired
 	public EmployeeRepository employeeRepository;
@@ -237,7 +240,20 @@ public class EmployeeServiceImpl implements EmployeeService {
 		      return savedEntity;
 		   
 	}
+		@Override
+		public EmployeeEntity delete(Integer employeeId) {
+			log.info("service method{}", employeeId);
+			EmployeeEntity optional = employeeRepository.findById(employeeId)
+					.orElseThrow(() -> new IllegalArgumentException("id not found"));
+			optional.setIsDeleted(true);
+			EmployeeBean entityToBean = entityToBean(optional);
+			EmployeeEntity deletedEmployee = updateEmployee(entityToBean);
+			
+			return deletedEmployee;
 
+
+			
+		}
 }
 
 		

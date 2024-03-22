@@ -2,6 +2,7 @@ package com.feuji.accountservice.entity;
 
 import java.sql.Timestamp;
 
+
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -25,9 +26,10 @@ import lombok.ToString;
 @ToString
 @Entity
 @Table(name="account")
+@Builder
 @DynamicInsert
 @DynamicUpdate
-@Builder
+
 public class AccountEntity {
 	@Id	
 	@GeneratedValue(strategy = GenerationType.AUTO)

@@ -4,10 +4,12 @@ import java.util.List;
 
 
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +29,7 @@ import com.feuji.employeeservice.dto.UpadteEmployeeDto;
 import com.feuji.employeeservice.entity.CommonReferenceTypeEntity;
 import com.feuji.employeeservice.entity.EmployeeEntity;
 import com.feuji.employeeservice.service.EmployeeService;
+
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -77,7 +80,7 @@ public class EmployeeController {
 	}
 
 	
-	@GetMapping("/{userEmpId}")
+	@GetMapping("/getEmployeeByUserEmpId/{userEmpId}")
     public List<EmployeeDto> getEmployeeByUserEmpId(@PathVariable("userEmpId") Integer userEmpId) {
 		List<EmployeeDto> employee = employeeService.getByUserEmpId(userEmpId);
 		return employee;
@@ -134,5 +137,15 @@ public class EmployeeController {
 	        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	    } 
 	}	
+	
+	@DeleteMapping("/deleteEmp/{employeeId}")
+	public ResponseEntity<EmployeeEntity> delate(@PathVariable Integer employeeId) {
+		// log.info("holiday delete",holidayId);)
+		EmployeeEntity employeeEntity = employeeService.delete(employeeId);
+		log.info("Delete department_details {}", employeeId);
+		ResponseEntity<EmployeeEntity> responseEntity = new ResponseEntity<EmployeeEntity>(employeeEntity, HttpStatus.OK);
+		return responseEntity;
+
+	}
 
 }

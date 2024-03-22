@@ -47,7 +47,7 @@ public class HolidayServiceImpl implements HolidayService {
 				throw new HolidayNameExistException("Holiday name is exists");
 			}
 			
-			if(holiday.get().getHolidayDate()==(holidayEntity.getHolidayDate()))
+			if(holiday.get().getHolidayDate().equals(holidayEntity.getHolidayDate()))
 			{
 				throw new HolidayDateExistsException("Holiday date is exists");
 			}
@@ -132,14 +132,7 @@ public class HolidayServiceImpl implements HolidayService {
 		optional.setDeleted(true);
 		update(optional);
 
-//		if (optional.isPresent()) {
-//			
-//			holidayRepository.updateIsDeleted(holidayId);
-//
-//			System.out.println("deleted successfull");
-//		} else {
-//			optional.orElseThrow();
-//		}
+
 
 		return optional;
 	}
