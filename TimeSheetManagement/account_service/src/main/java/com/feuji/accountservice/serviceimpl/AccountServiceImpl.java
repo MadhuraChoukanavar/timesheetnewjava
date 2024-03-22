@@ -92,7 +92,7 @@ public class AccountServiceImpl implements AccountService {
 	
 	
 	public List<EmployeeBean> getEmployeeBean() {
-		 String url = "http://localhost:8085/api/employee/getAll";
+		 String url = "http://localhost:8082/api/employee/getAll";
 		    HttpHeaders headers = new HttpHeaders();
 	       headers.setContentType(MediaType.APPLICATION_JSON);
 		   HttpEntity<String> httpEntity = new HttpEntity<>(headers);
@@ -134,13 +134,17 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public AccountEntity updateAccount(AccountBean accountBean) {
+		AccountEntity accountEntity1 = beanToEntity(accountBean);
 		if (accountBean == null) {
 	        throw new IllegalArgumentException("Account bean object is null");
 	    }
 	    try {
+	    	log.info("updating account  entity "+accountBean);
 	        AccountEntity existingEntity = accountRepository.findByuuId(accountBean.getUuId());
-	        log.info("updating account  entity "+existingEntity);
-	        AccountEntity savedEntity = accountRepository.save(existingEntity);
+	        
+        log.info("updating account  entity "+existingEntity);
+	        AccountEntity savedEntity = accountRepository.save(accountEntity1);
+	        log.info("updating account  entity "+ savedEntity);
 	      return existingEntity;
 	    } catch (IllegalArgumentException e) {
 	        throw e; 

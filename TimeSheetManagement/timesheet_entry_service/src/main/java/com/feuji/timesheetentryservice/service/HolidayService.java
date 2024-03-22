@@ -2,7 +2,6 @@ package com.feuji.timesheetentryservice.service;
 
 import java.util.List;
 
-
 import com.feuji.timesheetentryservice.entity.HolidayEntity;
 
 public interface HolidayService {
@@ -17,6 +16,6 @@ public interface HolidayService {
 	HolidayEntity delete(Integer holidayId);
 
 	public List<Integer> getWeekHolidaysDayIds(String startweekofDate);
+	List<HolidayEntity> getHolidayByYear(int year);
 
 }
-

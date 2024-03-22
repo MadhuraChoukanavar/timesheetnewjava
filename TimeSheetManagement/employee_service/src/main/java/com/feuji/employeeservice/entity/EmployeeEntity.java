@@ -61,7 +61,7 @@ public class EmployeeEntity {
     @Column(name = "employment_type")
     private Integer employmentType;
 
-    @Column(name = "status")
+    @Column(name = "employee_status")
     private Integer status;
 
     @Column(name = "delivery_unit_id")

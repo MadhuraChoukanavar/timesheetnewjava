@@ -1,17 +1,27 @@
  package com.feuji.employeeservice.serviceimpl;
 
 import java.util.List;
+
+
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+
+
 import com.feuji.employeeservice.bean.EmployeeBean;
 import com.feuji.employeeservice.dto.AddEmployee;
+import com.feuji.employeeservice.dto.EmployeeDisplayDto;
 import com.feuji.employeeservice.dto.EmployeeDto;
+import com.feuji.employeeservice.dto.SaveEmployeeDto;
+import com.feuji.employeeservice.dto.UpadteEmployeeDto;
 import com.feuji.employeeservice.entity.EmployeeEntity;
 import com.feuji.employeeservice.repository.EmployeeRepository;
 import com.feuji.employeeservice.service.EmployeeService;
+
+import lombok.extern.java.Log;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 	@Autowired
@@ -32,6 +42,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 		employeeEntity = employeeRepository.save(employeeEntity);
 
 		return employeeEntity;
+	}
+	@Override
+	public List<EmployeeEntity> getAllEmployees() {
+		return employeeRepository.findAll();
+	}
+	@Override
+	public List<SaveEmployeeDto> getByReferenceTypeId(Integer referenceTypeId) {
+		
+		return employeeRepository.getByReferenceTypeId(referenceTypeId);
 	}
 
 	// GET BY ID
@@ -169,8 +188,56 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 			employeeRepository.save(existingEmployee);
 		}
+		@Override
+		public List<EmployeeDisplayDto> getEmployeeDetails(){
+				try
+				{
+				
+				List<EmployeeDisplayDto>   empdetails=employeeRepository.getEmployeeDetails();
+				System.out.println();
+				return  empdetails;
+				}
+				catch (Exception e) {
+					System.out.println(e.getMessage());
+					
+				}
+				return null;
 
-		
 
-		
+			
+
+		}
+		@Override
+		public List<UpadteEmployeeDto> getEmployeeDetailByUUiD(String uuid) {
+			try
+			{
+			
+			List<UpadteEmployeeDto>   empdetails=employeeRepository.getEmployeeDetailByUUiD(uuid);
+			System.out.println();
+			return  empdetails;
+			}
+			catch (Exception e) {
+				System.out.println(e.getMessage());
+				
+			}
+			return null;
+		}
+		@Override
+		public EmployeeEntity updateEmployee(EmployeeBean employeeBean) {
+			EmployeeEntity accountEntity1 = beanToEntity(employeeBean);
+			if (employeeBean == null) {
+		        throw new IllegalArgumentException("Account bean object is null");
+		    }
+		    
+		    
+		        
+	       
+	        EmployeeEntity savedEntity =employeeRepository.save(accountEntity1);
+		        System.out.println(savedEntity);
+		      return savedEntity;
+		   
+	}
+
 }
+
+		

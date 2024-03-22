@@ -2,9 +2,18 @@ package com.feuji.employeeservice.service;
 
 import java.util.List;
 
+
+import org.springframework.data.repository.query.Param;
+
+
+
+
 import com.feuji.employeeservice.bean.EmployeeBean;
 import com.feuji.employeeservice.dto.AddEmployee;
+import com.feuji.employeeservice.dto.EmployeeDisplayDto;
 import com.feuji.employeeservice.dto.EmployeeDto;
+import com.feuji.employeeservice.dto.SaveEmployeeDto;
+import com.feuji.employeeservice.dto.UpadteEmployeeDto;
 import com.feuji.employeeservice.entity.CommonReferenceDetailsEntity;
 import com.feuji.employeeservice.entity.CommonReferenceTypeEntity;
 import com.feuji.employeeservice.entity.EmployeeEntity;
@@ -20,12 +29,18 @@ public interface EmployeeService {
 	public EmployeeEntity getByUuid(String uuid);
 
 	public void updateEmployeeDetails(EmployeeEntity updateEmpolyee, Integer id) throws Throwable;
-
+	public List<EmployeeEntity> getAllEmployees();
 	public boolean isEmployeeCodeUnique(String empCode);
 
 	public EmployeeBean getReportingMngIdByEmpId(Integer id);
 	
 	public List<AddEmployee> getAllReportingManager();
-	
+	public List<SaveEmployeeDto> getByReferenceTypeId(Integer referenceTypeId);
 //	public List<ReferenceDto> getAll();
+	
+	List<EmployeeDisplayDto> getEmployeeDetails();
+	List<UpadteEmployeeDto> getEmployeeDetailByUUiD( String uuid);
+	
+	public EmployeeEntity updateEmployee(EmployeeBean employeeBean) ;
+
 }
