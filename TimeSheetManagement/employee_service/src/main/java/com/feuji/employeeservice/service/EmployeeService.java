@@ -35,6 +35,10 @@ public interface EmployeeService {
 	public EmployeeBean getReportingMngIdByEmpId(Integer id);
 	
 	public List<AddEmployee> getAllReportingManager();
+	
+	
+	List<EmployeeEntity> searchEmployeesByFirstName(String firstName);
+	
 	public List<SaveEmployeeDto> getByReferenceTypeId(Integer referenceTypeId);
 //	public List<ReferenceDto> getAll();
 	
