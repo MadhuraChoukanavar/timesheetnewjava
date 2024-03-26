@@ -13,5 +13,10 @@ public interface TimesheetDayService {
 	public TimesheetDayEntity getTimeSheetDayByuuid(Integer id);
 	
 	List<TimeSheetDayHistoryDto> getTimeSheetDayHistory( String uuId);
+  TimesheetDayEntity saveTimesheetDay(TimesheetDayBean timesheetDayBean);
 
+	 TimesheetDayEntity getTimeSheetDayByuuid(Integer id);
+
+	 List<CommonReferenceDetailsBean> getDetailsByTypeId(String typeName);
+	 
 }
