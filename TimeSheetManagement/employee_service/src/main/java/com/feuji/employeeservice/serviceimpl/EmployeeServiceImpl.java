@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.feuji.employeeservice.bean.EmployeeBean;
 import com.feuji.employeeservice.dto.AddEmployee;
 import com.feuji.employeeservice.dto.EmployeeDto;
+import com.feuji.employeeservice.dto.SaveEmployeeDto;
 import com.feuji.employeeservice.entity.EmployeeEntity;
 import com.feuji.employeeservice.repository.EmployeeRepository;
 import com.feuji.employeeservice.service.EmployeeService;
@@ -74,7 +75,26 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 		
 		
+	@Override
+	public List<SaveEmployeeDto> getByReferenceTypeId(Integer referenceTypeId) {
 		
+		return employeeRepository.getByReferenceTypeId(referenceTypeId);
+	}
+
+		
+	
+	@Override
+	public List<EmployeeEntity> getAllEmployees() {
+		return employeeRepository.findAll();
+	}
+
+	
+	@Override
+	public List<EmployeeEntity> searchEmployeesByFirstName(String firstName) {
+		 return employeeRepository.findByFirstNameContainingIgnoreCase(firstName);
+	}
+
+
 //		@Override
 //		public List<ReferenceDto> getAll() {
 //			
@@ -109,6 +129,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 		return employeeBean;
 	}
+	
+	
+
 
 	public EmployeeEntity beanToEntity(EmployeeBean employeeBean) {
 		EmployeeEntity entity = new EmployeeEntity();
@@ -170,6 +193,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 			employeeRepository.save(existingEmployee);
 		}
 
+		
+		
 		
 
 		

@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import com.feuji.employeeservice.bean.EmployeeBean;
 import com.feuji.employeeservice.dto.AddEmployee;
 import com.feuji.employeeservice.dto.EmployeeDto;
+import com.feuji.employeeservice.dto.SaveEmployeeDto;
 import com.feuji.employeeservice.entity.CommonReferenceTypeEntity;
 import com.feuji.employeeservice.entity.EmployeeEntity;
 
@@ -35,5 +36,12 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Intege
 	        + "FROM UserLoginEntity ule left join EmployeeEntity empe on( ule.userEmpId=empe.employeeId)"
 	        + "WHERE ule.userEmpId = :userEmpId")
 	List<EmployeeDto> getEmployeeDetailsByUserEmpId(@Param("userEmpId") Integer userEmpId);
-
+	
+	@Query("SELECT new com.feuji.employeeservice.dto.SaveEmployeeDto(crde.referenceDetailId, crde.referenceDetailValue,crte.referenceTypeId) "
+			+ "FROM CommonReferenceDetailsEntity crde "
+			+ "JOIN CommonReferenceTypeEntity crte ON crde.referenceType.referenceTypeId = crte.referenceTypeId "
+			+ "WHERE crde.referenceType.referenceTypeId = :referenceTypeId")
+    List<SaveEmployeeDto> getByReferenceTypeId(Integer referenceTypeId);
+	
+	  List<EmployeeEntity> findByFirstNameContainingIgnoreCase(String firstName);
 }

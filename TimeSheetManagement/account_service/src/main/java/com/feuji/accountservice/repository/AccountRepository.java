@@ -18,7 +18,7 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Integer>
 	@Query("SELECT NEW com.feuji.accountservice.dto.AccountDTO(a.uuId,a.accountId,a.accountName,e_owener.firstName AS owenername,e_relationship.firstName AS relationshipManagername ,e_businessDevelopment.firstName AS businessDevelopmentManagername ,a_parentname.accountName,a.plannedStartDate ,a.plannedEndDate,a.actualStartDate,a.actualEndDate, "
 			+"crd_accountBuId.referenceDetailValue,crd_status.referenceDetailValue )"
 			+ "FROM AccountEntity a " 
-			+"JOIN AccountEntity a_parentname ON a.accountId=a_parentname.parentAccountId "
+			+"JOIN AccountEntity a_parentname ON a_parentname.accountId=a.parentAccountId "
 			+ "JOIN EmployeeEntity e_owener ON a.ownerId = e_owener.employeeId "
 			+ " JOIN EmployeeEntity e_relationship ON a.relationshipManagerId=e_relationship.employeeId "
 			+ " JOIN EmployeeEntity e_businessDevelopment ON a.businessDevelopmentManagerId=e_businessDevelopment.employeeId "

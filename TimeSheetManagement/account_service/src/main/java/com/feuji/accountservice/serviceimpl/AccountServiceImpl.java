@@ -92,7 +92,7 @@ public class AccountServiceImpl implements AccountService {
 	
 	
 	public List<EmployeeBean> getEmployeeBean() {
-		 String url = "http://localhost:8085/api/employee/getAll";
+		 String url = "http://localhost:8082/api/employee/getAll";
 		    HttpHeaders headers = new HttpHeaders();
 	       headers.setContentType(MediaType.APPLICATION_JSON);
 		   HttpEntity<String> httpEntity = new HttpEntity<>(headers);

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.feuji.employeeservice.bean.EmployeeBean;
 import com.feuji.employeeservice.dto.AddEmployee;
 import com.feuji.employeeservice.dto.EmployeeDto;
+import com.feuji.employeeservice.dto.SaveEmployeeDto;
 import com.feuji.employeeservice.entity.CommonReferenceTypeEntity;
 import com.feuji.employeeservice.entity.EmployeeEntity;
 import com.feuji.employeeservice.service.EmployeeService;
@@ -75,6 +76,28 @@ public class EmployeeController {
 //            throw new RuntimeException("Failed to fetch reporting managers. Please try again later.");
         }
 		return null;
-    }	 
+    }	
+	
+	@GetMapping("/getAll")
+	public ResponseEntity<List<EmployeeEntity>> getAllEmployees(){
+		List<EmployeeEntity> accountEntities=employeeService.getAllEmployees();
+		log.info("Fetching employee details {}", accountEntities);
+		ResponseEntity<List<EmployeeEntity>> responseEntity = new ResponseEntity<List<EmployeeEntity>>(accountEntities,
+				HttpStatus.OK);
+		return responseEntity;
+	}
 
+
+	@GetMapping("/referenceTypeId/{referenceTypeId}")
+    public List<SaveEmployeeDto> getEmployeesByReferenceTypeId(@PathVariable Integer referenceTypeId) {
+        return employeeService.getByReferenceTypeId(referenceTypeId);
+    }
+	
+	@GetMapping("/search")
+    public ResponseEntity<List<EmployeeEntity>> searchEmployees(@RequestParam("firstName") String firstName) {
+        log.info("Searching employees by first name: {}", firstName);
+        List<EmployeeEntity> employees = employeeService.searchEmployeesByFirstName(firstName);
+        log.info("Found {} employees matching the search criteria", employees.size());
+        return ResponseEntity.ok(employees);
+    }
 }
