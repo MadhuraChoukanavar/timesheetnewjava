@@ -32,17 +32,33 @@ public class AccountTaskController {
 	@Autowired
 	AccountProjectTaskService accountProjectTaskService;
 	
+//	@GetMapping(path = "/getbyid/{task_id}")
+//	public ResponseEntity<AccountTaskBean> getById(@PathVariable Integer task_id) throws IdNotFoundException {
+//		try {
+//			log.info("start getbyid method trainingid" + task_id);
+//			AccountTaskBean getbyid = accountProjectTaskService.getById(task_id);
+//			ResponseEntity<AccountTaskBean> responseEntity = new ResponseEntity<>(getbyid, HttpStatus.OK);
+//			log.info("end getting id details");
+//			return responseEntity;
+//		} catch (IdNotFoundException e) {
+//			throw new IdNotFoundException("Invalid taskid");
+//		}
+//	}
 	@GetMapping(path = "/getbyid/{task_id}")
-	public ResponseEntity<AccountTaskBean> getById(@PathVariable Integer task_id) throws IdNotFoundException {
-		try {
-			log.info("start getbyid method trainingid" + task_id);
-			AccountTaskBean getbyid = accountProjectTaskService.getById(task_id);
-			ResponseEntity<AccountTaskBean> responseEntity = new ResponseEntity<>(getbyid, HttpStatus.OK);
-			log.info("end getting id details");
-			return responseEntity;
-		} catch (IdNotFoundException e) {
-			throw new IdNotFoundException("Invalid taskid");
-		}
+	public ResponseEntity<AccountTaskBean> getById(@PathVariable Integer task_id) {
+	    try {
+	        log.info("Start getById method. Task ID: {}", task_id);
+	        AccountTaskBean getbyid = accountProjectTaskService.getById(task_id);
+	        log.info("End getById method. Task ID: {}", task_id);
+	        return ResponseEntity.ok(getbyid);
+	    } catch (IdNotFoundException e) {
+	        log.error("Invalid task ID: {}", task_id);
+	      
+	        return ResponseEntity.notFound().build();
+	    } catch (Exception e) {
+	        log.error("An error occurred while fetching AccountTaskBean with ID {}: {}", task_id, e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.feuji.timesheetentryservice.controller;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -36,74 +37,145 @@ public class HolidayController {
 	private HolidayService holidayService;
 
 	@PostMapping(path="/save")
-	public ResponseEntity<HolidayEntity> save(@RequestBody HolidayEntity holidayEntity) {
-		try {
-		log.info("Saving holiday details {}", holidayEntity);
-		holidayService.save(holidayEntity);
-
-		ResponseEntity<HolidayEntity> responseEntity = new ResponseEntity<>(holidayEntity, HttpStatus.CREATED);
-		return responseEntity;
-		}
-		catch (HolidayNameAndHolidayDateExistException e) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-		catch (HolidayDateExistsException|HolidayNameExistException e) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
-
+	public ResponseEntity<HolidayEntity> saveHoliday(@RequestBody HolidayEntity holidayEntity) {
+	    try {
+	        log.info("Saving holiday details: {}", holidayEntity);
+	        holidayService.save(holidayEntity);
+	        log.info("Holiday details saved successfully");
+	        return ResponseEntity.status(HttpStatus.CREATED).body(holidayEntity);
+	    } catch (HolidayNameAndHolidayDateExistException e) {
+	        log.error("Holiday name and date already exist: {}", e.getMessage());
+	        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+	    } catch (HolidayDateExistsException|HolidayNameExistException e) {
+	        log.error("Holiday date or name already exist: {}", e.getMessage());
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+	    } catch (Exception e) {
+	        log.error("An error occurred while saving holiday details: {}", e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
 	}
 
+
+//	@GetMapping(path = "/{holidayId}")
+//	public ResponseEntity<HolidayEntity> get(@PathVariable Integer holidayId) {
+//		log.info("Fetching department_details {}", holidayId);
+//
+//		HolidayEntity holidayEntity = holidayService.get(holidayId);
+//
+//		ResponseEntity<HolidayEntity> responseEntity = new ResponseEntity<>(holidayEntity, HttpStatus.OK);
+//		return responseEntity;
+//	}
 	@GetMapping(path = "/{holidayId}")
-	public ResponseEntity<HolidayEntity> get(@PathVariable Integer holidayId) {
-		log.info("Fetching department_details {}", holidayId);
-
-		HolidayEntity holidayEntity = holidayService.get(holidayId);
-
-		ResponseEntity<HolidayEntity> responseEntity = new ResponseEntity<>(holidayEntity, HttpStatus.OK);
-		return responseEntity;
+	public ResponseEntity<HolidayEntity> getHolidayById(@PathVariable Integer holidayId) {
+	    try {
+	        log.info("Fetching holiday details for ID: {}", holidayId);
+	        HolidayEntity holidayEntity = holidayService.get(holidayId);
+	        log.info("Retrieved holiday details: {}", holidayEntity);
+	        return ResponseEntity.ok(holidayEntity);
+	    } catch (HolidayNotFoundException e) {
+	        log.error("Holiday not found for ID {}: {}", holidayId, e.getMessage());
+	        return ResponseEntity.notFound().build();
+	    } catch (Exception e) {
+	        log.error("An error occurred while fetching holiday details for ID {}: {}", holidayId, e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
 	}
 
+//	@PutMapping(path="/update")
+//	public ResponseEntity<String> handlePutRequestupdate(@RequestBody HolidayEntity holidayEntity) {
+//
+//		log.info("start the holiday_details Controller:update");
+//		try {
+//			holidayService.update(holidayEntity);
+//			log.info("Update holiday_details {}", holidayEntity);
+//			return ResponseEntity.status(HttpStatus.OK).body("updated");
+//		} catch (HolidayNotFoundException e) {
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+//		}
+//
+//	}
 	@PutMapping(path="/update")
-	public ResponseEntity<String> handlePutRequestupdate(@RequestBody HolidayEntity holidayEntity) {
-
-		log.info("start the holiday_details Controller:update");
-		try {
-			holidayService.update(holidayEntity);
-			log.info("Update holiday_details {}", holidayEntity);
-			return ResponseEntity.status(HttpStatus.OK).body("updated");
-		} catch (HolidayNotFoundException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-		}
-
+	public ResponseEntity<String> updateHoliday(@RequestBody HolidayEntity holidayEntity) {
+	    try {
+	        log.info("Starting holiday update: {}", holidayEntity);
+	        holidayService.update(holidayEntity);
+	        log.info("Updated holiday details: {}", holidayEntity);
+	        return ResponseEntity.ok("Updated");
+	    } catch (HolidayNotFoundException e) {
+	        log.error("Holiday not found: {}", e.getMessage());
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+	    } catch (Exception e) {
+	        log.error("An error occurred while updating holiday: {}", e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while updating holiday");
+	    }
 	}
 
+//	@DeleteMapping("/{holidayId}")
+//	public ResponseEntity<HolidayEntity> delate(@PathVariable Integer holidayId) {
+//		// log.info("holiday delete",holidayId);)
+//		HolidayEntity holidayEntity = holidayService.delete(holidayId);
+//		log.info("Delete department_details {}", holidayId);
+//		ResponseEntity<HolidayEntity> responseEntity = new ResponseEntity<HolidayEntity>(holidayEntity, HttpStatus.OK);
+//		return responseEntity;
+//
+//	}
 	@DeleteMapping("/{holidayId}")
-	public ResponseEntity<HolidayEntity> delate(@PathVariable Integer holidayId) {
-		// log.info("holiday delete",holidayId);)
-		HolidayEntity holidayEntity = holidayService.delete(holidayId);
-		log.info("Delete department_details {}", holidayId);
-		ResponseEntity<HolidayEntity> responseEntity = new ResponseEntity<HolidayEntity>(holidayEntity, HttpStatus.OK);
-		return responseEntity;
-
+	public ResponseEntity<HolidayEntity> deleteHoliday(@PathVariable Integer holidayId) {
+	    try {
+	        log.info("Deleting holiday with ID: {}", holidayId);
+	        HolidayEntity holidayEntity = holidayService.delete(holidayId);
+	        log.info("Deleted holiday with ID: {}", holidayId);
+	        return ResponseEntity.ok(holidayEntity);
+	    } catch (Exception e) {
+	        log.error("An error occurred while deleting holiday with ID {}: {}", holidayId, e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
 	}
 
+
+//	@GetMapping("/getWeekHolidaysDayIds/{startweekofDate}")
+//	public List<Integer> getWeekHolidaysDayIds(@PathVariable String startweekofDate) {
+//		// log.info("holiday delete",holidayId);)
+//		System.out.println(startweekofDate);
+//		List<Integer> holidayList = holidayService.getWeekHolidaysDayIds(startweekofDate);
+//
+//		return holidayList;
+//
+//	}
+	
 	@GetMapping("/getWeekHolidaysDayIds/{startweekofDate}")
-	public List<Integer> getWeekHolidaysDayIds(@PathVariable String startweekofDate) {
-		// log.info("holiday delete",holidayId);)
-		System.out.println(startweekofDate);
-		List<Integer> holidayList = holidayService.getWeekHolidaysDayIds(startweekofDate);
-
-		return holidayList;
-
+	public ResponseEntity<List<Integer>> getWeekHolidaysDayIds(@PathVariable String startweekofDate) {
+	    try {
+	        log.info("Fetching holiday day IDs for week starting from: {}", startweekofDate);
+	        List<Integer> holidayList = holidayService.getWeekHolidaysDayIds(startweekofDate);
+	        log.info("Retrieved holiday day IDs for week starting from {}: {}", startweekofDate, holidayList);
+	        return ResponseEntity.ok(holidayList);
+	    } catch (Exception e) {
+	        log.error("An error occurred while fetching holiday day IDs for week starting from {}: {}", startweekofDate, e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
+	    }
 	}
+
+//	@GetMapping("/getHolidayByYear/{year}")
+//	public List<HolidayEntity> getHolidayByYear(@PathVariable int year) {
+//		// log.info("holiday delete",holidayId);)
+//		System.out.println(year);
+//		List<HolidayEntity> holidayList = holidayService.getHolidayByYear(year);
+//
+//		return holidayList;
+//
+//	}
 	@GetMapping("/getHolidayByYear/{year}")
-	public List<HolidayEntity> getHolidayByYear(@PathVariable int year) {
-		// log.info("holiday delete",holidayId);)
-		System.out.println(year);
-		List<HolidayEntity> holidayList = holidayService.getHolidayByYear(year);
-
-		return holidayList;
-
+	public ResponseEntity<List<HolidayEntity>> getHolidayByYear(@PathVariable int year) {
+	    try {
+	        log.info("Fetching holidays for year: {}", year);
+	        List<HolidayEntity> holidayList = holidayService.getHolidayByYear(year);
+	        log.info("Retrieved {} holidays for year {}", holidayList.size(), year);
+	        return ResponseEntity.ok(holidayList);
+	    } catch (Exception e) {
+	        log.error("An error occurred while fetching holidays for year {}: {}", year, e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
+	    }
 	}
 
 }

@@ -37,12 +37,13 @@ public class UpadteEmployeeDto {
 	private Integer statusId;
 	private String status;
 	private String uuid;
+	 private Boolean isDeleted;
 	public UpadteEmployeeDto(Integer employeeId, String employeeCode, String firstName, String middleName,
 			String lastName, String image, String designation, String email, Integer genderId, String gender,
 			Timestamp dateOfJoining, Integer empTypeId, String empType, String managerFirstName,
 			String managerLastNamee, String managerMiddleName, Integer managerId, Integer deliveryUnitId,
 			String deliveryUnit, Integer businessUnitId, String businessUnit, Integer statusId, String status,
-			String uuid) {
+			String uuid, Boolean isDeleted) {
 		super();
 		this.employeeId = employeeId;
 		this.employeeCode = employeeCode;
@@ -68,6 +69,7 @@ public class UpadteEmployeeDto {
 		this.statusId = statusId;
 		this.status = status;
 		this.uuid = uuid;
+		this.isDeleted = isDeleted;
 	}
 	
 

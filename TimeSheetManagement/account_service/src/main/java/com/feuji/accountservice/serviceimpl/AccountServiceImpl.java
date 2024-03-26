@@ -143,12 +143,13 @@ public class AccountServiceImpl implements AccountService {
 	        throw new IllegalArgumentException("Account bean object is null");
 	    }
 	    try {
-	    	log.info("updating account  entity "+accountBean);
+	    	log.info("updating account  before from front end entity "+accountBean);
 	        AccountEntity existingEntity = accountRepository.findByuuId(accountBean.getUuId());
 	        
-        log.info("updating account  entity "+existingEntity);
+        log.info("updating account after find entity "+existingEntity);
 	        AccountEntity savedEntity = accountRepository.save(accountEntity1);
-	        log.info("updating account  entity "+ savedEntity);
+	        log.info("updating account  after save "
+	        		+ "entity "+ savedEntity);
 	      return existingEntity;
 	    } catch (IllegalArgumentException e) {
 	        throw e; 
