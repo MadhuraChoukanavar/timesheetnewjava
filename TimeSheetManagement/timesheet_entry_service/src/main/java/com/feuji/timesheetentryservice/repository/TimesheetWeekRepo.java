@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -12,10 +13,13 @@ import com.feuji.timesheetentryservice.dto.AccountProjectResourceMappingDto;
 import com.feuji.timesheetentryservice.dto.ProjectNameDto;
 import com.feuji.timesheetentryservice.dto.ProjectTaskDto;
 import com.feuji.timesheetentryservice.dto.ProjectTaskTypeNameDto;
+import com.feuji.timesheetentryservice.dto.TimeSheeApprovalDto;
 import com.feuji.timesheetentryservice.dto.TimeSheetHistoryDto;
 import com.feuji.timesheetentryservice.dto.TimesheetWeekDayDetailDto;
 import com.feuji.timesheetentryservice.entity.TimesheetWeekEntity;
 
+import jakarta.transaction.Transactional;
+@Transactional
 public interface TimesheetWeekRepo extends JpaRepository<TimesheetWeekEntity, Integer> {
 
 	public List<TimesheetWeekEntity> findByWeekStartDate(Date weekStartDate);
@@ -102,7 +106,7 @@ public interface TimesheetWeekRepo extends JpaRepository<TimesheetWeekEntity, In
 	           "WHERE YEAR(pdt.date) = :year " +
 	           "AND MONTHNAME(pdt.date) = :month " +
 	           "AND acc.accountName = :accountName " +
-	           "AND pwt.employeeId=:employeeId "+
+	           "AND pwt.employeeId=:employeeId AND pwt.isDeleted=0 AND pdt.isDeleted=0 "+
 	           "GROUP BY pwt.uuid,pwt.weekStartDate,ep.lastName,ep.firstName, pwt.weekEndDate, ap.projectName, acc.accountName, crdStatus.referenceDetailValue")
 	    List<TimeSheetHistoryDto> getTimeSheetHistory(@Param("month") String month, @Param("year") int year, @Param("accountName") String accountName ,@Param("employeeId") int employeeId);
 
@@ -164,5 +168,41 @@ public interface TimesheetWeekRepo extends JpaRepository<TimesheetWeekEntity, In
 	List<Integer> getYear(@Param("employeeId") int employeeId);
 
 	public List<TimesheetWeekEntity> findByTimesheetStatus(Integer status);
- 
+	
+	@Modifying
+	@Query(value="update project_week_timesheet set timesheet_status=59 where employee_id=:employeeId and account_id=:accountId and week_start_date=:weekStartDate",nativeQuery=true)
+	public void updateTimesheetStatus(Integer employeeId,Integer accountId,Date weekStartDate);
+	
+
+	@Modifying
+	@Query(value="update project_week_timesheet set timesheet_status=60 where employee_id=:employeeId and account_id=:accountId and week_start_date=:weekStartDate",nativeQuery=true)
+	public void rejectedTimesheet(Integer employeeId,Integer accountId,Date weekStartDate);
+	@Query("SELECT new com.feuji.timesheetentryservice.dto.TimeSheeApprovalDto(" +
+	        "pwt.weekStartDate, " +
+	        "ep.email, " +
+	        "ap.plannedStartDate, " +
+	        "ap.plannedEndDate, " +
+	        "pwt.weekEndDate, " +
+	        "ap.projectName, " +
+	        "acc.accountName, " +
+	        "ep.employeeCode, "+
+	        "ep.designation, "+
+	        "ap.projectManagerId, "+
+	        "crdStatus.referenceDetailValue, "+
+	        "CONCAT(ep.firstName,' ', ep.lastName), "+
+	        "SUM(CASE WHEN crd.referenceDetailValue = 'Billable' THEN pdt.numberOfHours ELSE 0 END), "+
+	        "SUM(CASE WHEN crd.referenceDetailValue = 'Non billable' THEN pdt.numberOfHours ELSE 0 END), "+
+	        "SUM(CASE WHEN crd.referenceDetailValue = 'Leave' THEN pdt.numberOfHours ELSE 0 END)/8) "+
+	        "FROM TimesheetWeekEntity pwt "+
+	        "JOIN EmployeeEntity ep ON ep.employeeId = pwt.employeeId "+
+	        "JOIN AccountProjectsEntity ap ON ap.accountProjectId = pwt.accountProjectId "+
+	        "JOIN AccountEntity acc ON acc.accountId = pwt.accountId "+
+	        "JOIN TimesheetDayEntity pdt ON pdt.timesheetWeekEntity.timesheetWeekId = pwt.timesheetWeekId "+
+	        "JOIN CommonReferenceDetailsEntity crd ON pdt.attendanceType = crd.referenceDetailId "+
+	        "JOIN CommonReferenceDetailsEntity crdStatus ON crdStatus.referenceDetailId = pwt.timesheetStatus "+
+	        "WHERE YEAR(pdt.date) = :year " +
+	        "AND MONTHNAME(pdt.date) = :month " +
+	        "AND acc.accountId = :accountId " +
+	        "GROUP BY ep.email,ap.plannedStartDate,ap.plannedEndDate,pwt.uuid, ap.projectManagerId, ep.designation, ep.employeeCode, pwt.weekStartDate, ep.lastName, ep.firstName, pwt.weekEndDate, ap.projectName, acc.accountName, crdStatus.referenceDetailValue")
+	List<TimeSheeApprovalDto> getTimeSheetHistory(@Param("month") String month, @Param("year") int year, @Param("accountId") Integer accountId);
 }

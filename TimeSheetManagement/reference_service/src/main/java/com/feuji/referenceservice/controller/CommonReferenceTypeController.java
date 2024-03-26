@@ -1,5 +1,6 @@
 package com.feuji.referenceservice.controller;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -36,40 +37,83 @@ public class CommonReferenceTypeController {
 	@Autowired
 	CommonReferenceType commonReferenceType;
 
+//	@PostMapping("/save")
+//	public ResponseEntity<CommonReferenceTypeEntity> saveTimesheetWeek(
+//			@RequestBody CommonReferenceTypeBean commonReferenceTypeBean) {
+//		try {
+//			log.info("timesheet week controller", commonReferenceTypeBean);
+//			CommonReferenceTypeEntity save = commonReferenceType.save(commonReferenceTypeBean);
+//			return new ResponseEntity<>(save, HttpStatus.CREATED);
+//
+//		} catch (Exception e) {
+//
+//			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//
+//		}
+//	}
 	@PostMapping("/save")
 	public ResponseEntity<CommonReferenceTypeEntity> saveTimesheetWeek(
-			@RequestBody CommonReferenceTypeBean commonReferenceTypeBean) {
-		try {
-			log.info("timesheet week controller", commonReferenceTypeBean);
-			CommonReferenceTypeEntity save = commonReferenceType.save(commonReferenceTypeBean);
-			return new ResponseEntity<>(save, HttpStatus.CREATED);
-
-		} catch (Exception e) {
-
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-
-		}
+	        @RequestBody CommonReferenceTypeBean commonReferenceTypeBean) {
+	    try {
+	        log.info("Saving timesheet week in controller: {}", commonReferenceTypeBean);
+	        CommonReferenceTypeEntity save = commonReferenceType.save(commonReferenceTypeBean);
+	        log.info("Saved timesheet week: {}", save);
+	        return new ResponseEntity<>(save, HttpStatus.CREATED);
+	    } catch (Exception e) {
+	        log.error("An error occurred while saving timesheet week: {}", e.getMessage());
+	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
 	}
 
+//	@GetMapping("/getref/{name}")
+//	public ResponseEntity<CommonReferenceTypeEntity> getReferenceTypeByName(@PathVariable String name) {
+//
+//		try {
+//			log.info("getting timesheet", name);
+//			CommonReferenceTypeEntity commonReferenceTypeEntity = commonReferenceType.getByTypeName(name);
+//			return new ResponseEntity<>(commonReferenceTypeEntity, HttpStatus.CREATED);
+//
+//		} catch (Exception e) {
+//			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
+//
+//	}\
+	
+	
+	
 	@GetMapping("/getref/{name}")
 	public ResponseEntity<CommonReferenceTypeEntity> getReferenceTypeByName(@PathVariable String name) {
-
-		try {
-			log.info("getting timesheet", name);
-			CommonReferenceTypeEntity commonReferenceTypeEntity = commonReferenceType.getByTypeName(name);
-			return new ResponseEntity<>(commonReferenceTypeEntity, HttpStatus.CREATED);
-
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
+	    try {
+	        log.info("Fetching reference type by name: {}", name);
+	        CommonReferenceTypeEntity commonReferenceTypeEntity = commonReferenceType.getByTypeName(name);
+	        log.info("Retrieved reference type: {}", commonReferenceTypeEntity);
+	        return ResponseEntity.ok(commonReferenceTypeEntity);
+	    } catch (Exception e) {
+	        log.error("An error occurred while fetching reference type by name {}: {}", name, e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
 	}
+
 	
+//	@GetMapping("/all")
+//    public List<ReferenceDto> getAllReferences() {
+//        log.info("Fetching all references");
+//        List<ReferenceDto> references = commonReferenceType.getAllReferences();
+//        log.info("Retrieved {} references", references.size());
+//        return references;
+//    }
 	@GetMapping("/all")
-    public List<ReferenceDto> getAllReferences() {
-        log.info("Fetching all references");
-        List<ReferenceDto> references = commonReferenceType.getAllReferences();
-        log.info("Retrieved {} references", references.size());
-        return references;
-    }
+	public ResponseEntity<List<ReferenceDto>> getAllReferences() {
+	    try {
+	        log.info("Fetching all references");
+	        List<ReferenceDto> references = commonReferenceType.getAllReferences();
+	        log.info("Retrieved {} references", references.size());
+	        return ResponseEntity.ok(references);
+	    } catch (Exception e) {
+	        log.error("An error occurred while fetching all references: {}", e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
+	    }
+	}
+
+	
 }

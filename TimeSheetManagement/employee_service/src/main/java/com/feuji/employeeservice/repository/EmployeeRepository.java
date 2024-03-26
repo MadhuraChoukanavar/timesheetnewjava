@@ -90,7 +90,7 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Intege
 	        "crd_bu.referenceDetailValue, " +
 	        "crd_status.referenceDetailId, " +
 	        "crd_status.referenceDetailValue, " +
-	        "emp.uuid) " +
+	        "emp.uuid,emp.isDeleted ) " +
 	        "FROM EmployeeEntity emp " +
 	        "JOIN EmployeeEntity e_manager ON e_manager.employeeId = emp.reportingManagerId " +
 	        "JOIN CommonReferenceDetailsEntity crd_gender ON crd_gender.referenceDetailId = emp.gender " +

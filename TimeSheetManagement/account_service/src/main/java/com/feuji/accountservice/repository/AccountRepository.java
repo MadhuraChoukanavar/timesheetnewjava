@@ -31,7 +31,7 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Integer>
 			+" e_relationship.employeeId  ,e_relationship.firstName,e_businessDevelopment.employeeId,e_businessDevelopment.firstName ,"
 			+" a_parentname.parentAccountId, a_parentname.accountName,crd_accountBuId.referenceDetailId,crd_accountBuId.referenceDetailValue, "
 			+" a.plannedStartDate ,a.plannedEndDate,a.actualStartDate,a.actualEndDate,a.address,a.city,a.state,a.zipcode,a.country, "
-			+" crd_status.referenceDetailId,crd_status.referenceDetailValue ,a.comments,a.uuId)"
+			+" crd_status.referenceDetailId,crd_status.referenceDetailValue ,a.comments,a.uuId,a.isDeleted)"
 			+ "FROM AccountEntity a " 
 					+"JOIN AccountEntity a_parentname ON a_parentname.accountId=a.parentAccountId "
 					+ "JOIN EmployeeEntity e_owener ON a.ownerId = e_owener.employeeId "
