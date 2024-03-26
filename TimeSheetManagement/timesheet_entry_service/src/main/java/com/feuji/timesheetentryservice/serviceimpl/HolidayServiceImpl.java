@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 
 import com.feuji.timesheetentryservice.controller.HolidayController;
 import com.feuji.timesheetentryservice.entity.HolidayEntity;
+import com.feuji.timesheetentryservice.exception.HolidayDateExistsException;
+import com.feuji.timesheetentryservice.exception.HolidayNameAndHolidayDateExistException;
+import com.feuji.timesheetentryservice.exception.HolidayNameExistException;
 import com.feuji.timesheetentryservice.exception.HolidayNotFoundException;
 import com.feuji.timesheetentryservice.repository.HolidayRepository;
 import com.feuji.timesheetentryservice.service.HolidayService;
@@ -29,10 +32,36 @@ public class HolidayServiceImpl implements HolidayService {
 	private HolidayRepository holidayRepository;
 
 	@Override
-	public void save(HolidayEntity holidayEntity) {
+	public void save(HolidayEntity holidayEntity) {	
+		if(holidayEntity!=null) {
+		List<HolidayEntity> holidayDetails=holidayRepository.findByHolidayNameOrHolidayDate(holidayEntity.getHolidayName(), holidayEntity.getHolidayDate());
+		Optional<HolidayEntity> holiday=holidayDetails.stream().findFirst();
+		if(holidayDetails.size()>1)
+		{
+			throw new HolidayNameAndHolidayDateExistException();
+		}
+		else if(holiday.isPresent())
+		{
+			if(holiday.get().getHolidayName().equalsIgnoreCase(holidayEntity.getHolidayName()))
+			{
+				throw new HolidayNameExistException("Holiday name is exists");
+			}
+			
+			if(holiday.get().getHolidayDate().equals(holidayEntity.getHolidayDate()))
+			{
+				throw new HolidayDateExistsException("Holiday date is exists");
+			}
+		}
+		else {
 		holidayRepository.save(holidayEntity);
 		log.info("Holiday details are save", holidayEntity);
+		}
 
+	}
+		else
+		{
+			throw new HolidayNotFoundException("Holiday details Not found");
+		}
 	}
 
 	@Override
@@ -103,20 +132,25 @@ public class HolidayServiceImpl implements HolidayService {
 		optional.setDeleted(true);
 		update(optional);
 
-//		if (optional.isPresent()) {
-//			
-//			holidayRepository.updateIsDeleted(holidayId);
-//
-//			System.out.println("deleted successfull");
-//		} else {
-//			optional.orElseThrow();
-//		}
+
 
 		return optional;
 	}
 
+	@Override
+	public List<HolidayEntity> getHolidayByYear(int year) {
+		List<HolidayEntity> holidayList=holidayRepository.findHolidaysByYear(year).stream().filter(holiday -> !holiday.isDeleted())
+				.collect(Collectors.toList());;
+		if(holidayList!=null)
+		{
+			return holidayList;
+			
+		}
+		else {
+		return null;
+		}
+	}
+	
+
 
 }
-
-}
-

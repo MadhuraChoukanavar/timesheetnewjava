@@ -1,7 +1,10 @@
 package com.feuji.timesheetentryservice.serviceimpl;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-
+import java.util.Date;
 import java.util.Iterator;
 
 import java.util.List;
@@ -21,6 +24,7 @@ import com.feuji.timesheetentryservice.dto.AccountProjectResourceMappingDto;
 import com.feuji.timesheetentryservice.dto.ProjectNameDto;
 import com.feuji.timesheetentryservice.dto.ProjectTaskDto;
 import com.feuji.timesheetentryservice.dto.ProjectTaskTypeNameDto;
+import com.feuji.timesheetentryservice.dto.TimeSheeApprovalDto;
 import com.feuji.timesheetentryservice.dto.TimeSheetHistoryDto;
 import com.feuji.timesheetentryservice.entity.TimesheetWeekEntity;
 import com.feuji.timesheetentryservice.exception.WeekNotFoundException;
@@ -180,6 +184,66 @@ public class TimesheetWeekServiceImpl implements TimesheetWeekService {
 
 		log.info("Years :" ,years);
 		return years;
+		}
+		catch (Exception e) {
+//			System.out.println(e.getMessage());
+			log.info(e.getMessage());
+		}
+		return null;
+	}
+	@Override
+	public String updateTimesheetStatus(Integer employeeId,Integer accountId,String weekStartDate) {
+		Date startDate = convertDateStringToDate(weekStartDate);
+		try {
+			timesheetWeekRepo.updateTimesheetStatus(employeeId,accountId,startDate);
+			return "Update timesheetStatus successfully";
+		}catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
+
+
+	@Override
+	public String rejectedTimesheet(Integer employeeId, Integer accountId,String weekStartDate) {
+		Date startDate = convertDateStringToDate(weekStartDate);
+		try {
+			timesheetWeekRepo.rejectedTimesheet(employeeId,accountId,startDate);
+			return " Rejected Timesheet successfully";
+		}catch(Exception e) {
+			e.printStackTrace();
+			return "getting exception";
+		}
+		
+		
+	}
+	
+	public static Date convertDateStringToDate(String dateString) {
+		try {
+
+			LocalDate localDate = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("dd-MMM-yyyy"));
+
+			Date date = java.sql.Date.valueOf(localDate);
+			return date;
+
+		} catch (DateTimeParseException e) {
+
+			System.out.println("Error parsing the date: " + e.getMessage());
+			return null;
+		}
+
+	}
+	@Override
+	public List<TimeSheeApprovalDto> timeSheetHistoryDto(String month, int year,Integer accountId) {
+		
+		try
+		{
+		System.out.println(month+" "+year+" "+accountId);
+		List<TimeSheeApprovalDto>   timeSheeApproval =timesheetWeekRepo.getTimeSheetHistory(month, year,accountId);
+
+		log.info("timeSheetHistory :" ,timeSheeApproval);
+		return timeSheeApproval;
 		}
 		catch (Exception e) {
 //			System.out.println(e.getMessage());

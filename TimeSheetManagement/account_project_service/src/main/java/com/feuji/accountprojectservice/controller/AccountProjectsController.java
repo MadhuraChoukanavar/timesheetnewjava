@@ -55,14 +55,21 @@ public class AccountProjectsController {
 	@GetMapping("/getAccountProject/{id}")
 	public ResponseEntity<AccountProjectsBean> getAccountBeanByEmpId(@PathVariable Integer id) {
 
-		AccountProjectsBean accountProjectsBean = accountProjectsService.getAccountProjectBean(id);
+	    try {
+	        AccountProjectsBean accountProjectsBean = accountProjectsService.getAccountProjectBean(id);
+	        
+	        if (accountProjectsBean != null) {
+	            log.info("AccountProjectsBean retrieved successfully: {}", accountProjectsBean);
+	            return ResponseEntity.ok().body(accountProjectsBean);
+	        } else {
+	            log.warn("AccountProjectsBean not found for id: {}", id);
+	            return ResponseEntity.notFound().build();
+	        }
+	    } catch (Exception e) {
+	        log.error("An error occurred while fetching AccountProjectsBean with id {}: {}", id, e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
 
-		if (accountProjectsBean != null) {
-			log.info("reporting manager id: {}", accountProjectsBean);
-			return new ResponseEntity<>(accountProjectsBean, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
 	}
 
 	@GetMapping(path = "/getByUuid/{uuid}")
@@ -84,39 +91,57 @@ public class AccountProjectsController {
 	}
 
 	@PutMapping("/updateAccountProject")
-	public ResponseEntity<AccountProjectsBean> updateAccountProject(
-			@RequestBody AccountProjectsBean accountProjectsBean) {
-		log.info("updateAccountProject in controller start");
-		log.info("accountProjectsBean object: {}", accountProjectsBean);
 
-		try {
-			AccountProjectsBean updateAccountProject = accountProjectsService.updateAccountProject(accountProjectsBean);
-			log.info("updateAccountProject in controller end");
-			return new ResponseEntity<AccountProjectsBean>(updateAccountProject, HttpStatus.OK);
-		} catch (IllegalArgumentException e) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		} catch (UUIDNotFoundException e) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
+	public ResponseEntity<AccountProjectsBean> updateAccountProject(@RequestBody AccountProjectsBean accountProjectsBean) {
+	    log.info("updateAccountProject in controller start");
+	    log.info("accountProjectsBean object: {}", accountProjectsBean);
+	    
+	    try {
+	        AccountProjectsBean updateAccountProject = accountProjectsService.updateAccountProject(accountProjectsBean);
+	        log.info("updateAccountProject in controller end");
+	        return ResponseEntity.ok().body(updateAccountProject);
+	    } catch (IllegalArgumentException e) {
+	        log.error("Bad request received while updating AccountProjectsBean: {}", e.getMessage());
+	        return ResponseEntity.badRequest().build();
+	    } catch (UUIDNotFoundException e) {
+	        log.warn("AccountProjectsBean not found: {}", e.getMessage());
+	        return ResponseEntity.notFound().build();
+	    } catch (Exception e) {
+	        log.error("An error occurred while updating AccountProjectsBean: {}", e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
 	}
 
-	@GetMapping(path = "/getaccount")
+
+
+	@GetMapping(path="/getaccount")
 	public ResponseEntity<List<AccountBean>> getAccount() {
-		List<AccountBean> beans = accountProjectsService.getAccountBean();
-		return new ResponseEntity<>(beans, HttpStatus.OK);
+	    try {
+	        List<AccountBean> beans = accountProjectsService.getAccountBean();
+	        log.info("Retrieved {} account beans", beans.size());
+	        return ResponseEntity.ok().body(beans);
+	    } catch (Exception e) {
+	        log.error("An error occurred while fetching account beans: {}", e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
 	}
 
 	@GetMapping(path = "/getEmployee")
 	public ResponseEntity<List<EmployeeBean>> getAllEmployees() {
+
 		List<EmployeeBean> beans = accountProjectsService.getEmployeeBean();
 		return new ResponseEntity<>(beans, HttpStatus.OK);
-	}
+  }
 
 	@PutMapping("delete/{accountProjectId}")
 	public ResponseEntity<String> deleteProject(@PathVariable Integer accountProjectId) {
-		String result = null;
-		result = accountProjectsService.updateDeleteStatus(accountProjectId);
-		return new ResponseEntity<String>(result, HttpStatus.NO_CONTENT);
+	    try {
+	        String result = accountProjectsService.updateDeleteStatus(accountProjectId);
+	        return new ResponseEntity<String>(result,HttpStatus.NO_CONTENT );
+	    } catch (Exception e) {
+	        log.error("An error occurred while deleting project with ID {}: {}", accountProjectId, e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while deleting project.");
+	    }
 	}
 	
 

@@ -24,12 +24,15 @@ public class EmployeeBean {
 	private String lastName;
 	private String image;
 	private String designation;
+	
 	private String email;
 	private Integer gender;
 	private Timestamp dateOfJoining;
+	
 	private Integer reportingManagerId;
 	private Integer employmentType;
 	private Integer status;
+	
 	private Integer deliveryUnitId;
 	private Integer businessUnitId;
 	private Timestamp exitDate;
@@ -40,4 +43,7 @@ public class EmployeeBean {
 	private Timestamp createdOn;
 	private String modifiedBy;
 	private Timestamp modifiedOn;
+	
+	
+	
 }

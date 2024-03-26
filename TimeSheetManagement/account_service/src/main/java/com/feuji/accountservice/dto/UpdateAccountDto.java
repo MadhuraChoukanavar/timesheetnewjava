@@ -20,7 +20,7 @@ public class UpdateAccountDto {
 	private String businessDevelopmentManagerName;
 	private Integer parentAccountId;
 	private String parentAccountName;
-	private Long accountBuId;
+	private Integer accountBuId;
 	private String accountBuName;
 	private Timestamp plannedStartDate;
 	private Timestamp  plannedEndDate;
@@ -31,11 +31,11 @@ public class UpdateAccountDto {
 	private String state;
 	private String zipcode;
 	private String country;
-	private Long statusId;
+	private Integer accountStatus;
 	private String statusValue;
 	private String comments;
 	private String uuId;
-	
+	private Boolean isDeleted;
 	
 	public String getFormattedPlannedStartDate() {
         return formatDate(plannedStartDate);
@@ -63,10 +63,11 @@ public class UpdateAccountDto {
 
 	public UpdateAccountDto(Integer accountId, String accountName, Integer ownerId, String ownerName,
 			Integer relationshipManagerId, String relationshipManageName, Integer businessDevelopmentManagerId,
-			String businessDevelopmentManagerName, Integer parentAccountId, String parentAccountName, Long accountBuId,
-			String accountBuName, Timestamp plannedStartDate, Timestamp plannedEndDate, Timestamp actualStartDate,
-			Timestamp actualEndDate, String address, String city, String state, String zipcode, String country,
-			Long statusId, String statusValue, String comments, String uuId) {
+			String businessDevelopmentManagerName, Integer parentAccountId, String parentAccountName,
+			Integer accountBuId, String accountBuName, Timestamp plannedStartDate, Timestamp plannedEndDate,
+			Timestamp actualStartDate, Timestamp actualEndDate, String address, String city, String state,
+			String zipcode, String country, Integer accountStatus, String statusValue, String comments, String uuId,
+			Boolean isDeleted) {
 		super();
 		this.accountId = accountId;
 		this.accountName = accountName;
@@ -89,11 +90,14 @@ public class UpdateAccountDto {
 		this.state = state;
 		this.zipcode = zipcode;
 		this.country = country;
-		this.statusId = statusId;
+		this.accountStatus = accountStatus;
 		this.statusValue = statusValue;
 		this.comments = comments;
 		this.uuId = uuId;
+		this.isDeleted = isDeleted;
 	}
 
+
+	
 	
 }

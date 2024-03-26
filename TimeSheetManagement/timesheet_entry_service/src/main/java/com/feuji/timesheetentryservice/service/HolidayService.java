@@ -16,7 +16,6 @@ public interface HolidayService {
 	HolidayEntity delete(Integer holidayId);
 
 	public List<Integer> getWeekHolidaysDayIds(String startweekofDate);
-
-}
+	List<HolidayEntity> getHolidayByYear(int year);
 
 }

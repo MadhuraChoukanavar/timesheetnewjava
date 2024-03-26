@@ -53,16 +53,29 @@ public class TimesheetDataController {
 	 *         HTTP status code.
 	 */
 
+//	@PostMapping("/saveedit/{weekStartDate}")
+//	public String saveupdate(@RequestBody SaveAndEditRecordsDto weekAndDayDataBeans,
+//			@PathVariable String weekStartDate) {
+//
+//		timeSheetDataService.saveOrUpdate(weekAndDayDataBeans, weekStartDate);
+//		return "came to controller ";
+//
+//	}
+
 	@PostMapping("/saveedit/{weekStartDate}")
-	public String saveupdate(@RequestBody SaveAndEditRecordsDto weekAndDayDataBeans,
+	public String saveOrUpdateRecords(@RequestBody SaveAndEditRecordsDto weekAndDayDataBeans,
 			@PathVariable String weekStartDate) {
-
-		timeSheetDataService.saveOrUpdate(weekAndDayDataBeans, weekStartDate);
-		return "came to controller ";
-
+		try {
+			log.info("Saving or updating records for week starting from: {}", weekStartDate);
+			timeSheetDataService.saveOrUpdate(weekAndDayDataBeans, weekStartDate);
+			log.info("Records saved or updated successfully");
+			return "Records saved or updated successfully";
+		} catch (Exception e) {
+			log.error("An error occurred while saving or updating records for week starting from {}: {}", weekStartDate,
+					e.getMessage());
+			return "Error occurred while saving or updating records";
+		}
 	}
-
-
 
 	/**
 	 * Handles the HTTP GET request to retrieve the timesheet data for a specific
@@ -79,19 +92,36 @@ public class TimesheetDataController {
 	 * @return ResponseEntity containing a list of WeekAndDayDto objects
 	 *         representing the timesheet data and HTTP status code.
 	 */
+//	@GetMapping("/getallweekdayData/{accountId}/{employeeId}/{weekStartDate}/{weekEndDate}")
+//	public ResponseEntity<List<WeekAndDayDto>> getAttWeekDayData(@PathVariable Integer accountId,
+//			@PathVariable Integer employeeId, @PathVariable String weekStartDate, @PathVariable String weekEndDate) {
+//
+//		try {
+//
+//			List<WeekAndDayDto> fetchAllWeekDayRecordsById = timeSheetDataService.fetchAllWeekDayRecordsById(accountId,
+//					employeeId, weekStartDate, weekEndDate);
+//
+//			return new ResponseEntity<>(fetchAllWeekDayRecordsById, HttpStatus.ACCEPTED);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
+//	}
 	@GetMapping("/getallweekdayData/{accountId}/{employeeId}/{weekStartDate}/{weekEndDate}")
-	public ResponseEntity<List<WeekAndDayDto>> getAttWeekDayData(@PathVariable Integer accountId,
+	public ResponseEntity<List<WeekAndDayDto>> getAllWeekdayData(@PathVariable Integer accountId,
 			@PathVariable Integer employeeId, @PathVariable String weekStartDate, @PathVariable String weekEndDate) {
-
 		try {
+			log.info("Fetching all weekday data for account {}, employee {} from {} to {}", accountId, employeeId,
+					weekStartDate, weekEndDate);
 
-			List<WeekAndDayDto> fetchAllWeekDayRecordsById = timeSheetDataService.fetchAllWeekDayRecordsById(accountId,
-					employeeId, weekStartDate, weekEndDate);
+			List<WeekAndDayDto> weekdayData = timeSheetDataService.fetchAllWeekDayRecordsById(accountId, employeeId,
+					weekStartDate, weekEndDate);
 
-			return new ResponseEntity<>(fetchAllWeekDayRecordsById, HttpStatus.ACCEPTED);
+			log.info("Retrieved {} weekday data records", weekdayData.size());
+			return ResponseEntity.ok(weekdayData);
 		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			log.error("An error occurred while fetching weekday data: {}", e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
 
@@ -103,26 +133,40 @@ public class TimesheetDataController {
 	 * @return ResponseEntity containing a list of TimesheetDayEntity objects
 	 *         representing the deleted record and HTTP status code.
 	 */
+//	@PostMapping("/delete")
+//	public ResponseEntity<List<TimesheetDayEntity>> deleteTheRecord(@RequestBody WeekAndDayDto weekAndDayDto) {
+//		try {
+//			System.out.println("hi delete");
+//			List<TimesheetDayEntity> deleteDayRecord = timeSheetDataService.deleteDayRecord(weekAndDayDto);
+//
+//			if (deleteDayRecord == null || deleteDayRecord.isEmpty()) {
+//				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//			}
+//
+//			return new ResponseEntity<>(deleteDayRecord, HttpStatus.OK);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
+//	}
 	@PostMapping("/delete")
-	public ResponseEntity<List<TimesheetDayEntity>> deleteTheRecord(@RequestBody WeekAndDayDto weekAndDayDto) {
+	public ResponseEntity<List<TimesheetDayEntity>> deleteRecord(@RequestBody WeekAndDayDto weekAndDayDto) {
 		try {
-			System.out.println("hi delete");
-			List<TimesheetDayEntity> deleteDayRecord = timeSheetDataService.deleteDayRecord(weekAndDayDto);
+			log.info("Deleting record: {}", weekAndDayDto);
 
-			if (deleteDayRecord == null || deleteDayRecord.isEmpty()) {
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			List<TimesheetDayEntity> deletedRecords = timeSheetDataService.deleteDayRecord(weekAndDayDto);
+
+			if (deletedRecords == null || deletedRecords.isEmpty()) {
+				log.warn("No records deleted");
+				return ResponseEntity.notFound().build();
 			}
 
-			return new ResponseEntity<>(deleteDayRecord, HttpStatus.OK);
+			log.info("Deleted {} records", deletedRecords.size());
+			return ResponseEntity.ok(deletedRecords);
 		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			log.error("An error occurred while deleting record: {}", e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
-	}
-
-	@PutMapping("/editData")
-	public void updateData(@RequestBody WeekAndDayDto weekAndDayDto) {
-
 	}
 
 	/**
@@ -134,68 +178,134 @@ public class TimesheetDataController {
 	 * @return ResponseEntity containing a list of TimesheetWeekEntity objects
 	 *         representing the submitted timesheet and HTTP status code.
 	 */
-	@PostMapping("submitAction")
-	public ResponseEntity<List<TimesheetWeekEntity>> submitTimesheet(@RequestParam Integer employeeId,@RequestParam Integer accountId, @RequestParam String weekStartDate
-		) {
-		log.info("weekStartDate:::"+ weekStartDate);
-		try {
+//	@PostMapping("submitAction")
+//	public ResponseEntity<List<TimesheetWeekEntity>> submitTimesheet(@RequestParam Integer employeeId,@RequestParam Integer accountId, @RequestParam String weekStartDate
+//		) {
+//		log.info("weekStartDate:::"+ weekStartDate);
+//	
+//
+//			log.info("Submitting timesheet for week starting on {} with status: {}", weekStartDate, Constants.TIME_SHEET_STATUS_SAVED);
+//
+//			List<TimesheetWeekEntity> submittingTimesheet = timeSheetDataService.submittingTimesheet(weekStartDate,
+//					Constants.TIME_SHEET_STATUS_SUBMITTED);
+//
+//			if (submittingTimesheet != null && !submittingTimesheet.isEmpty()) {
+//
+//				this.sendEmails(employeeId, accountId, weekStartDate);
+//				return new ResponseEntity<>(submittingTimesheet, HttpStatus.OK);
+//			} else {
+//
+//				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//			}
+//	
+//		
+//	
+//		}
 
-			log.info("Submitting timesheet for week starting on {} with status: {}", weekStartDate, Constants.TIME_SHEET_STATUS_SAVED);
+	@PostMapping("submitAction")
+	public ResponseEntity<List<TimesheetWeekEntity>> submitTimesheet(@RequestParam Integer employeeId,
+			@RequestParam Integer accountId, @RequestParam String weekStartDate) {
+		try {
+			log.info("Submitting timesheet for week starting on {} with status: {}", weekStartDate,
+					Constants.TIME_SHEET_STATUS_SAVED);
 
 			List<TimesheetWeekEntity> submittingTimesheet = timeSheetDataService.submittingTimesheet(weekStartDate,
 					Constants.TIME_SHEET_STATUS_SUBMITTED);
 
 			if (submittingTimesheet != null && !submittingTimesheet.isEmpty()) {
-
 				this.sendEmails(employeeId, accountId, weekStartDate);
 				return new ResponseEntity<>(submittingTimesheet, HttpStatus.OK);
 			} else {
-
+				log.error("Failed to submit timesheet for week starting on {}", weekStartDate);
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
+		} catch (Exception e) {
+			log.error("An error occurred while submitting timesheet for week starting on {}: {}", weekStartDate,
+					e.getMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
+//	public ResponseEntity<List<TimesheetWeekEntity>> sendEmails(Integer employeeId,
+//			 Integer accountId,  String weekStartDate) {
+//		try {
+//
+//			log.info("Submitting timesheet for employeeId : {} and account Id: {}", employeeId, accountId,
+//					weekStartDate);
+//
+//			List<EmployeeDataDto> list = timeSheetDataService.getEmployeeDetailsByIdAndAccountId(accountId, employeeId);
+//
+//			log.info("List size:" + list.size());
+//			for (EmployeeDataDto emp : list) {
+//				log.info("mail sending....." + emp.getEmail());
+//				emailsender.sendSimpleEmail(emp.getEmail(), "Request for Timesheet Approval",
+//						this.composeBody(emp, weekStartDate));
+//				System.out.println(emp.getEmail());
+//
+//			}
+//			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//		} catch (Exception e) {
+//
+//			e.printStackTrace();
+//			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
+//	}
 
-	public ResponseEntity<List<TimesheetWeekEntity>> sendEmails(Integer employeeId,
-			 Integer accountId,  String weekStartDate) {
+	public ResponseEntity<List<TimesheetWeekEntity>> sendEmails(Integer employeeId, Integer accountId,
+			String weekStartDate) {
 		try {
-
-			log.info("Submitting timesheet for employeeId : {} and account Id: {}", employeeId, accountId,
-					weekStartDate);
+			log.info("Submitting timesheet for employeeId : {} and account Id: {} for week starting on: {}", employeeId,
+					accountId, weekStartDate);
 
 			List<EmployeeDataDto> list = timeSheetDataService.getEmployeeDetailsByIdAndAccountId(accountId, employeeId);
 
-			log.info("List size:" + list.size());
+			log.info("List size: {}", list.size());
 			for (EmployeeDataDto emp : list) {
-				log.info("mail sending....." + emp.getEmail());
+				log.info("Sending email to: {}", emp.getEmail());
 				emailsender.sendSimpleEmail(emp.getEmail(), "Request for Timesheet Approval",
 						this.composeBody(emp, weekStartDate));
-
+				log.info("Email sent to: {}", emp.getEmail());
 			}
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		} catch (Exception e) {
 
+			return new ResponseEntity<>(HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("An error occurred while sending emails for timesheet approval: {}", e.getMessage());
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
+//	private String composeBody(EmployeeDataDto emp, String weekStartDate) throws Exception {
+//
+//		log.info("composeBody for employee:" + emp.getEmail());
+//
+//		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//		LocalDate startDate = LocalDate.parse(weekStartDate, dateTimeFormatter);
+//		LocalDate endDate = startDate.plusDays(6);
+//
+//		String emailBody = "Dear " + emp.getFirstName() + " " + emp.getLastName() + ",\n\n"
+//				+ "The employee has submitted the timesheet for the period from: " + startDate.toString() + " to: "
+//				+ endDate.toString() + " Please review and approve it accordingly.";
+//
+//		return emailBody;
+//	}
+	private String composeBody(EmployeeDataDto emp, String weekStartDate) {
+	    try {
+	        log.info("composeBody for employee: {}", emp.getEmail());
 
-	private String composeBody(EmployeeDataDto emp, String weekStartDate) throws Exception {
+	        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	        LocalDate startDate = LocalDate.parse(weekStartDate, dateTimeFormatter);
+	        LocalDate endDate = startDate.plusDays(6);
 
-		log.info("composeBody for employee:" + emp.getEmail());
+	        String emailBody = "Dear " + emp.getFirstName() + " " + emp.getLastName() + ",\n\n"
+	                + "The employee has submitted the timesheet for the period from: " + startDate.toString() + " to: "
+	                + endDate.toString() + " Please review and approve it accordingly.";
 
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		LocalDate startDate = LocalDate.parse(weekStartDate, dateTimeFormatter);
-		LocalDate endDate = startDate.plusDays(6);
-
-		String emailBody = "Dear " + emp.getFirstName() + " " + emp.getLastName() + ",\n\n"
-				+ "The employee has submitted the timesheet for the period from: " + startDate.toString() + " to: "
-				+ endDate.toString() + " Please review and approve it accordingly.";
-
-		return emailBody;
+	        return emailBody;
+	    } catch (Exception e) {
+	        log.error("An error occurred while composing email body for employee: {}", emp.getEmail(), e);
+	        return null;
+	    }
 	}
 
 }
-
-}
-
