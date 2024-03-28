@@ -44,7 +44,7 @@ public class AccountServiceImpl implements AccountService {
 		AccountEntity	accountEntity2= accountRepository.findByAccountName(accountEntity1.getAccountName());
 		if (accountEntity2 == null) {
 			accountRepository.save(accountEntity1);
-			System.out.println(" Account Details Type details saved { " + accountEntity1 + " }");
+			
 			return accountEntity1;
 		} else {
 			throw new SaveUniqueAccountException("Account Name already Exist");
@@ -120,13 +120,13 @@ public class AccountServiceImpl implements AccountService {
 	public List<UpdateAccountDto> fetchByUuID(String uuId) {
 		try
 		{
-		System.out.println("UUID :"+uuId);
+	
 		List<UpdateAccountDto>   updatedData=accountRepository.fetchByUuID(uuId);
 		log.info(" updatedData :" , updatedData);
 		return  updatedData;
 		}
 		catch (Exception e) {
-//			System.out.println(e.getMessage());
+
 			log.info(e.getMessage());
 		}
 		return null;

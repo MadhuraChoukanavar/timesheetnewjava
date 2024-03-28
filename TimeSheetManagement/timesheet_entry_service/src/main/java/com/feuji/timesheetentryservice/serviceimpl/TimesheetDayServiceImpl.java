@@ -52,7 +52,7 @@ public class TimesheetDayServiceImpl implements TimesheetDayService {
 				throw new WeekNotFoundException("week with id not found");
 			}
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+		
 			log.error("Day not found: {}", e.getMessage());
 			return null;
 		}
@@ -84,14 +84,14 @@ public class TimesheetDayServiceImpl implements TimesheetDayService {
 	public List<TimeSheetDayHistoryDto> getTimeSheetDayHistory(String uuId) {
 		try
 		{
-		System.out.println(uuId);
+	
 		List<TimeSheetDayHistoryDto>   timeSheetHistory =timesheetDayRepo.getTimeSheetDayHistory(uuId);
 
 		log.info("timeSheetHistory :" ,timeSheetHistory);
 		return timeSheetHistory;
 		}
 		catch (Exception e) {
-//			System.out.println(e.getMessage());
+
 			log.info(e.getMessage());
 		}
 		return null;
