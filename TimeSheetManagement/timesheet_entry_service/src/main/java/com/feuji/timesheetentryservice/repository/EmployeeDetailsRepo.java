@@ -48,7 +48,6 @@ public class EmployeeDetailsRepo {
 		// Execute the query and return the result
 		return query.getResultList();
 	}
-
 }
 
 

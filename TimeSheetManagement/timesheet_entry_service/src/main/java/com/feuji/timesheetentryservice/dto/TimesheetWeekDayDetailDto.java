@@ -37,6 +37,7 @@ public class TimesheetWeekDayDetailDto {
     private Timestamp date;
     private Integer numberOfHours;
     private Integer attendanceType;
+    private Integer timesheetStatus;
    
 }
 

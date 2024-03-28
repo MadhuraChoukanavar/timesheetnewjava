@@ -53,7 +53,7 @@ public interface TimesheetWeekRepo extends JpaRepository<TimesheetWeekEntity, In
     @Query("SELECT new com.feuji.timesheetentryservice.dto.TimesheetWeekDayDetailDto( "
             + " pwts.timesheetWeekId, pwts.employeeId, pwts.accountId, pwts.accountProjectId, "
             + " pwts.weekStartDate, pwts.weekEndDate, pwts.weekNumber, pdts.timesheetDayId,  "
-            + " aptt.taskId, aptt.taskTypeId, pdts.date, pdts.numberOfHours, pdts.attendanceType ) "
+            + " aptt.taskId, aptt.taskTypeId, pdts.date, pdts.numberOfHours, pdts.attendanceType,pwts.timesheetStatus ) "
             + " FROM AccountProjectTask aptt "
             + " JOIN TimesheetDayEntity pdts ON aptt.taskId = pdts.taskId "
             + " JOIN TimesheetWeekEntity pwts ON pwts.timesheetWeekId = pdts.timesheetWeekEntity.timesheetWeekId"

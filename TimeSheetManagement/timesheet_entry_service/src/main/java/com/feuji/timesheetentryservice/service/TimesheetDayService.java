@@ -8,7 +8,6 @@ import com.feuji.timesheetentryservice.dto.TimeSheetDayHistoryDto;
 import com.feuji.timesheetentryservice.entity.TimesheetDayEntity;
 
 
-
 public interface TimesheetDayService {
 	
 	public TimesheetDayEntity saveTimesheetDay(TimesheetDayBean timesheetDayBean);

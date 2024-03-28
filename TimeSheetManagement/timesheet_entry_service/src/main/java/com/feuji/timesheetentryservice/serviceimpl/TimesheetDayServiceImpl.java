@@ -53,7 +53,7 @@ public class TimesheetDayServiceImpl implements TimesheetDayService {
 				throw new WeekNotFoundException("week with id not found");
 			}
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+		
 			log.error("Day not found: {}", e.getMessage());
 			return null;
 		}

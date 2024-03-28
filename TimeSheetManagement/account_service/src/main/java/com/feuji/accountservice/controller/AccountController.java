@@ -67,6 +67,7 @@ public class AccountController {
 	        return ResponseEntity.notFound().build();
 	    }
 	}
+
 	
 	
 	@GetMapping(path = "/getAll")
@@ -78,7 +79,6 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
-	
 	
 	@GetMapping(path="/getEmployee")
 	public ResponseEntity<List<EmployeeBean>> getAllEmployees() {

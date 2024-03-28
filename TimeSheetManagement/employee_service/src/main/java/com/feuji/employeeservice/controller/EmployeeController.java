@@ -55,8 +55,6 @@ public class EmployeeController {
 		}
 	}
 	
-
-	
 	@GetMapping("/referenceTypeId/{referenceTypeId}")
 	public ResponseEntity<List<SaveEmployeeDto>> getEmployeesByReferenceTypeId(@PathVariable Integer referenceTypeId) {
 	    try {
@@ -70,7 +68,6 @@ public class EmployeeController {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	    }
 	}
-
 	
 	@GetMapping("/getReportingMngIdByEmpId/{id}")
 	public ResponseEntity<EmployeeBean> getReportingMngIdByEmpId(@PathVariable Integer id) {
@@ -105,6 +102,7 @@ public class EmployeeController {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	    }
 	}
+
 	
 	@GetMapping("/{userEmpId}")
 	public List<EmployeeDto> getEmployeeByUserEmpId(@PathVariable("userEmpId") Integer userEmpId) {
@@ -134,7 +132,22 @@ public class EmployeeController {
         }
 		return null;
     }	
+
+ 
+//	public List<EmployeeDisplayDto> getEmployeeDetails(Integer employeeId)
+//	@GetMapping(path = "/getEmployeeDetails")
+//	public ResponseEntity<List<EmployeeDisplayDto>> getEmployeeDetails()
+//	{
+//
+//		List<EmployeeDisplayDto> updateDta= employeeService.getEmployeeDetails();
+//		log.info("Fetching updateDta {}", updateDta);
+//		ResponseEntity<List<EmployeeDisplayDto>>  timeSheetHistory1= new ResponseEntity<List<EmployeeDisplayDto>>(HttpStatus.OK);
+//		return ResponseEntity.status(HttpStatus.OK).body(updateDta);	
+//
+//	}
 	
+	
+
 	
 	@GetMapping(path = "/getEmployeeDetails")
 	public ResponseEntity<List<EmployeeDisplayDto>> getEmployeeDetails() {
@@ -147,8 +160,12 @@ public class EmployeeController {
 	        log.error("An error occurred while fetching employee details: {}", e.getMessage());
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	    }
+
 	}
+
+
 	
+
 	@GetMapping("/search")
     public ResponseEntity<List<EmployeeEntity>> searchEmployees(@RequestParam("firstName") String firstName) {
         log.info("Searching employees by first name: {}", firstName);
@@ -202,4 +219,5 @@ public class EmployeeController {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	    }
 	}
+
 }

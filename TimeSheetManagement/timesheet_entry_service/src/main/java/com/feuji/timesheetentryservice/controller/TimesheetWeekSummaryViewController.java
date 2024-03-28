@@ -18,6 +18,7 @@ import com.feuji.timesheetentryservice.dto.ProjectNameDto;
 import com.feuji.timesheetentryservice.dto.TimeSheeApprovalDto;
 import com.feuji.timesheetentryservice.dto.ProjectTaskDto;
 import com.feuji.timesheetentryservice.dto.ProjectTaskTypeNameDto;
+import com.feuji.timesheetentryservice.dto.TimeSheeApprovalDto;
 import com.feuji.timesheetentryservice.entity.TimesheetWeekEntity;
 import com.feuji.timesheetentryservice.entity.TimesheetWeekSummaryViewEntity;
 import com.feuji.timesheetentryservice.repository.TimesheetWeekSummaryRepo;
@@ -35,24 +36,6 @@ public class TimesheetWeekSummaryViewController {
 	
 	@Autowired
 	private TimesheetWeekSummaryService timesheetWeekSummaryService;
-	
-
-//	@GetMapping("/timesheets/manager/{approvedBy}/{accountId}/{weekNumber}")
-//
-//	    public ResponseEntity<List<TimesheetWeekSummaryViewEntity>> getTimesheetsForManager(
-//	            @PathVariable Integer approvedBy,
-//	            @PathVariable Integer accountId,
-//	           
-//	            @PathVariable Integer weekNumber) {
-//	        List<TimesheetWeekSummaryViewEntity> timesheets = timesheetWeekSummaryService.getTimesheetsForManager(approvedBy,accountId, weekNumber);
-//
-//	        if (timesheets.isEmpty()) {
-//	            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-//	        } else {
-//	            return ResponseEntity.status(HttpStatus.OK).body(timesheets);
-//	        }
-//
-//	    }
 	
 	@GetMapping("/timesheets/manager/{approvedBy}/{accountId}/{weekNumber}")
 	public ResponseEntity<List<TimesheetWeekSummaryViewEntity>> getTimesheetsForManager(
@@ -79,16 +62,7 @@ public class TimesheetWeekSummaryViewController {
 	}
 
 	
-//	 @GetMapping("/projects/{accountId}/{employeeId}")
-//	    public ResponseEntity<List<ProjectNameDto>> getAccountProjects(@PathVariable Integer accountId,@PathVariable Integer employeeId) {
-//	        log.info("Fetching account projects for accountId: {}", accountId);
-//	        List<ProjectNameDto> projects = timesheetWeekSummaryService.getAccountProjects(accountId,employeeId);
-//	        if (projects != null && !projects.isEmpty()) {
-//	            return new ResponseEntity<>(projects, HttpStatus.OK);
-//	        } else {
-//	            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//	        }
-//	    }
+
 	@GetMapping("/projects/{accountId}/{employeeId}")
 	public ResponseEntity<List<ProjectNameDto>> getAccountProjects(@PathVariable Integer accountId, @PathVariable Integer employeeId) {
 	    try {
@@ -106,16 +80,6 @@ public class TimesheetWeekSummaryViewController {
 	    }
 	}
 
-//	 @GetMapping("/accounts/{approvedBy}")
-//	 public ResponseEntity<List<AccountNameDto>> getAccounts(@PathVariable Integer approvedBy){
-//		 log.info("Fetching account for approvedBy: {}", approvedBy);
-//	        List<AccountNameDto> accounts = timesheetWeekSummaryService.getAccounts(approvedBy);
-//	        if (accounts != null && !accounts.isEmpty()) {
-//	            return new ResponseEntity<>(accounts, HttpStatus.OK);
-//	        } else {
-//	            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//	        }
-//	 }
 	
 	@GetMapping("/accounts/{approvedBy}")
 	public ResponseEntity<List<AccountNameDto>> getAccounts(@PathVariable Integer approvedBy) {
@@ -134,11 +98,6 @@ public class TimesheetWeekSummaryViewController {
 	    }
 	}
 
-//	 @GetMapping("/total/{employeeId}/{accountProjectId}/{weekNumber}")
-//	 public ResponseEntity<Integer> getTotalHours(@PathVariable Integer employeeId, @PathVariable Integer accountProjectId,@PathVariable Integer weekNumber) {
-//	      Integer totalHours = timesheetWeekSummaryService.getTotalHours(employeeId, accountProjectId,weekNumber);
-//	      return new ResponseEntity<>(totalHours, HttpStatus.OK);
-//	 }
 	
 	@GetMapping("/total/{employeeId}/{accountProjectId}/{weekNumber}")
 	public ResponseEntity<Integer> getTotalHours(@PathVariable Integer employeeId,
@@ -154,24 +113,24 @@ public class TimesheetWeekSummaryViewController {
 	    }
 	}
 
-	 
-		@GetMapping(path = "/getTimeSheeApproval/{projectManagerId}/{year}/{accountId}")
-		public ResponseEntity<List<TimeSheeApprovalDto>> getTimeSheetApproval(@PathVariable Integer projectManagerId,@PathVariable Integer year,
-				@PathVariable Integer accountId) {
-			Object employeeId = null;
-			try {
-				List<TimeSheeApprovalDto> timeSheetHistory = timesheetWeekSummaryService.getTimeSheetApproval(projectManagerId, year, accountId);
-				log.info("Fetching timeSheetHistory for year: {} accountId: {} ", year, accountId);
-
-				return ResponseEntity.status(HttpStatus.OK).body(timeSheetHistory);
-			} catch (Exception e) {
-
-				log.error("Error fetching time sheet history for year: {} accountId: {}", year,
-						accountId,  e.getMessage()); // Example: Logging the error
-
-				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-		}
+//	 
+//		@GetMapping(path = "/getTimeSheeApproval/{projectManagerId}/{year}/{accountId}")
+//		public ResponseEntity<List<TimeSheeApprovalDto>> getTimeSheetApproval(@PathVariable Integer projectManagerId,@PathVariable Integer year,
+//				@PathVariable Integer accountId) {
+//			Object employeeId = null;
+//			try {
+//				List<TimeSheeApprovalDto> timeSheetHistory = timesheetWeekSummaryService.getTimeSheetApproval(projectManagerId, year, accountId);
+//				log.info("Fetching timeSheetHistory for year: {} accountId: {} ", year, accountId);
+//
+//				return ResponseEntity.status(HttpStatus.OK).body(timeSheetHistory);
+//			} catch (Exception e) {
+//
+//				log.error("Error fetching time sheet history for year: {} accountId: {}", year,
+//						accountId,  e.getMessage()); // Example: Logging the error
+//
+//				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//			}
+//		}
 		
 		
 		
@@ -193,6 +152,7 @@ public class TimesheetWeekSummaryViewController {
 			}
 		}
 		
+
 	 
 	 @GetMapping("/first-account/current-month")
 	 public ResponseEntity<List<TimeSheeApprovalDto>> getTimesheetsForFirstAccountAndCurrentMonth() {
@@ -211,6 +171,7 @@ public class TimesheetWeekSummaryViewController {
 	         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	     }
 	 }
+
 	 
 //	 @GetMapping(path = "/getTimeSheeApproval/{projectManagerId}/{year}/{accountId}")
 //		public ResponseEntity<List<TimeSheeApprovalDto>> getTimeSheetApproval(@PathVariable Integer projectManagerId,@PathVariable Integer year,
@@ -229,6 +190,7 @@ public class TimesheetWeekSummaryViewController {
 //				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 //			}
 //		}
-		
+//		
+
 
 }

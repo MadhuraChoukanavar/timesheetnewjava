@@ -28,5 +28,7 @@ public interface AccountService {
 	public AccountEntity updateAccount(AccountBean accountBean);
 	AccountEntity delete(Integer accountId);
 
+;
+
 
 }

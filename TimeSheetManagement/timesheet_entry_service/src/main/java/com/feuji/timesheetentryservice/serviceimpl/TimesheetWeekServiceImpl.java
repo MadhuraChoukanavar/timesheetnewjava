@@ -64,7 +64,7 @@ public class TimesheetWeekServiceImpl implements TimesheetWeekService {
 				throw new WeekNotFoundException("week with id not found");
 			}
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+		
 			log.error("Week not found: {}", e.getMessage());
 			return null;
 		}
@@ -80,7 +80,7 @@ public class TimesheetWeekServiceImpl implements TimesheetWeekService {
 			return projectsOfEmployee;
 
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			log.info(e.getMessage());
 		}
 		return null;
 
@@ -94,7 +94,7 @@ public class TimesheetWeekServiceImpl implements TimesheetWeekService {
 			return projectsTaskType;
 
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			log.info(e.getMessage());
 		}
 		return null;
 	}
@@ -109,7 +109,7 @@ public class TimesheetWeekServiceImpl implements TimesheetWeekService {
 		
 		}
 		catch (Exception e) {
-			System.out.println(e.getMessage());
+			log.info(e.getMessage());
 		}
 		return null;
 	}
@@ -128,14 +128,14 @@ public class TimesheetWeekServiceImpl implements TimesheetWeekService {
 		
 		try
 		{
-		System.out.println(month+" "+year+" "+accountName);
+	
 		List<TimeSheetHistoryDto>   timeSheetHistory =timesheetWeekRepo.getTimeSheetHistory(month, year,accountName, employeeId);
 
 		log.info("timeSheetHistory :" ,timeSheetHistory);
 		return timeSheetHistory;
 		}
 		catch (Exception e) {
-//			System.out.println(e.getMessage());
+
 			log.info(e.getMessage());
 		}
 		return null;
@@ -145,14 +145,14 @@ public class TimesheetWeekServiceImpl implements TimesheetWeekService {
 	public List<TimeSheetHistoryDto> getTimeSheetHistoryByYear(int year, String accountName, int employeeId) {
 		try
 		{
-		System.out.println(employeeId+" "+year+" "+accountName);
+	
 		List<TimeSheetHistoryDto>   timeSheetHistory =timesheetWeekRepo.getTimeSheetHistoryByYear(year, accountName, employeeId);
 
 		log.info("timeSheetHistory :" ,timeSheetHistory);
 		return timeSheetHistory;
 		}
 		catch (Exception e) {
-//			System.out.println(e.getMessage());
+
 			log.info(e.getMessage());
 		}
 		return null;
@@ -162,14 +162,14 @@ public class TimesheetWeekServiceImpl implements TimesheetWeekService {
 	public List<TimeSheetHistoryDto> getAccountByMonthAndYear(String month, int year, int employeeId) {
 		try
 		{
-		System.out.println(employeeId+" "+year);
+	
 		List<TimeSheetHistoryDto>   timeSheetHistory =timesheetWeekRepo.getAccountByMonthAndYear(month, year, employeeId);
 
 		log.info("timeSheetHistory :" ,timeSheetHistory);
 		return timeSheetHistory;
 		}
 		catch (Exception e) {
-//			System.out.println(e.getMessage());
+
 			log.info(e.getMessage());
 		}
 		return null;
@@ -186,7 +186,7 @@ public class TimesheetWeekServiceImpl implements TimesheetWeekService {
 		return years;
 		}
 		catch (Exception e) {
-//			System.out.println(e.getMessage());
+
 			log.info(e.getMessage());
 		}
 		return null;
@@ -229,7 +229,7 @@ public class TimesheetWeekServiceImpl implements TimesheetWeekService {
 
 		} catch (DateTimeParseException e) {
 
-			System.out.println("Error parsing the date: " + e.getMessage());
+			log.info(e.getMessage());
 			return null;
 		}
 
@@ -239,16 +239,17 @@ public class TimesheetWeekServiceImpl implements TimesheetWeekService {
 		
 		try
 		{
-		System.out.println(month+" "+year+" "+accountId);
+	
 		List<TimeSheeApprovalDto>   timeSheeApproval =timesheetWeekRepo.getTimeSheetHistory(month, year,accountId);
 
 		log.info("timeSheetHistory :" ,timeSheeApproval);
 		return timeSheeApproval;
 		}
 		catch (Exception e) {
-//			System.out.println(e.getMessage());
+
 			log.info(e.getMessage());
 		}
 		return null;
 	}
+	
 }

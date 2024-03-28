@@ -15,8 +15,6 @@ import org.springframework.stereotype.Service;
 import com.feuji.timesheetentryservice.dto.AccountNameDto;
 import com.feuji.timesheetentryservice.dto.ProjectNameDto;
 import com.feuji.timesheetentryservice.dto.TimeSheeApprovalDto;
-
-import com.feuji.timesheetentryservice.dto.TimeSheetHistoryDto;
 import com.feuji.timesheetentryservice.entity.TimesheetWeekSummaryViewEntity;
 import com.feuji.timesheetentryservice.repository.TimesheetWeekSummaryRepo;
 import com.feuji.timesheetentryservice.service.TimesheetWeekSummaryService;
@@ -168,5 +166,4 @@ public class TimesheetWeekSummaryViewServiceImpl implements TimesheetWeekSummary
 	     }
 	     return null;
 	 }
-	
 }

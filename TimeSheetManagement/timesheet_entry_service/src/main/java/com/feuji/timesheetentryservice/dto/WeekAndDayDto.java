@@ -64,6 +64,7 @@ public class WeekAndDayDto {
    
     private String comments;
     private Integer timesheetStatus;
+    private String timesheetStatusname;
 	
 
    

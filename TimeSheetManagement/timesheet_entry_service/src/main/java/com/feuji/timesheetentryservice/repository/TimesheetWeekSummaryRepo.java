@@ -17,6 +17,7 @@ import com.feuji.timesheetentryservice.entity.TimesheetWeekSummaryViewEntity;
 import jakarta.transaction.Transactional;
 
 
+//import com.feuji.timesheetentryservice.entity.ProjectTimesheetSummaryView;
 @EnableJpaRepositories
 @Transactional
 public interface TimesheetWeekSummaryRepo extends JpaRepository<TimesheetWeekSummaryViewEntity,Integer>{
@@ -36,10 +37,9 @@ public interface TimesheetWeekSummaryRepo extends JpaRepository<TimesheetWeekSum
 			        + " JOIN TimesheetWeekEntity pwts ON pwts.timesheetWeekId = pdts.timesheetWeekEntity.timesheetWeekId "
 			        )
 
- 
-	
-
 	public List<TimesheetWeekDayDetailDto> getimesheetWeekDayDetailDto();
+	
+	
 
 
 	@Query("SELECT p FROM TimesheetWeekSummaryViewEntity p "
@@ -152,9 +152,4 @@ public interface TimesheetWeekSummaryRepo extends JpaRepository<TimesheetWeekSum
 	                                                  @Param("year") Integer year,
 	                                                  @Param("accountId") Integer accountId,
 	                                                  @Param("employeeId") Integer employeeId);
-	
-	
-	
-
-
 }

@@ -32,7 +32,6 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Intege
 
 	@Query("SELECT e FROM EmployeeEntity e WHERE e.uuid = :uuid")
 	EmployeeEntity findByUuid(@Param("uuid") String uuid);
-
 	@Query("SELECT new com.feuji.employeeservice.dto.SaveEmployeeDto(crde.referenceDetailId, crde.referenceDetailValue,crte.referenceTypeId) "
 			+ "FROM CommonReferenceDetailsEntity crde "
 			+ "JOIN CommonReferenceTypeEntity crte ON crde.referenceType.referenceTypeId = crte.referenceTypeId "
@@ -42,6 +41,8 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Intege
 	        + "FROM UserLoginEntity ule left join EmployeeEntity empe on( ule.userEmpId=empe.employeeId)"
 	        + "WHERE ule.userEmpId = :userEmpId")
 	List<EmployeeDto> getEmployeeDetailsByUserEmpId(@Param("userEmpId") Integer userEmpId);
+	
+
 	
 	
 	  List<EmployeeEntity> findByFirstNameContainingIgnoreCase(String firstName);
