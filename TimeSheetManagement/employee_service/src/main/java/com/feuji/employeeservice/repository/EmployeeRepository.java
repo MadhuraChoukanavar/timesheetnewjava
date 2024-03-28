@@ -43,14 +43,10 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Intege
 	        + "WHERE ule.userEmpId = :userEmpId")
 	List<EmployeeDto> getEmployeeDetailsByUserEmpId(@Param("userEmpId") Integer userEmpId);
 	
-	@Query("SELECT new com.feuji.employeeservice.dto.SaveEmployeeDto(crde.referenceDetailId, crde.referenceDetailValue,crte.referenceTypeId) "
-			+ "FROM CommonReferenceDetailsEntity crde "
-			+ "JOIN CommonReferenceTypeEntity crte ON crde.referenceType.referenceTypeId = crte.referenceTypeId "
-			+ "WHERE crde.referenceType.referenceTypeId = :referenceTypeId")
-    List<SaveEmployeeDto> getByReferenceTypeId(Integer referenceTypeId);
+	
 	
 	  List<EmployeeEntity> findByFirstNameContainingIgnoreCase(String firstName);
-}
+
 
 	
 	@Query("SELECT new com.feuji.employeeservice.dto.EmployeeDisplayDto(" +

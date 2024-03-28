@@ -55,11 +55,7 @@ public class EmployeeController {
 		}
 	}
 	
-//	@GetMapping("/referenceTypeId/{referenceTypeId}")
-//    public List<SaveEmployeeDto> getEmployeesByReferenceTypeId(@PathVariable Integer referenceTypeId) {
-//        return employeeService.getByReferenceTypeId(referenceTypeId);
-//    }
-	
+
 	@GetMapping("/referenceTypeId/{referenceTypeId}")
 	public ResponseEntity<List<SaveEmployeeDto>> getEmployeesByReferenceTypeId(@PathVariable Integer referenceTypeId) {
 	    try {
@@ -166,14 +162,7 @@ public class EmployeeController {
 		return null;
     }	
 	
-	@GetMapping("/getAll")
-	public ResponseEntity<List<EmployeeEntity>> getAllEmployees(){
-		List<EmployeeEntity> accountEntities=employeeService.getAllEmployees();
-		log.info("Fetching employee details {}", accountEntities);
-		ResponseEntity<List<EmployeeEntity>> responseEntity = new ResponseEntity<List<EmployeeEntity>>(accountEntities,
-				HttpStatus.OK);
-		return responseEntity;
-    }	 
+ 
 //	public List<EmployeeDisplayDto> getEmployeeDetails(Integer employeeId)
 //	@GetMapping(path = "/getEmployeeDetails")
 //	public ResponseEntity<List<EmployeeDisplayDto>> getEmployeeDetails()
@@ -287,10 +276,6 @@ public class EmployeeController {
 	}
 
 
-	@GetMapping("/referenceTypeId/{referenceTypeId}")
-    public List<SaveEmployeeDto> getEmployeesByReferenceTypeId(@PathVariable Integer referenceTypeId) {
-        return employeeService.getByReferenceTypeId(referenceTypeId);
-    }
-	
-	
+
+   
 }
