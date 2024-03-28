@@ -80,7 +80,7 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 		List<WeekAndDayDataBean> dto = saveAndEditRecordsDto.getTimesheetWeekDayDetailDto();
 
 		Date date = convertDateStringToDate(mondayDate);
-		System.out.println(date);
+		
 		List<TimesheetWeekEntity> saveAll = saveAll(saveAndEditRecordsDto.getTimesheetWeekDayDetailDto(), date);
 		saveAll.forEach(e -> System.out.println(e));
 		update(saveAndEditRecordsDto.getWeekAndDayDto());
@@ -102,7 +102,7 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 		String formattedDate = dateFormat.format(mondayDatee);
 
 		Date monDate = convertDateStringToDate(formattedDate);
-		System.out.println(monDate);
+	
 		for (WeekAndDayDataBean weekAndDayDataBean : weekAndDayDataBeans) {
 			Integer employeeId = weekAndDayDataBean.getEmployeeId();
 			Integer accountId = weekAndDayDataBean.getAccountId();
@@ -215,11 +215,9 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 			String date = formatter.format(dateValue);
 			if (existingDates.containsKey(date)) {
 				TimesheetDayEntity data = existingDates.get(date);
-				System.out.println("data::" + data);
+			
 				data.setNumberOfHours(num);
-				System.out.println("num::" + num);
-				System.out.println("after data::" + data.getNumberOfHours());
-				// update
+		
 				TimesheetDayEntity dayEntity = timesheetDayRepo.save(data);
 			}
 
@@ -235,13 +233,13 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 			Date weekEndDate = timesheetWeekEntity.getWeekEndDate();
 			List<String> dateList = getDatesBetweenWeekStartAndEnd(weekStartDate, weekEndDate);
 			if (num != 0) {
-				System.out.println("number is not equal to zero");
+				
 				String string = dateList.get(count);
 				Date convertDateStringToDate = convertUserSpecificFormateDate(string);
-				System.out.println(convertDateStringToDate);
+		
 				TimesheetDayEntity createTimesheetDayEntity1 = createTimesheetDayEntity1(timesheetWeekEntity,
 						weekAndDayDto, convertDateStringToDate, num);
-				System.out.println(createTimesheetDayEntity1);
+			
 				timesheetDayRepo.save(createTimesheetDayEntity1);
 
 			}
@@ -517,8 +515,7 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 				}
 
 			}
-			System.out.println("fetched details.............");
-			System.out.println(weekAndDayDtoList);
+			
 
 			return weekAndDayDtoList;
 
@@ -574,11 +571,11 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 
 			if (weekAndDayDto.getTaskId().equals(timesheetDayEntity.getTaskId())
 					&& weekAndDayDto.getAttendanceType().equals(timesheetDayEntity.getAttendanceType())) {
-				System.out.println(timesheetDayEntity);
+			
 				timesheetDayEntity.setIsDeleted((byte) 1);
 
 				timesheetDayRepo.save(timesheetDayEntity);
-				System.out.println(timesheetDayEntity);
+				
 
 			}
 			List<TimesheetDayEntity> listOfTimesheetDayEntity2 = timesheetDayRepo
@@ -600,7 +597,7 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 	public List<TimesheetWeekEntity> submittingTimesheet(String weekStartDate, Integer timesheetStatus) {
 
 		try {
-			System.out.println(weekStartDate);
+		
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date convertedWeekStartDate = dateFormat.parse(weekStartDate);
 
@@ -631,7 +628,7 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 
 		} catch (DateTimeParseException e) {
 
-			System.out.println("Error parsing the date: " + e.getMessage());
+		
 			return null;
 		}
 
@@ -652,7 +649,7 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 
 			d = outputFormat.parse(formattedDate);
 
-			System.out.println("Formatted date and time: " + formattedDate);
+			
 		} catch (ParseException e) {
 			// Handle parse exception
 			e.printStackTrace();
@@ -685,63 +682,8 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 		return new java.text.SimpleDateFormat("dd-MMM-yyyy").format(date);
 	}
 
-//	public static void setDatesToWeekAndDayDto(Date weekStartDate, WeekAndDayDto weekAndDayDto) {
-//	    weekAndDayDto.setWeekStartDate(weekStartDate);
-//	    weekAndDayDto.setDateMon(weekStartDate);
-//	    weekAndDayDto.setDateTue(DateUtils.addDays(weekStartDate, 1));
-//	    weekAndDayDto.setDateWed(DateUtils.addDays(weekStartDate, 2));
-//	    weekAndDayDto.setDateThu(DateUtils.addDays(weekStartDate, 3));
-//	    weekAndDayDto.setDateFri(DateUtils.addDays(weekStartDate, 4));
-//	    weekAndDayDto.setDateSat(DateUtils.addDays(weekStartDate, 5));
-//	    weekAndDayDto.setDateSun(DateUtils.addDays(weekStartDate, 6));
-//	   // System.out.println(weekAndDayDto.getDateSun());
-//	}
 
-//Date weekStartDate = timesheetDayEntity.getTimesheetWeekEntity().getWeekStartDate();
-//Date weekEndDate = timesheetDayEntity.getTimesheetWeekEntity().getWeekEndDate();
-//List<String> dateList = getDatesBetweenWeekStartAndEnd(weekStartDate, weekEndDate);
-//ArrayList<Integer> num = new ArrayList<>(List.of(weekAndDayDto.getHoursMon(),
-//		weekAndDayDto.getHoursTue(), weekAndDayDto.getHoursWed(), weekAndDayDto.getHoursThu(),
-//		weekAndDayDto.getHoursFri(), weekAndDayDto.getHoursSat(), weekAndDayDto.getHoursSun()));
-//System.out.println(num);
-//
-//System.out.println(dateList);
-//for (int i = 0; i < dateList.size(); i++) {
-//	boolean flag = false;
-//	Date dateOfWeek = convertDateStringToDate(dateList.get(i));
-//	SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
-//	String dateString = formatter.format(timesheetDayEntity.getDate());
-//	System.out.println(dateString+"dataString");
-//	if(dateString==null)
-//	{
-//		if (num.get(i)!= 0) {
-//			System.out.println(dateOfWeek+"date");
-//			System.out.println(num.get(i));
-//			Integer timesheetWeekId2 = weekAndDayDto.getTimesheetWeekId();
-//			TimesheetWeekEntity timesheetWeekEntity = timesheetWeekRepo.findById(timesheetWeekId2)
-//					.get();
-//			TimesheetDayEntity timeDayEntity = createTimesheetDayEntity1(timesheetWeekEntity,
-//					weekAndDayDto, dateOfWeek, num.get(i));
-//			System.out.println(timeDayEntity);
-////			 timesheetDayRepo.save(timeDayEntity);
-//		}
-//	}
-//	else {
-//		System.out.println(dateString);
-//		
-//		Date date =convertDateStringToDate(dateString) ;
-//			
-//		
-//		if (date.equals(dateOfWeek) && timesheetDayEntity.getTimesheetDayId() != null && !flag) {
-//			timesheetDayEntity.setNumberOfHours(num.get(i));
-//			TimesheetDayEntity dayEntity = timesheetDayRepo.save(timesheetDayEntity);
-//			flag = true;
-//
-//		} else {
-//			System.out.println("elsepppppp");
-//
-//		}
-//	}
+
 
 	public List<EmployeeDataDto> getEmployeeDetailsByIdAndAccountId(Integer accountId, Integer employeeId) {
 
@@ -764,7 +706,7 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 		List<Object[]> list = employeeDetailsRepo.getReportingManagerDetails(accountId, employeeId);
 		List<EmployeeDataDto> empList = new ArrayList<>();
 		for (Object[] o : list) {
-			System.out.println(o.toString());
+			 
 			EmployeeDataDto emp = new EmployeeDataDto();
 			emp.setFirstName((String) o[0]);
 			emp.setLastName((String) o[1]);
@@ -775,13 +717,11 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 	}
 
 	public void processPendingTimesheetsBySubmittedStatus() throws Exception {
-		System.out.println("processPendingTimesheetsBySubmittedStatus");
-
-		// Submitted status value is 58
+		 
 		List<TimesheetWeekEntity> weekList = timesheetWeekRepo
 				.findByTimesheetStatus(Constants.TIME_SHEET_STATUS_SUBMITTED);
 
-		System.out.println("processPendingTimesheetsBySubmittedStatus::" + weekList.size());
+	 
 		LocalDate currentDate = LocalDate.now();
 		for (TimesheetWeekEntity entity : weekList) {
 
@@ -791,7 +731,7 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 			LocalDate modifiedDate = instant.atZone(zoneId).toLocalDate();
 			modifiedDate = modifiedDate.plusDays(Constants.TIME_SHEET_GRACE_NUMBER_OF_DAYS);
 			if (modifiedDate.compareTo(currentDate) < 0) {
-				System.out.println(entity);
+			 
 				List<EmployeeDataDto> empList = this.getReportingManagerByIdAndAccountId(
 						entity.getAccountId(),entity.getEmployeeId());
 				if (!empList.isEmpty()) {
@@ -801,9 +741,7 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 								"Request for Timesheet Approval from Reporting Manager",
 								this.composeBody(emp, entity.getWeekStartDate(), entity.getWeekEndDate()));
 					}
-				} else {
-					System.out.println("Employee list is empty.");
-				}
+				} 
 			}
 		}
 

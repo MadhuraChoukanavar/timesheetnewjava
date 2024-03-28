@@ -45,20 +45,7 @@ public class TimesheetWeekController {
 	@Autowired
 	TimesheetWeekRepo timesheetWeekRepo;
 
-//	@PostMapping("/save")
-//	public ResponseEntity<TimesheetWeekEntity> saveTimesheetWeek(@RequestBody TimesheetWeekBean timesheetWeekBean) {
-//
-//		try {
-//			log.info("timesheet week controller", timesheetWeekBean);
-//			TimesheetWeekEntity timesheetWeekEntity = timesheetWeekService.save(timesheetWeekBean);
-//			return new ResponseEntity<>(timesheetWeekEntity, HttpStatus.CREATED);
-//
-//		} catch (Exception e) {
-//
-//			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//
-//		}
-//	}
+
 	
 	@PostMapping("/save")
 	public ResponseEntity<TimesheetWeekEntity> saveTimesheetWeek(@RequestBody TimesheetWeekBean timesheetWeekBean) {
@@ -74,18 +61,7 @@ public class TimesheetWeekController {
 	}
 
 
-//	@GetMapping("/gettimesheetweek/{id}")
-//	public ResponseEntity<TimesheetWeekEntity> getTimesheetById(@PathVariable Integer id) {
-//		try {
-//			log.info("getting timesheet", id);
-//			TimesheetWeekEntity timesheetWeekEntity = timesheetWeekService.getById(id);
-//			return new ResponseEntity<>(timesheetWeekEntity, HttpStatus.CREATED);
-//
-//		} catch (Exception e) {
-//			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
-//
-//	}
+
 	@GetMapping("/gettimesheetweek/{id}")
 	public ResponseEntity<TimesheetWeekEntity> getTimesheetById(@PathVariable Integer id) {
 	    try {
@@ -99,13 +75,7 @@ public class TimesheetWeekController {
 	    }
 	}
 
-//	@GetMapping("/getproject")
-//	public ResponseEntity<List<ProjectNameDto>> getProjectBYEMpId(@RequestParam Integer employeeId,
-//			@RequestParam Integer accountId) {
-//		log.info("passing employee id", employeeId);
-//		List<ProjectNameDto> projectNameByEmpId = timesheetWeekService.getProjectNameByEmpId(employeeId, accountId);
-//		return new ResponseEntity<>(projectNameByEmpId, HttpStatus.CREATED);
-//	}
+
 	@GetMapping("/getproject")
 	public ResponseEntity<List<ProjectNameDto>> getProjectBYEMpId(@RequestParam Integer employeeId,
 	        @RequestParam Integer accountId) {
@@ -120,14 +90,7 @@ public class TimesheetWeekController {
 	    }
 	}
 
-//	@GetMapping("/getprojecttasktype")
-//	public ResponseEntity<List<ProjectTaskTypeNameDto>> getProjectTaskType(@RequestParam Integer employeeId,
-//			@RequestParam Integer accountProjectId) {
-//		log.info("passing employee id", employeeId);
-//		List<ProjectTaskTypeNameDto> projectTaskType = timesheetWeekService.getProjectTaskTypeName(employeeId,
-//				accountProjectId);
-//		return new ResponseEntity<>(projectTaskType, HttpStatus.CREATED);
-//	}
+
 	@GetMapping("/getprojecttasktype")
 	public ResponseEntity<List<ProjectTaskTypeNameDto>> getProjectTaskType(@RequestParam Integer employeeId,
 	        @RequestParam Integer accountProjectId) {
@@ -143,12 +106,7 @@ public class TimesheetWeekController {
 	    }
 	}
 
-//	@GetMapping("/getprojecttask")
-//	public ResponseEntity<List<ProjectTaskDto>> getProjectTask(@RequestParam Integer taskTypeId) {
-//		log.info("passing employee id", taskTypeId);
-//		List<ProjectTaskDto> projectTask = timesheetWeekService.getProjectTask(taskTypeId);
-//		return new ResponseEntity<>(projectTask, HttpStatus.CREATED);
-//	}
+
 	
 	@GetMapping("/getprojecttask")
 	public ResponseEntity<List<ProjectTaskDto>> getProjectTask(@RequestParam Integer taskTypeId) {
@@ -173,25 +131,7 @@ public class TimesheetWeekController {
 	 * @return ResponseEntity containing a list of AccountProjectResourceMappingDto
 	 *         objects representing account details and HTTP status code.
 	 */
-//	@GetMapping(path = "/getaccountdetails")
-//	public ResponseEntity<List<AccountProjectResourceMappingDto>> findAccountNameByUserEmpId(
-//			@RequestParam Integer userEmpId) {
-//		try {
-//
-//			List<AccountProjectResourceMappingDto> accountProjectResourceMappingDtos = timesheetWeekService
-//					.findAccountNameByUserEmpId(userEmpId);
-//
-//			log.info("Fetching accountProjectResourceMappingDtos for userEmpId {}: {}", userEmpId,
-//					accountProjectResourceMappingDtos);
-//
-//			return ResponseEntity.status(HttpStatus.OK).body(accountProjectResourceMappingDtos);
-//		} catch (Exception e) {
-//
-//			log.error("Error fetching account details for userEmpId {}: {}", userEmpId, e.getMessage());
-//
-//			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
-//	}
+
 	
 	@GetMapping(path = "/getaccountdetails")
 	public ResponseEntity<List<AccountProjectResourceMappingDto>> findAccountNameByUserEmpId(

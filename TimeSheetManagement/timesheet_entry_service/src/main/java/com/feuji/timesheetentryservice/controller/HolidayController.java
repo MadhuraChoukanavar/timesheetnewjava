@@ -56,15 +56,7 @@ public class HolidayController {
 	}
 
 
-//	@GetMapping(path = "/{holidayId}")
-//	public ResponseEntity<HolidayEntity> get(@PathVariable Integer holidayId) {
-//		log.info("Fetching department_details {}", holidayId);
-//
-//		HolidayEntity holidayEntity = holidayService.get(holidayId);
-//
-//		ResponseEntity<HolidayEntity> responseEntity = new ResponseEntity<>(holidayEntity, HttpStatus.OK);
-//		return responseEntity;
-//	}
+
 	@GetMapping(path = "/{holidayId}")
 	public ResponseEntity<HolidayEntity> getHolidayById(@PathVariable Integer holidayId) {
 	    try {
@@ -81,19 +73,7 @@ public class HolidayController {
 	    }
 	}
 
-//	@PutMapping(path="/update")
-//	public ResponseEntity<String> handlePutRequestupdate(@RequestBody HolidayEntity holidayEntity) {
-//
-//		log.info("start the holiday_details Controller:update");
-//		try {
-//			holidayService.update(holidayEntity);
-//			log.info("Update holiday_details {}", holidayEntity);
-//			return ResponseEntity.status(HttpStatus.OK).body("updated");
-//		} catch (HolidayNotFoundException e) {
-//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-//		}
-//
-//	}
+
 	@PutMapping(path="/update")
 	public ResponseEntity<String> updateHoliday(@RequestBody HolidayEntity holidayEntity) {
 	    try {
@@ -110,15 +90,7 @@ public class HolidayController {
 	    }
 	}
 
-//	@DeleteMapping("/{holidayId}")
-//	public ResponseEntity<HolidayEntity> delate(@PathVariable Integer holidayId) {
-//		// log.info("holiday delete",holidayId);)
-//		HolidayEntity holidayEntity = holidayService.delete(holidayId);
-//		log.info("Delete department_details {}", holidayId);
-//		ResponseEntity<HolidayEntity> responseEntity = new ResponseEntity<HolidayEntity>(holidayEntity, HttpStatus.OK);
-//		return responseEntity;
-//
-//	}
+
 	@DeleteMapping("/{holidayId}")
 	public ResponseEntity<HolidayEntity> deleteHoliday(@PathVariable Integer holidayId) {
 	    try {
@@ -133,15 +105,7 @@ public class HolidayController {
 	}
 
 
-//	@GetMapping("/getWeekHolidaysDayIds/{startweekofDate}")
-//	public List<Integer> getWeekHolidaysDayIds(@PathVariable String startweekofDate) {
-//		// log.info("holiday delete",holidayId);)
-//		System.out.println(startweekofDate);
-//		List<Integer> holidayList = holidayService.getWeekHolidaysDayIds(startweekofDate);
-//
-//		return holidayList;
-//
-//	}
+
 	
 	@GetMapping("/getWeekHolidaysDayIds/{startweekofDate}")
 	public ResponseEntity<List<Integer>> getWeekHolidaysDayIds(@PathVariable String startweekofDate) {
@@ -156,15 +120,7 @@ public class HolidayController {
 	    }
 	}
 
-//	@GetMapping("/getHolidayByYear/{year}")
-//	public List<HolidayEntity> getHolidayByYear(@PathVariable int year) {
-//		// log.info("holiday delete",holidayId);)
-//		System.out.println(year);
-//		List<HolidayEntity> holidayList = holidayService.getHolidayByYear(year);
-//
-//		return holidayList;
-//
-//	}
+
 	@GetMapping("/getHolidayByYear/{year}")
 	public ResponseEntity<List<HolidayEntity>> getHolidayByYear(@PathVariable int year) {
 	    try {

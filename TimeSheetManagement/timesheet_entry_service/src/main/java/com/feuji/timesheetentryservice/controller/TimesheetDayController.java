@@ -45,19 +45,7 @@ public class TimesheetDayController {
 	 * @return ResponseEntity containing the saved TimesheetDayEntity object and HTTP status code.
 	 */
 	
-//	@PostMapping("/save")
-//	public ResponseEntity<TimesheetDayEntity> saveTimesheetWeek(@RequestBody TimesheetDayBean timesheetDayBean) {
-//		try {
-//			log.info("timesheet week controller", timesheetDayBean);
-//			TimesheetDayEntity timesheetDayEntity = timesheetDayService.saveTimesheetDay(timesheetDayBean);
-//			return new ResponseEntity<>(timesheetDayEntity, HttpStatus.CREATED);
-//
-//		} catch (Exception e) {
-//
-//			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//
-//		}
-//	}
+
 	@PostMapping("/save")
 	public ResponseEntity<TimesheetDayEntity> saveTimesheetWeek(@RequestBody TimesheetDayBean timesheetDayBean) {
 	    try {
@@ -78,19 +66,7 @@ public class TimesheetDayController {
 	 * @return ResponseEntity containing the retrieved TimesheetDayEntity object and HTTP status code.
 	 */
 	
-//	@GetMapping("/gettimesheetday/{id}")
-//	public ResponseEntity<TimesheetDayEntity> getTimesheetById(@PathVariable Integer id) {
-//		try {
-//			log.info("getting timesheet day", id);
-//			TimesheetDayEntity timeSheetDayEntity = timesheetDayService.getTimeSheetDayByuuid(id);
-//			return new ResponseEntity<>(timeSheetDayEntity, HttpStatus.CREATED);
-//
-//		} catch (Exception e) {
-//			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
-//
-//	}
-//	
+
 	@GetMapping("/gettimesheetday/{id}")
 	public ResponseEntity<TimesheetDayEntity> getTimesheetById(@PathVariable Integer id) {
 	    try {
@@ -103,17 +79,7 @@ public class TimesheetDayController {
 	    }
 	}
 
-//	@GetMapping(path = "/gettimeSheetDayHistory/{uuId}")
-//	public ResponseEntity<List<TimeSheetDayHistoryDto>> getAccountByMonthAndYear(@PathVariable String uuId)
-//	{
-//		
-//		
-//		List<TimeSheetDayHistoryDto> timeSheetHistory= timesheetDayService.getTimeSheetDayHistory(uuId);
-//		log.info("Fetching timeSheetHistory {}", timeSheetHistory);
-//		//ResponseEntity<List<TimeSheetDayHistoryDto>>  timeSheetHistory1= new ResponseEntity<List<TimeSheetDayHistoryDto>>(HttpStatus.OK);
-//		return new  ResponseEntity(timeSheetHistory,HttpStatus.OK);
-//
-//	}
+
 	@GetMapping(path = "/gettimeSheetDayHistory/{uuId}")
 	public ResponseEntity<List<TimeSheetDayHistoryDto>> getAccountByMonthAndYear(@PathVariable String uuId) {
 	    try {
@@ -126,20 +92,7 @@ public class TimesheetDayController {
 	    }
 	}
 
-//	@GetMapping("/getref/{typeName}")
-//	public ResponseEntity<List<CommonReferenceDetailsBean>> getReferenceTypeByName(@PathVariable String typeName) {
-//		log.info("getReferenceTypeByName start");
-//		System.out.println("hii");
-//		List<CommonReferenceDetailsBean> getbyreferenceType = null;
-//		try {
-//			getbyreferenceType = timesheetDayService.getDetailsByTypeId(typeName);
-//			log.info("getReferenceTypeByName end");
-//			return new ResponseEntity<>(getbyreferenceType, HttpStatus.OK);
-//		} catch (Exception e) {
-//			log.info(e.getMessage());
-//			return new ResponseEntity<>(getbyreferenceType, HttpStatus.NOT_FOUND);
-//		}
-//	}
+
 	@GetMapping("/getref/{typeName}")
 	public ResponseEntity<List<CommonReferenceDetailsBean>> getReferenceTypeByName(@PathVariable String typeName) {
 	    log.info("getReferenceTypeByName start for type: {}", typeName);
