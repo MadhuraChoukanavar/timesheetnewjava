@@ -145,16 +145,15 @@ public class AccountProjectsController {
 	}
 	
 
-	@GetMapping(path="/getAccountProjectDto/{priorityReferenceTypeId}")
-	public ResponseEntity<List<AccountDto>> accountProjectDto(
-	        @RequestParam(name = "priorityReferenceTypeId") Integer priorityReferenceTypeId
-	         )
-	{
-
-	    List<AccountDto> accountDto = accountProjectsService.accountProjectDto(priorityReferenceTypeId);
-	    return new ResponseEntity<>(accountDto, HttpStatus.OK);
-	}
-
+	@GetMapping("/account-project-dto")
+    public ResponseEntity<List<AccountDto>> getAccountProjectDto() {
+        List<AccountDto> accountDtos = accountProjectsService.accountProjectDto();
+        if (accountDtos != null && !accountDtos.isEmpty()) {
+            return new ResponseEntity<>(accountDtos, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+    }
 }
 
 //  @RequestParam(name = "statusReferenceTypeId") Integer statusReferenceTypeId     

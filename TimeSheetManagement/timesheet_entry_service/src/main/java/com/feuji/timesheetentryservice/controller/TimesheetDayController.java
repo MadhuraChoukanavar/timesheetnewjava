@@ -44,8 +44,6 @@ public class TimesheetDayController {
 	 * @param timesheetDayBean A TimesheetDayBean object containing the data for the timesheet day record to be saved.
 	 * @return ResponseEntity containing the saved TimesheetDayEntity object and HTTP status code.
 	 */
-	
-
 	@PostMapping("/save")
 	public ResponseEntity<TimesheetDayEntity> saveTimesheetWeek(@RequestBody TimesheetDayBean timesheetDayBean) {
 	    try {
@@ -65,8 +63,6 @@ public class TimesheetDayController {
 	 * @param id The ID of the timesheet day record to be retrieved.
 	 * @return ResponseEntity containing the retrieved TimesheetDayEntity object and HTTP status code.
 	 */
-	
-
 	@GetMapping("/gettimesheetday/{id}")
 	public ResponseEntity<TimesheetDayEntity> getTimesheetById(@PathVariable Integer id) {
 	    try {
@@ -79,7 +75,6 @@ public class TimesheetDayController {
 	    }
 	}
 
-
 	@GetMapping(path = "/gettimeSheetDayHistory/{uuId}")
 	public ResponseEntity<List<TimeSheetDayHistoryDto>> getAccountByMonthAndYear(@PathVariable String uuId) {
 	    try {
@@ -91,7 +86,6 @@ public class TimesheetDayController {
 	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
 	}
-
 
 	@GetMapping("/getref/{typeName}")
 	public ResponseEntity<List<CommonReferenceDetailsBean>> getReferenceTypeByName(@PathVariable String typeName) {

@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.feuji.employeeservice.bean.EmployeeBean;
 import com.feuji.employeeservice.dto.AddEmployee;
 import com.feuji.employeeservice.dto.EmployeeDisplayDto;
@@ -17,9 +16,14 @@ import com.feuji.employeeservice.dto.UpadteEmployeeDto;
 import com.feuji.employeeservice.entity.EmployeeEntity;
 import com.feuji.employeeservice.repository.EmployeeRepository;
 import com.feuji.employeeservice.service.EmployeeService;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
+import lombok.extern.slf4j.Slf4j;
+
 
 import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
+
 
 @Service
 @Slf4j
@@ -43,7 +47,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return employeeEntity;
 	}
 
+	@Override
+	public List<EmployeeEntity> getAllEmployees() {
+		return employeeRepository.findAll();
+	}
 	
+	@Override
+	public List<SaveEmployeeDto> getByReferenceTypeId(Integer referenceTypeId) {
+		
+		return employeeRepository.getByReferenceTypeId(referenceTypeId);
+	}
 
 	// GET BY ID
 	@Override
@@ -80,22 +93,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 		List<AddEmployee> employees = employeeRepository.findDesignationsContainingManager();
 		return employees;
 	}
-
-
-
-	@Override
-	public List<SaveEmployeeDto> getByReferenceTypeId(Integer referenceTypeId) {
-		
-		return employeeRepository.getByReferenceTypeId(referenceTypeId);
-	}
-
-		
-	
-	@Override
-	public List<EmployeeEntity> getAllEmployees() {
-		return employeeRepository.findAll();
-	}
-
 	
 	@Override
 	public List<EmployeeEntity> searchEmployeesByFirstName(String firstName) {
@@ -167,6 +164,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
 
+
 		@Override
 		public void updateEmployeeDetails(EmployeeEntity updateEmployee, Integer id) throws Throwable {
 			EmployeeEntity existingEmployee = employeeRepository.findById(id)
@@ -213,7 +211,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
 
-	}
 
 	@Override
 	public List<UpadteEmployeeDto> getEmployeeDetailByUUiD(String uuid) {
@@ -259,3 +256,4 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 	
 }
+

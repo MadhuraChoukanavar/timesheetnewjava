@@ -2,9 +2,10 @@ package com.feuji.timesheetentryservice.serviceimpl;
 
 
 import java.util.ArrayList;
-
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -80,20 +81,39 @@ public class TimesheetDayServiceImpl implements TimesheetDayService {
 		return null;
 	}
 
-	@Override
-	public List<TimeSheetDayHistoryDto> getTimeSheetDayHistory(String uuId) {
-		try
-		{
+//	@Override
+//	public List<TimeSheetDayHistoryDto> getTimeSheetDayHistory(String uuId) {
+//		try
+//		{
+//		System.out.println(uuId);
+//		List<TimeSheetDayHistoryDto>   timeSheetHistory =timesheetDayRepo.getTimeSheetDayHistory(uuId);
+//        
+//		log.info("timeSheetHistory :" ,timeSheetHistory);
+//		return timeSheetHistory;
+//		}
+//		catch (Exception e) {
+////			System.out.println(e.getMessage());
+//			log.info(e.getMessage());
+//		}
+//		return null;
+//	}
 	
-		List<TimeSheetDayHistoryDto>   timeSheetHistory =timesheetDayRepo.getTimeSheetDayHistory(uuId);
+	public List<TimeSheetDayHistoryDto> getTimeSheetDayHistory(String uuId) {
+	    try {
+	        System.out.println(uuId);
+	        List<TimeSheetDayHistoryDto> timeSheetHistory = timesheetDayRepo.getTimeSheetDayHistory(uuId);
 
-		log.info("timeSheetHistory :" ,timeSheetHistory);
-		return timeSheetHistory;
-		}
-		catch (Exception e) {
+	        // Sorting the list based on date using Java streams
+	        List<TimeSheetDayHistoryDto> sortedHistory = timeSheetHistory.stream()
+	                .sorted(Comparator.comparing(TimeSheetDayHistoryDto::getDate))
+	                .collect(Collectors.toList());
 
-			log.info(e.getMessage());
-		}
-		return null;
+	        log.info("Sorted timeSheetHistory: {}", sortedHistory);
+	        return sortedHistory;
+	    } catch (Exception e) {
+	        log.error("An error occurred while sorting timeSheetHistory: {}", e.getMessage());
+	        // Handle the exception as needed
+	    }
+	    return null;
 	}
 }

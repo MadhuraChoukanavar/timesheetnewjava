@@ -25,7 +25,7 @@ public class AccountProjectsBean {
 
 	private Integer accountProjectId;
 
-	private String projectPId;
+	private String projectAId;
 
 	private String projectName;
 

@@ -46,7 +46,6 @@ public class TimesheetWeekController {
 	TimesheetWeekRepo timesheetWeekRepo;
 
 
-	
 	@PostMapping("/save")
 	public ResponseEntity<TimesheetWeekEntity> saveTimesheetWeek(@RequestBody TimesheetWeekBean timesheetWeekBean) {
 	    try {
@@ -131,8 +130,6 @@ public class TimesheetWeekController {
 	 * @return ResponseEntity containing a list of AccountProjectResourceMappingDto
 	 *         objects representing account details and HTTP status code.
 	 */
-
-	
 	@GetMapping(path = "/getaccountdetails")
 	public ResponseEntity<List<AccountProjectResourceMappingDto>> findAccountNameByUserEmpId(
 	        @RequestParam Integer userEmpId) {
@@ -339,3 +336,4 @@ public class TimesheetWeekController {
 		}
 	}
 }
+

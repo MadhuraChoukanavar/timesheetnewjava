@@ -1,7 +1,5 @@
 package com.feuji.timesheetentryservice.repository;
 
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,16 +21,7 @@ import jakarta.transaction.Transactional;
 @EnableJpaRepositories
 @Transactional
 public interface TimesheetWeekSummaryRepo extends JpaRepository<TimesheetWeekSummaryViewEntity,Integer>{
-//	
-//	@Query("SELECT p FROM TimesheetWeekSummaryViewEntity p " +
-//	           "WHERE p.approvedBy = :approvedBy " +
-//	           "AND p.accountProjectId = :accountProjectId " +
-//	           "AND p.weekNumber = :weekNumber")
-// List<TimesheetWeekSummaryViewEntity> getTimesheetsForManager( @Param("approvedBy") Integer approvedBy,
-//		 @Param("accountProjectId") Integer accountProjectId,
-//	        @Param("weekNumber") Integer weekNumber
-//	    );
-	
+
  
 	@Query("SELECT distinct NEW com.feuji.timesheetentryservice.dto.ProjectNameDto(pwt.accountId,ap.accountProjectId,ap.projectName) FROM TimesheetWeekEntity pwt JOIN AccountProjectsEntity ap ON pwt.accountProjectId = ap.accountProjectId WHERE pwt.accountId = :accountId And pwt.employeeId=:employeeId")
 	public List<ProjectNameDto> getAccountProjects(@Param("accountId") Integer accountId,@Param("employeeId") Integer employeeId);
@@ -48,12 +37,36 @@ public interface TimesheetWeekSummaryRepo extends JpaRepository<TimesheetWeekSum
 			        + " JOIN TimesheetWeekEntity pwts ON pwts.timesheetWeekId = pdts.timesheetWeekEntity.timesheetWeekId "
 			        )
 
- 
-	
 	public List<TimesheetWeekDayDetailDto> getimesheetWeekDayDetailDto();
 	
 	
 
+
+	@Query("SELECT p FROM TimesheetWeekSummaryViewEntity p "
+			+ "WHERE p.approvedBy = :approvedBy and p.accountId=:accountId "
+			+ "AND p.accountProjectId = :accountProjectId " + "AND p.weekNumber = :weekNumber")
+	List<TimesheetWeekSummaryViewEntity> getTimesheetsForManager(@Param("approvedBy") Integer approvedBy,
+			@Param("accountId") Integer accountId, @Param("accountProjectId") Integer accountProjectId,
+			@Param("weekNumber") Integer weekNumber
+
+	);
+
+	@Query("SELECT p FROM TimesheetWeekSummaryViewEntity p "
+			+ "WHERE p.approvedBy = :approvedBy AND p.accountId = :accountId "
+			+ "AND FUNCTION('month', p.weekStartDate) = :month " + "AND FUNCTION('month', p.weekEndDate) = :month")
+	List<TimesheetWeekSummaryViewEntity> findByApprovedByAndAccountIdAndMonth(@Param("approvedBy") Integer approvedBy,
+			@Param("accountId") Integer accountId, @Param("month") Integer month);
+
+	@Query("SELECT DISTINCT NEW com.feuji.timesheetentryservice.dto.AccountNameDto(a.accountId, a.accountName) FROM TimesheetWeekEntity pwt JOIN AccountEntity a ON pwt.accountId = a.accountId WHERE pwt.approvedBy = :approvedBy ")
+	public List<AccountNameDto> getAccounts(@Param("approvedBy") String approvedBy);
+
+	@Query("SELECT SUM(totalBillingHours + totalNonBillingHours + totalLeaveHours) "
+			+ "FROM TimesheetWeekSummaryViewEntity "
+			+ "WHERE employeeId = :employeeId AND accountProjectId = :accountProjectId and weekNumber=:weekNumber")
+	public Integer getTotalHours(@Param("employeeId") Integer employeeId,
+			@Param("accountProjectId") Integer accountProjectId, @Param("weekNumber") Integer weekNumber);
+	
+	
 	@Query("SELECT p FROM TimesheetWeekSummaryViewEntity p " +
 	           "WHERE p.approvedBy = :approvedBy and p.accountId=:accountId "  +
 	           "AND p.weekNumber = :weekNumber")
@@ -68,19 +81,10 @@ public interface TimesheetWeekSummaryRepo extends JpaRepository<TimesheetWeekSum
 	@Query("SELECT DISTINCT NEW com.feuji.timesheetentryservice.dto.AccountNameDto(a.accountId, a.accountName) FROM TimesheetWeekEntity pwt JOIN AccountEntity a ON pwt.accountId = a.accountId WHERE pwt.approvedBy = :approvedBy ")
 	public List<AccountNameDto> getAccounts(@Param("approvedBy") Integer approvedBy);
 	
-	@Query("SELECT SUM(totalBillingHours + totalNonBillingHours + totalLeaveHours) " +
-		       "FROM TimesheetWeekSummaryViewEntity " +
-		       "WHERE employeeId = :employeeId AND accountProjectId = :accountProjectId and weekNumber=:weekNumber")
-		public Integer getTotalHours(@Param("employeeId") Integer employeeId, 
-		                             @Param("accountProjectId") Integer accountProjectId,
-		                             @Param("weekNumber") Integer weekNumber);
 
 	
 
 		
-//	@Modifying
-//	@Query(value="update project_week_timesheet set timesheet_status=60 where employee_id=:employeeId and account_project_id=:accountProjectId and week_number=:weekNumber",nativeQuery=true)
-//	public void rejectedTimesheet(Integer employeeId,Integer accountProjectId,Integer weekNumber);
 	@Query("SELECT new com.feuji.timesheetentryservice.dto.TimeSheeApprovalDto(" +
 	        "   pwt.weekStartDate, " +
 	        "   ep.email, " +
@@ -113,10 +117,6 @@ public interface TimesheetWeekSummaryRepo extends JpaRepository<TimesheetWeekSum
 			@Param("year") Integer year,
             @Param("accountId") Integer accountId);
 	                                                
-
-	
-	
-	
 	
 	@Query("SELECT new com.feuji.timesheetentryservice.dto.TimeSheeApprovalDto(" +
 	        "   pwt.weekStartDate, " +
@@ -152,11 +152,4 @@ public interface TimesheetWeekSummaryRepo extends JpaRepository<TimesheetWeekSum
 	                                                  @Param("year") Integer year,
 	                                                  @Param("accountId") Integer accountId,
 	                                                  @Param("employeeId") Integer employeeId);
-	
-	
-	
-	
-
-
-
 }

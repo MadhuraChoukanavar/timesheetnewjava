@@ -69,18 +69,6 @@ public class EmployeeController {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	    }
 	}
-
-//	@GetMapping("/getReportingMngIdByEmpId/{id}")
-//    public ResponseEntity<EmployeeBean> getReportingMngIdByEmpId(@PathVariable Integer id) {
-//        log.info("get reporting manager id by emp id: {}", id);
-//        EmployeeBean employeeBean = employeeService.getReportingMngIdByEmpId(id);
-//        if (employeeBean.getReportingManagerId() != null) {
-//            log.info("reporting manager id: {}", employeeBean);
-//            return new ResponseEntity<>(employeeBean, HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//    }
 	
 	@GetMapping("/getReportingMngIdByEmpId/{id}")
 	public ResponseEntity<EmployeeBean> getReportingMngIdByEmpId(@PathVariable Integer id) {
@@ -101,15 +89,7 @@ public class EmployeeController {
 	    }
 	}
 
-//	
-//	@GetMapping("/getAll")
-//	public ResponseEntity<List<EmployeeEntity>> getAllEmployees(){
-//		List<EmployeeEntity> accountEntities=employeeService.getAllEmployees();
-//		log.info("Fetching employee details {}", accountEntities);
-//		ResponseEntity<List<EmployeeEntity>> responseEntity = new ResponseEntity<List<EmployeeEntity>>(accountEntities,
-//				HttpStatus.OK);
-//		return responseEntity;
-//	}
+
 	
 	@GetMapping("/getAll")
 	public ResponseEntity<List<EmployeeEntity>> getAllEmployees() {
@@ -124,14 +104,6 @@ public class EmployeeController {
 	    }
 	}
 
-
-	
-//	@GetMapping("/{userEmpId}")
-//    public List<EmployeeDto> getEmployeeByUserEmpId(@PathVariable("userEmpId") Integer userEmpId) {
-//		List<EmployeeDto> employee = employeeService.getByUserEmpId(userEmpId);
-//		return employee;
-//    }
-//	
 	
 	@GetMapping("/{userEmpId}")
 	public List<EmployeeDto> getEmployeeByUserEmpId(@PathVariable("userEmpId") Integer userEmpId) {
@@ -161,21 +133,11 @@ public class EmployeeController {
         }
 		return null;
     }	
-	
- 
-//	public List<EmployeeDisplayDto> getEmployeeDetails(Integer employeeId)
-//	@GetMapping(path = "/getEmployeeDetails")
-//	public ResponseEntity<List<EmployeeDisplayDto>> getEmployeeDetails()
-//	{
-//
-//		List<EmployeeDisplayDto> updateDta= employeeService.getEmployeeDetails();
-//		log.info("Fetching updateDta {}", updateDta);
-//		ResponseEntity<List<EmployeeDisplayDto>>  timeSheetHistory1= new ResponseEntity<List<EmployeeDisplayDto>>(HttpStatus.OK);
-//		return ResponseEntity.status(HttpStatus.OK).body(updateDta);	
-//
-//	}
+
+
 	
 	
+
 	
 	@GetMapping(path = "/getEmployeeDetails")
 	public ResponseEntity<List<EmployeeDisplayDto>> getEmployeeDetails() {
@@ -188,19 +150,19 @@ public class EmployeeController {
 	        log.error("An error occurred while fetching employee details: {}", e.getMessage());
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	    }
+
 	}
 
+
 	
-//	@GetMapping(path = "/getEmployeeDetailByUUiD/{uuid}")
-//	public ResponseEntity<List<UpadteEmployeeDto>> getEmployeeDetailByUUiD(@PathVariable String uuid)
-//	{
-//
-//		List<UpadteEmployeeDto> updateDta= employeeService.getEmployeeDetailByUUiD(uuid);
-//		log.info("Fetching updateDta {}", updateDta);
-//		ResponseEntity<List<UpadteEmployeeDto>>  timeSheetHistory1= new ResponseEntity<List<UpadteEmployeeDto>>(HttpStatus.OK);
-//		return ResponseEntity.status(HttpStatus.OK).body(updateDta);	
-//
-//	}
+
+	@GetMapping("/search")
+    public ResponseEntity<List<EmployeeEntity>> searchEmployees(@RequestParam("firstName") String firstName) {
+        log.info("Searching employees by first name: {}", firstName);
+        List<EmployeeEntity> employees = employeeService.searchEmployeesByFirstName(firstName);
+        log.info("Found {} employees matching the search criteria", employees.size());
+        return ResponseEntity.ok(employees);
+    }
 	
 	
 	@GetMapping(path = "/getEmployeeDetailByUUiD/{uuid}")
@@ -215,22 +177,6 @@ public class EmployeeController {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	    }
 	}
-
-//	@PutMapping("/updateEmployee")
-//	public ResponseEntity<EmployeeEntity> updateEmployee(@RequestBody EmployeeBean employeeBean) {
-//	    log.info("update  in controller start");
-//	    log.info("accountBean object: {}", employeeBean);
-//	    
-//	    try {
-//	    	EmployeeEntity updateEmployee = employeeService.updateEmployee(employeeBean);
-//	        log.info("updateAccountProject in controller end");
-//	        return new ResponseEntity<EmployeeEntity>(updateEmployee, HttpStatus.OK);
-//	    } catch (IllegalArgumentException e) {
-//	        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//	    } catch (Exception e) {
-//	        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//	    } 
-//	}	
 	
 	@PutMapping("/updateEmployee")
 	public ResponseEntity<EmployeeEntity> updateEmployee(@RequestBody EmployeeBean employeeBean) {
@@ -250,17 +196,6 @@ public class EmployeeController {
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	    }
 	}
-
-	
-//	@DeleteMapping("/deleteEmp/{employeeId}")
-//	public ResponseEntity<EmployeeEntity> delate(@PathVariable Integer employeeId) {
-//		// log.info("holiday delete",holidayId);)
-//		EmployeeEntity employeeEntity = employeeService.delete(employeeId);
-//		log.info("Delete department_details {}", employeeId);
-//		ResponseEntity<EmployeeEntity> responseEntity = new ResponseEntity<EmployeeEntity>(employeeEntity, HttpStatus.OK);
-//		return responseEntity;
-//
-//	}
 	
 	@DeleteMapping("/deleteEmp/{employeeId}")
 	public ResponseEntity<EmployeeEntity> delete(@PathVariable Integer employeeId) {
@@ -275,7 +210,4 @@ public class EmployeeController {
 	    }
 	}
 
-
-
-   
 }

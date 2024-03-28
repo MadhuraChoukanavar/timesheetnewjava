@@ -48,7 +48,7 @@ private static Logger log = LoggerFactory.getLogger(AccountProjectsServiceImpl.c
 	
     @Override
 	public List<AccountBean> getAccountBean() {
-	    String url = "http://localhost:8081/api/accountSave";
+	    String url = "http://localhost:8081/api/accountSave/getAll";
 	    HttpHeaders headers = new HttpHeaders();
 	    headers.setContentType(MediaType.APPLICATION_JSON);
 	    HttpEntity<String> httpEntity = new HttpEntity<>(headers);
@@ -155,7 +155,7 @@ private static Logger log = LoggerFactory.getLogger(AccountProjectsServiceImpl.c
 			accountProjectsBean.setModifiedOn(entity.getModifiedOn());
 			accountProjectsBean.setUuid(entity.getUuid());
 			accountProjectsBean.setProjectStatus(entity.getProjectStatus());
-			accountProjectsBean.setProjectPId(entity.getProjectPId());
+			accountProjectsBean.setProjectAId(entity.getProjectAId());
 			accountProjectsBean.setProjectManagerId(entity.getProjectManagerId());
 			accountProjectsBean.setPriority(entity.getPriority());
 			accountProjectsBean.setPlannedStartDate(entity.getPlannedStartDate());
@@ -181,7 +181,7 @@ private static Logger log = LoggerFactory.getLogger(AccountProjectsServiceImpl.c
 		    accountProjectsEntity.setModifiedOn(accountProjectsBean.getModifiedOn());
 		    accountProjectsEntity.setUuid(accountProjectsBean.getUuid());
 		    accountProjectsEntity.setProjectStatus(accountProjectsBean.getProjectStatus());
-		    accountProjectsEntity.setProjectPId(accountProjectsBean.getProjectPId());
+		    accountProjectsEntity.setProjectAId(accountProjectsBean.getProjectAId());
 		    accountProjectsEntity.setProjectManagerId(accountProjectsBean.getProjectManagerId());
 		    accountProjectsEntity.setPriority(accountProjectsBean.getPriority());
 		    accountProjectsEntity.setPlannedStartDate(accountProjectsBean.getPlannedStartDate());
@@ -220,8 +220,8 @@ private static Logger log = LoggerFactory.getLogger(AccountProjectsServiceImpl.c
 
 
 	    @Override
-	    public List<AccountDto> accountProjectDto(Integer referenceTypeId) {
-	        return accountProjectsRepo.accountProjectDto(referenceTypeId);
+	    public List<AccountDto> accountProjectDto() {
+	        return accountProjectsRepo.accountProjectDto();
 	    }
 	    
 		@Override

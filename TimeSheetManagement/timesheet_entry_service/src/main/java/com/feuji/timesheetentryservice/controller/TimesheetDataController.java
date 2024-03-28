@@ -52,9 +52,6 @@ public class TimesheetDataController {
 	 * @return ResponseEntity containing the saved TimesheetWeekEntity objects and
 	 *         HTTP status code.
 	 */
-
-
-
 	@PostMapping("/saveedit/{weekStartDate}")
 	public String saveOrUpdateRecords(@RequestBody SaveAndEditRecordsDto weekAndDayDataBeans,
 			@PathVariable String weekStartDate) {
@@ -85,7 +82,6 @@ public class TimesheetDataController {
 	 * @return ResponseEntity containing a list of WeekAndDayDto objects
 	 *         representing the timesheet data and HTTP status code.
 	 */
-
 	@GetMapping("/getallweekdayData/{accountId}/{employeeId}/{weekStartDate}/{weekEndDate}")
 	public ResponseEntity<List<WeekAndDayDto>> getAllWeekdayData(@PathVariable Integer accountId,
 			@PathVariable Integer employeeId, @PathVariable String weekStartDate, @PathVariable String weekEndDate) {
@@ -112,12 +108,10 @@ public class TimesheetDataController {
 	 * @return ResponseEntity containing a list of TimesheetDayEntity objects
 	 *         representing the deleted record and HTTP status code.
 	 */
-
 	@PostMapping("/delete")
 	public ResponseEntity<List<TimesheetDayEntity>> deleteRecord(@RequestBody WeekAndDayDto weekAndDayDto) {
 		try {
 			log.info("Deleting record: {}", weekAndDayDto);
-
 			List<TimesheetDayEntity> deletedRecords = timeSheetDataService.deleteDayRecord(weekAndDayDto);
 
 			if (deletedRecords == null || deletedRecords.isEmpty()) {
@@ -142,8 +136,6 @@ public class TimesheetDataController {
 	 * @return ResponseEntity containing a list of TimesheetWeekEntity objects
 	 *         representing the submitted timesheet and HTTP status code.
 	 */
-
-
 	@PostMapping("submitAction")
 	public ResponseEntity<List<TimesheetWeekEntity>> submitTimesheet(@RequestParam Integer employeeId,
 			@RequestParam Integer accountId, @RequestParam String weekStartDate) {
@@ -169,7 +161,6 @@ public class TimesheetDataController {
 	}
 
 
-
 	public ResponseEntity<List<TimesheetWeekEntity>> sendEmails(Integer employeeId, Integer accountId,
 			String weekStartDate) {
 		try {
@@ -193,7 +184,6 @@ public class TimesheetDataController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-
 
 	private String composeBody(EmployeeDataDto emp, String weekStartDate) {
 	    try {

@@ -56,7 +56,6 @@ public class HolidayController {
 	}
 
 
-
 	@GetMapping(path = "/{holidayId}")
 	public ResponseEntity<HolidayEntity> getHolidayById(@PathVariable Integer holidayId) {
 	    try {
@@ -90,7 +89,6 @@ public class HolidayController {
 	    }
 	}
 
-
 	@DeleteMapping("/{holidayId}")
 	public ResponseEntity<HolidayEntity> deleteHoliday(@PathVariable Integer holidayId) {
 	    try {
@@ -103,8 +101,6 @@ public class HolidayController {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	    }
 	}
-
-
 
 	
 	@GetMapping("/getWeekHolidaysDayIds/{startweekofDate}")
@@ -133,5 +129,7 @@ public class HolidayController {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
 	    }
 	}
+
+	
 
 }
