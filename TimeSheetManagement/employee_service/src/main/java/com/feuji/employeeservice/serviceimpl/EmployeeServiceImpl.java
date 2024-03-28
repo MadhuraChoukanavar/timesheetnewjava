@@ -85,9 +85,32 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	public List<AddEmployee> getAllReportingManager() {
 		
+
 		List<AddEmployee> employees = employeeRepository.findDesignationsContainingManager();
 		return employees;
 	}
+
+
+
+	@Override
+	public List<SaveEmployeeDto> getByReferenceTypeId(Integer referenceTypeId) {
+		
+		return employeeRepository.getByReferenceTypeId(referenceTypeId);
+	}
+
+		
+	
+	@Override
+	public List<EmployeeEntity> getAllEmployees() {
+		return employeeRepository.findAll();
+	}
+
+	
+	@Override
+	public List<EmployeeEntity> searchEmployeesByFirstName(String firstName) {
+		 return employeeRepository.findByFirstNameContainingIgnoreCase(firstName);
+	}
+
 
 
 	public EmployeeBean entityToBean(EmployeeEntity entity) {
@@ -118,6 +141,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 		return employeeBean;
 	}
+	
+	
+
 
 	public EmployeeEntity beanToEntity(EmployeeBean employeeBean) {
 		EmployeeEntity entity = new EmployeeEntity();
@@ -148,7 +174,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return entity;
 	}
 
-	// UPDATE
+
 	@Override
 	public void updateEmployeeDetails(EmployeeEntity updateEmployee, Integer id) throws Throwable {
 		EmployeeEntity existingEmployee = employeeRepository.findById(id)
@@ -186,6 +212,51 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 			return empdetails;
 		} catch (Exception e) {
+
+		@Override
+		public void updateEmployeeDetails(EmployeeEntity updateEmployee, Integer id) throws Throwable {
+			EmployeeEntity existingEmployee = employeeRepository.findById(id)
+					.orElseThrow(() -> new Exception("Employee not found with id: " + id));
+
+			existingEmployee.setFirstName(updateEmployee.getFirstName());
+			existingEmployee.setMiddleName(updateEmployee.getMiddleName());
+			existingEmployee.setLastName(updateEmployee.getLastName());
+			existingEmployee.setDesignation(updateEmployee.getDesignation());
+			existingEmployee.setEmail(updateEmployee.getEmail());
+			existingEmployee.setGender(updateEmployee.getGender());
+			existingEmployee.setDateOfJoining(updateEmployee.getDateOfJoining());
+			existingEmployee.setReportingManagerId(updateEmployee.getReportingManagerId());
+			existingEmployee.setEmploymentType(updateEmployee.getEmploymentType());
+			existingEmployee.setStatus(updateEmployee.getStatus());
+			existingEmployee.setDeliveryUnitId(updateEmployee.getDeliveryUnitId());
+			existingEmployee.setBusinessUnitId(updateEmployee.getBusinessUnitId());
+			existingEmployee.setExitDate(updateEmployee.getExitDate());
+			existingEmployee.setExitRemarks(updateEmployee.getExitRemarks());
+			existingEmployee.setIsDeleted(updateEmployee.getIsDeleted());
+			existingEmployee.setUuid(updateEmployee.getUuid());
+			existingEmployee.setCreatedBy(updateEmployee.getCreatedBy());
+			existingEmployee.setCreatedOn(updateEmployee.getCreatedOn());
+			existingEmployee.setModifiedBy(updateEmployee.getModifiedBy());
+			existingEmployee.setModifiedOn(updateEmployee.getModifiedOn());
+
+			employeeRepository.save(existingEmployee);
+		}
+		@Override
+		public List<EmployeeDisplayDto> getEmployeeDetails(){
+				try
+				{
+				
+				List<EmployeeDisplayDto>   empdetails=employeeRepository.getEmployeeDetails();
+				System.out.println();
+				return  empdetails;
+				}
+				catch (Exception e) {
+					System.out.println(e.getMessage());
+					
+				}
+				return null;
+
+
 
 		}
 		return null;

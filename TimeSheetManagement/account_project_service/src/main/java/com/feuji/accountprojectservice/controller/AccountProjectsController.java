@@ -2,7 +2,6 @@ package com.feuji.accountprojectservice.controller;
 
 import java.util.List;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,27 +14,29 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.feuji.accountprojectservice.bean.AccountBean;
 import com.feuji.accountprojectservice.bean.AccountProjectsBean;
 import com.feuji.accountprojectservice.bean.EmployeeBean;
+import com.feuji.accountprojectservice.dto.AccountDto;
 import com.feuji.accountprojectservice.entity.AccountProjectsEntity;
 import com.feuji.accountprojectservice.exception.UUIDNotFoundException;
 import com.feuji.accountprojectservice.repository.AccountProjectsRepo;
 import com.feuji.accountprojectservice.service.AccountProjectsService;
 
 import lombok.extern.slf4j.Slf4j;
+
 @CrossOrigin(origins = "http://localhost:4200")
 @Slf4j
 @RestController
 @RequestMapping("/accountProjects")
 public class AccountProjectsController {
-	private static Logger log = LoggerFactory.getLogger(AccountProjectsController.class);
 
 	@Autowired
 	AccountProjectsService accountProjectsService;
-	
+
 	@Autowired
 	AccountProjectsRepo accountProjectsRepo;
 
@@ -43,16 +44,17 @@ public class AccountProjectsController {
 	public ResponseEntity<AccountProjectsEntity> save(@RequestBody AccountProjectsBean accountProjectsBean) {
 		try {
 			log.info("Saving project started: {}", accountProjectsBean);
-			AccountProjectsEntity saveAccountProjects= accountProjectsService.save(accountProjectsBean);
+			AccountProjectsEntity saveAccountProjects = accountProjectsService.save(accountProjectsBean);
 			return new ResponseEntity<AccountProjectsEntity>(saveAccountProjects, HttpStatus.CREATED);
 		} catch (Exception e) {
 			log.error("Error occurred while saving employee: {}", e.getMessage());
 			return new ResponseEntity<AccountProjectsEntity>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@GetMapping("/getAccountProject/{id}")
 	public ResponseEntity<AccountProjectsBean> getAccountBeanByEmpId(@PathVariable Integer id) {
+
 	    try {
 	        AccountProjectsBean accountProjectsBean = accountProjectsService.getAccountProjectBean(id);
 	        
@@ -67,30 +69,29 @@ public class AccountProjectsController {
 	        log.error("An error occurred while fetching AccountProjectsBean with id {}: {}", id, e.getMessage());
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	    }
+
 	}
-	
 
 	@GetMapping(path = "/getByUuid/{uuid}")
-	public ResponseEntity<AccountProjectsBean> getByUUID(@PathVariable String uuid){
-	{
-		log.info("Entered into getbyuuid controller");
-		AccountProjectsBean bean=null;
-		try {
-			log.info("entered into fingbyuuid service");
-		bean = accountProjectsService.findByUuid(uuid);
-		log.info("coming out of  fingbyuuid service");
-		return new ResponseEntity<AccountProjectsBean>(bean,HttpStatus.FOUND);
-		}
-		catch(Exception e)
+	public ResponseEntity<AccountProjectsBean> getByUUID(@PathVariable String uuid) {
 		{
-			log.error("Error occurred while saving employee: {}", e.getMessage());
-			return new ResponseEntity<AccountProjectsBean>(HttpStatus.INTERNAL_SERVER_ERROR);
-		
-		
+			log.info("Entered into getbyuuid controller");
+			AccountProjectsBean bean = null;
+			try {
+				log.info("entered into fingbyuuid service");
+				bean = accountProjectsService.findByUuid(uuid);
+				log.info("coming out of  fingbyuuid service");
+				return new ResponseEntity<AccountProjectsBean>(bean, HttpStatus.FOUND);
+			} catch (Exception e) {
+				log.error("Error occurred while saving employee: {}", e.getMessage());
+				return new ResponseEntity<AccountProjectsBean>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+			}
+		}
 	}
-	}
-	}
+
 	@PutMapping("/updateAccountProject")
+
 	public ResponseEntity<AccountProjectsBean> updateAccountProject(@RequestBody AccountProjectsBean accountProjectsBean) {
 	    log.info("updateAccountProject in controller start");
 	    log.info("accountProjectsBean object: {}", accountProjectsBean);
@@ -125,27 +126,13 @@ public class AccountProjectsController {
 	    }
 	}
 
-	
-
-	@GetMapping(path="/getEmployee")
+	@GetMapping(path = "/getEmployee")
 	public ResponseEntity<List<EmployeeBean>> getAllEmployees() {
-	    try {
-	        List<EmployeeBean> beans = accountProjectsService.getEmployeeBean();
-	        log.info("Retrieved {} employee beans", beans.size());
-	        return ResponseEntity.ok().body(beans);
-	    } catch (Exception e) {
-	        log.error("An error occurred while fetching employee beans: {}", e.getMessage());
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-	    }
-	}
 
-//	
-//	@PutMapping("delete/{accountProjectId}")
-//	public ResponseEntity<String> deleteProject(@PathVariable Integer accountProjectId){
-//		String result=null;
-//		result=accountProjectsService.updateDeleteStatus(accountProjectId);
-//		return new ResponseEntity<String>(result,HttpStatus.NO_CONTENT );
-//	}
+		List<EmployeeBean> beans = accountProjectsService.getEmployeeBean();
+		return new ResponseEntity<>(beans, HttpStatus.OK);
+  }
+
 	@PutMapping("delete/{accountProjectId}")
 	public ResponseEntity<String> deleteProject(@PathVariable Integer accountProjectId) {
 	    try {
@@ -156,10 +143,18 @@ public class AccountProjectsController {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while deleting project.");
 	    }
 	}
-
-
-
-
 	
+
+	@GetMapping(path="/getAccountProjectDto/{priorityReferenceTypeId}")
+	public ResponseEntity<List<AccountDto>> accountProjectDto(
+	        @RequestParam(name = "priorityReferenceTypeId") Integer priorityReferenceTypeId
+	         )
+	{
+
+	    List<AccountDto> accountDto = accountProjectsService.accountProjectDto(priorityReferenceTypeId);
+	    return new ResponseEntity<>(accountDto, HttpStatus.OK);
+	}
+
 }
 
+//  @RequestParam(name = "statusReferenceTypeId") Integer statusReferenceTypeId     
