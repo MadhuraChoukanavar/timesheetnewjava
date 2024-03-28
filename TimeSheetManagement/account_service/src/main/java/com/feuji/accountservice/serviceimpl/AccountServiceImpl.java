@@ -147,5 +147,13 @@ public class AccountServiceImpl implements AccountService {
 	    }
 }
 
+
+
+	@Override
+	public List<AccountEntity> getAllAcount() {
+		
+		return accountRepository.findAll();
+	}
+
 	
 }

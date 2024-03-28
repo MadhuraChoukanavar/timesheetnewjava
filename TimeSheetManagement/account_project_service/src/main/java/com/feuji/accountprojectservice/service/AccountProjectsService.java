@@ -22,7 +22,7 @@ public AccountProjectsEntity save(AccountProjectsBean accountProjectsBean);
 	
 	public  List<EmployeeBean>getEmployeeBean();
 	
-	List<AccountDto> accountProjectDto(Integer referenceTypeId);
+	List<AccountDto> accountProjectDto();
 	
 	List<Integer> getAccountProjectIdByAccountId(Integer accountId);
 	

@@ -16,7 +16,7 @@ public interface AccountProjectsRepo extends JpaRepository<AccountProjectsEntity
 	Optional<AccountProjectsEntity> findByUuid(String uuid);
 	
 	@Query("SELECT NEW com.feuji.accountprojectservice.dto.AccountDto(" +
-	         " ap.accountProjectId ,ap.projectPId, " +
+	         " ap.accountProjectId ,ap.projectAId, " +
 	           "ap.projectName, " +
 	           "a.accountName, " +
 	           "e.firstName, " +
@@ -25,9 +25,9 @@ public interface AccountProjectsRepo extends JpaRepository<AccountProjectsEntity
 	           "JOIN AccountEntity a ON ap.accountId = a.accountId " +
 	           "JOIN EmployeeEntity e ON ap.projectManagerId = e.employeeId " +
 	           "JOIN CommonReferenceDetailsEntity rd ON ap.priority = rd.referenceDetailId  " + 
-	           "JOIN CommonReferenceTypeEntity rt ON rd.referenceTypeId = rt.referenceTypeId " +
-	           "WHERE rt.referenceTypeId = :referenceTypeId")
-	List<AccountDto> accountProjectDto(@Param("referenceTypeId") Integer referenceTypeId);
+	           "JOIN CommonReferenceTypeEntity rt ON rd.referenceTypeId = rt.referenceTypeId ")
+	List<AccountDto> accountProjectDto();
+	
 	
 //	@Query(value="select account_project_id from account_projects ap join account a  on ap.account_id=a.account_id	where a.account_id=2",nativeQuery=true)
 //	List<AccountProjectsEntity> getAccountProjectIdByAccountId( Integer accountId);

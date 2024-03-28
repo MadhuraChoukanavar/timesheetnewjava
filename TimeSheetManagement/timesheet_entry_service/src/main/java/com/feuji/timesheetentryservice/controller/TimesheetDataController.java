@@ -62,8 +62,6 @@ public class TimesheetDataController {
 
 	}
 
-
-
 	/**
 	 * Handles the HTTP GET request to retrieve the timesheet data for a specific
 	 * week and employee.
@@ -135,28 +133,31 @@ public class TimesheetDataController {
 	 *         representing the submitted timesheet and HTTP status code.
 	 */
 	@PostMapping("submitAction")
-	public ResponseEntity<List<TimesheetWeekEntity>> submitTimesheet(@RequestParam Integer employeeId,@RequestParam Integer accountId, @RequestParam String weekStartDate
-		) {
-		log.info("weekStartDate:::"+ weekStartDate);
+	public ResponseEntity<List<TimesheetWeekEntity>> submitTimesheet(@RequestParam Integer employeeId,
+			@RequestParam Integer accountId, @RequestParam String weekStartDate) {
 		try {
-
-			log.info("Submitting timesheet for week starting on {} with status: {}", weekStartDate, Constants.TIME_SHEET_STATUS_SAVED);
+			log.info("Submitting timesheet for week starting on {} with status: {}", weekStartDate,
+					Constants.TIME_SHEET_STATUS_SAVED);
 
 			List<TimesheetWeekEntity> submittingTimesheet = timeSheetDataService.submittingTimesheet(weekStartDate,
 					Constants.TIME_SHEET_STATUS_SUBMITTED);
 
 			if (submittingTimesheet != null && !submittingTimesheet.isEmpty()) {
-
 				this.sendEmails(employeeId, accountId, weekStartDate);
 				return new ResponseEntity<>(submittingTimesheet, HttpStatus.OK);
 			} else {
-
+				log.error("Failed to submit timesheet for week starting on {}", weekStartDate);
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
+		} catch (Exception e) {
+			log.error("An error occurred while submitting timesheet for week starting on {}: {}", weekStartDate,
+					e.getMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
-
-	public ResponseEntity<List<TimesheetWeekEntity>> sendEmails(Integer employeeId,
-			 Integer accountId,  String weekStartDate) {
+	public ResponseEntity<List<TimesheetWeekEntity>> sendEmails(Integer employeeId, Integer accountId,
+			String weekStartDate) {
 		try {
 
 			log.info("Submitting timesheet for employeeId : {} and account Id: {}", employeeId, accountId,
@@ -179,7 +180,6 @@ public class TimesheetDataController {
 		}
 	}
 
-
 	private String composeBody(EmployeeDataDto emp, String weekStartDate) throws Exception {
 
 		log.info("composeBody for employee:" + emp.getEmail());
@@ -196,6 +196,3 @@ public class TimesheetDataController {
 	}
 
 }
-
-}
-

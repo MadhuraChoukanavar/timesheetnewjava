@@ -61,13 +61,15 @@ public class AccountController {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
+	@GetMapping(path = "/getAll")
+    public ResponseEntity<List<AccountEntity>> getAllAccounts() {
+        List<AccountEntity> accounts = accountService.getAllAcount();
+        if (!accounts.isEmpty()) {
+            return new ResponseEntity<>(accounts, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+    }
 	
 	
 	@GetMapping(path="/getEmployee")

@@ -4,8 +4,10 @@ import java.util.List;
 
 import com.feuji.employeeservice.bean.EmployeeBean;
 import com.feuji.employeeservice.dto.AddEmployee;
+import com.feuji.employeeservice.dto.EmployeeDisplayDto;
 import com.feuji.employeeservice.dto.EmployeeDto;
 import com.feuji.employeeservice.dto.SaveEmployeeDto;
+import com.feuji.employeeservice.dto.UpadteEmployeeDto;
 import com.feuji.employeeservice.entity.CommonReferenceDetailsEntity;
 import com.feuji.employeeservice.entity.CommonReferenceTypeEntity;
 import com.feuji.employeeservice.entity.EmployeeEntity;
@@ -35,4 +37,11 @@ public interface EmployeeService {
 	List<EmployeeEntity> searchEmployeesByFirstName(String firstName);
 	
 //	public List<ReferenceDto> getAll();
+	
+	List<EmployeeDisplayDto> getEmployeeDetails();
+	List<UpadteEmployeeDto> getEmployeeDetailByUUiD( String uuid);
+	
+	public EmployeeEntity updateEmployee(EmployeeBean employeeBean) ;
+
+	EmployeeEntity delete(Integer employeeId);
 }

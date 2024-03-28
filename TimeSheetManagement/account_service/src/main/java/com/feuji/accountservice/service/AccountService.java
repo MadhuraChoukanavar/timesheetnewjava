@@ -10,25 +10,21 @@ import com.feuji.accountservice.entity.AccountEntity;
 import com.feuji.accountservice.exception.SaveUniqueAccountException;
 
 public interface AccountService {
-	
-	AccountEntity saveAccount(AccountBean accountBean) throws SaveUniqueAccountException ;
-	
+
+	AccountEntity saveAccount(AccountBean accountBean) throws SaveUniqueAccountException;
+
 	AccountEntity beanToEntity(AccountBean accountBean);
-	
-	
 
-	
-	AccountEntity findByUUId( String uuId);
-	
-	
-	   List<EmployeeBean>getEmployeeBean();
-	   
-	   List<AccountDTO> accountDto();
-	   
-	   List< UpdateAccountDto> fetchByUuID( String uuId);
+	public List<AccountEntity> getAllAcount();
 
-	   public AccountEntity updateAccount(AccountBean accountBean) ;
+	AccountEntity findByUUId(String uuId);
 
+	List<EmployeeBean> getEmployeeBean();
 
-	
+	List<AccountDTO> accountDto();
+
+	List<UpdateAccountDto> fetchByUuID(String uuId);
+
+	public AccountEntity updateAccount(AccountBean accountBean);
+
 }

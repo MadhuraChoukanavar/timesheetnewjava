@@ -32,8 +32,8 @@ public class AccountProjectsEntity {
 	@Column(name = "account_project_id")	
 	private Integer accountProjectId;
 
-	@Column(name = "project_pid")
-	private String projectPId;
+	@Column(name = "project_aid")
+	private String projectAId;
 
 	@Column(name = "project_name")
 	private String projectName;

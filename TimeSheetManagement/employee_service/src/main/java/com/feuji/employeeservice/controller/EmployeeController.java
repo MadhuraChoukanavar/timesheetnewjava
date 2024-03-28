@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,8 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.feuji.employeeservice.bean.EmployeeBean;
 import com.feuji.employeeservice.dto.AddEmployee;
+import com.feuji.employeeservice.dto.EmployeeDisplayDto;
 import com.feuji.employeeservice.dto.EmployeeDto;
 import com.feuji.employeeservice.dto.SaveEmployeeDto;
+import com.feuji.employeeservice.dto.UpadteEmployeeDto;
 import com.feuji.employeeservice.entity.CommonReferenceTypeEntity;
 import com.feuji.employeeservice.entity.EmployeeEntity;
 import com.feuji.employeeservice.service.EmployeeService;
@@ -100,4 +104,62 @@ public class EmployeeController {
         log.info("Found {} employees matching the search criteria", employees.size());
         return ResponseEntity.ok(employees);
     }
+	
+	@GetMapping(path = "/getEmployeeDetails")
+	public ResponseEntity<List<EmployeeDisplayDto>> getEmployeeDetails() {
+	    try {
+	        log.info("Fetching employee details");
+	        List<EmployeeDisplayDto> updateDta = employeeService.getEmployeeDetails();
+	        log.info("Retrieved employee details: {}", updateDta);
+	        return ResponseEntity.ok(updateDta);
+	    } catch (Exception e) {
+	        log.error("An error occurred while fetching employee details: {}", e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
+	}
+	
+	@GetMapping(path = "/getEmployeeDetailByUUiD/{uuid}")
+	public ResponseEntity<List<UpadteEmployeeDto>> getEmployeeDetailByUUiD(@PathVariable String uuid) {
+	    try {
+	        log.info("Fetching employee details for UUID: {}", uuid);
+	        List<UpadteEmployeeDto> updateDta = employeeService.getEmployeeDetailByUUiD(uuid);
+	        log.info("Retrieved employee details: {}", updateDta);
+	        return ResponseEntity.ok(updateDta);
+	    } catch (Exception e) {
+	        log.error("An error occurred while fetching employee details for UUID {}: {}", uuid, e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
+	}
+	
+	@PutMapping("/updateEmployee")
+	public ResponseEntity<EmployeeEntity> updateEmployee(@RequestBody EmployeeBean employeeBean) {
+	    try {
+	        log.info("Updating employee in controller");
+	        log.info("EmployeeBean object: {}", employeeBean);
+	        
+	        EmployeeEntity updateEmployee = employeeService.updateEmployee(employeeBean);
+	        
+	        log.info("Employee updated successfully");
+	        return ResponseEntity.ok(updateEmployee);
+	    } catch (IllegalArgumentException e) {
+	        log.error("Bad request received while updating employee: {}", e.getMessage());
+	        return ResponseEntity.badRequest().build();
+	    } catch (Exception e) {
+	        log.error("An error occurred while updating employee: {}", e.getMessage());
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	    }
+	}
+	
+	@DeleteMapping("/deleteEmp/{employeeId}")
+	public ResponseEntity<EmployeeEntity> delete(@PathVariable Integer employeeId) {
+	    try {
+	        log.info("Deleting employee with ID: {}", employeeId);
+	        EmployeeEntity employeeEntity = employeeService.delete(employeeId);
+	        log.info("Deleted employee with ID: {}", employeeId);
+	        return ResponseEntity.ok(employeeEntity);
+	    } catch (Exception e) {
+	        log.error("An error occurred while deleting employee with ID {}: {}", employeeId, e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
+	}
 }

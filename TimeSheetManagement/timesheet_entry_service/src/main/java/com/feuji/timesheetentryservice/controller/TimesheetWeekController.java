@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,6 +25,7 @@ import com.feuji.timesheetentryservice.dto.AccountProjectResourceMappingDto;
 import com.feuji.timesheetentryservice.dto.ProjectNameDto;
 import com.feuji.timesheetentryservice.dto.ProjectTaskDto;
 import com.feuji.timesheetentryservice.dto.ProjectTaskTypeNameDto;
+import com.feuji.timesheetentryservice.dto.TimeSheeApprovalDto;
 import com.feuji.timesheetentryservice.dto.TimeSheetHistoryDto;
 import com.feuji.timesheetentryservice.entity.TimesheetWeekEntity;
 import com.feuji.timesheetentryservice.repository.TimesheetWeekRepo;
@@ -43,57 +45,124 @@ public class TimesheetWeekController {
 	@Autowired
 	TimesheetWeekRepo timesheetWeekRepo;
 
+//	@PostMapping("/save")
+//	public ResponseEntity<TimesheetWeekEntity> saveTimesheetWeek(@RequestBody TimesheetWeekBean timesheetWeekBean) {
+//
+//		try {
+//			log.info("timesheet week controller", timesheetWeekBean);
+//			TimesheetWeekEntity timesheetWeekEntity = timesheetWeekService.save(timesheetWeekBean);
+//			return new ResponseEntity<>(timesheetWeekEntity, HttpStatus.CREATED);
+//
+//		} catch (Exception e) {
+//
+//			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//
+//		}
+//	}
+	
 	@PostMapping("/save")
 	public ResponseEntity<TimesheetWeekEntity> saveTimesheetWeek(@RequestBody TimesheetWeekBean timesheetWeekBean) {
-
-		try {
-			log.info("timesheet week controller", timesheetWeekBean);
-			TimesheetWeekEntity timesheetWeekEntity = timesheetWeekService.save(timesheetWeekBean);
-			return new ResponseEntity<>(timesheetWeekEntity, HttpStatus.CREATED);
-
-		} catch (Exception e) {
-
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-
-		}
+	    try {
+	        log.info("Saving timesheet week: {}", timesheetWeekBean);
+	        TimesheetWeekEntity timesheetWeekEntity = timesheetWeekService.save(timesheetWeekBean);
+	        log.info("Timesheet week saved successfully");
+	        return new ResponseEntity<>(timesheetWeekEntity, HttpStatus.CREATED);
+	    } catch (Exception e) {
+	        log.error("An error occurred while saving timesheet week: {}", e.getMessage(), e);
+	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
 	}
 
+
+//	@GetMapping("/gettimesheetweek/{id}")
+//	public ResponseEntity<TimesheetWeekEntity> getTimesheetById(@PathVariable Integer id) {
+//		try {
+//			log.info("getting timesheet", id);
+//			TimesheetWeekEntity timesheetWeekEntity = timesheetWeekService.getById(id);
+//			return new ResponseEntity<>(timesheetWeekEntity, HttpStatus.CREATED);
+//
+//		} catch (Exception e) {
+//			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
+//
+//	}
 	@GetMapping("/gettimesheetweek/{id}")
 	public ResponseEntity<TimesheetWeekEntity> getTimesheetById(@PathVariable Integer id) {
-		try {
-			log.info("getting timesheet", id);
-			TimesheetWeekEntity timesheetWeekEntity = timesheetWeekService.getById(id);
-			return new ResponseEntity<>(timesheetWeekEntity, HttpStatus.CREATED);
-
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
+	    try {
+	        log.info("Fetching timesheet week with ID: {}", id);
+	        TimesheetWeekEntity timesheetWeekEntity = timesheetWeekService.getById(id);
+	        log.info("Retrieved timesheet week with ID: {}", id);
+	        return new ResponseEntity<>(timesheetWeekEntity, HttpStatus.OK);
+	    } catch (Exception e) {
+	        log.error("An error occurred while fetching timesheet week with ID {}: {}", id, e.getMessage(), e);
+	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
 	}
 
+//	@GetMapping("/getproject")
+//	public ResponseEntity<List<ProjectNameDto>> getProjectBYEMpId(@RequestParam Integer employeeId,
+//			@RequestParam Integer accountId) {
+//		log.info("passing employee id", employeeId);
+//		List<ProjectNameDto> projectNameByEmpId = timesheetWeekService.getProjectNameByEmpId(employeeId, accountId);
+//		return new ResponseEntity<>(projectNameByEmpId, HttpStatus.CREATED);
+//	}
 	@GetMapping("/getproject")
 	public ResponseEntity<List<ProjectNameDto>> getProjectBYEMpId(@RequestParam Integer employeeId,
-			@RequestParam Integer accountId) {
-		log.info("passing employee id", employeeId);
-		List<ProjectNameDto> projectNameByEmpId = timesheetWeekService.getProjectNameByEmpId(employeeId, accountId);
-		return new ResponseEntity<>(projectNameByEmpId, HttpStatus.CREATED);
+	        @RequestParam Integer accountId) {
+	    try {
+	        log.info("Fetching projects for employee ID: {}", employeeId);
+	        List<ProjectNameDto> projectNameByEmpId = timesheetWeekService.getProjectNameByEmpId(employeeId, accountId);
+	        log.info("Retrieved projects for employee ID: {}", employeeId);
+	        return new ResponseEntity<>(projectNameByEmpId, HttpStatus.OK);
+	    } catch (Exception e) {
+	        log.error("An error occurred while fetching projects for employee ID {}: {}", employeeId, e.getMessage(), e);
+	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
 	}
 
+//	@GetMapping("/getprojecttasktype")
+//	public ResponseEntity<List<ProjectTaskTypeNameDto>> getProjectTaskType(@RequestParam Integer employeeId,
+//			@RequestParam Integer accountProjectId) {
+//		log.info("passing employee id", employeeId);
+//		List<ProjectTaskTypeNameDto> projectTaskType = timesheetWeekService.getProjectTaskTypeName(employeeId,
+//				accountProjectId);
+//		return new ResponseEntity<>(projectTaskType, HttpStatus.CREATED);
+//	}
 	@GetMapping("/getprojecttasktype")
 	public ResponseEntity<List<ProjectTaskTypeNameDto>> getProjectTaskType(@RequestParam Integer employeeId,
-			@RequestParam Integer accountProjectId) {
-		log.info("passing employee id", employeeId);
-		List<ProjectTaskTypeNameDto> projectTaskType = timesheetWeekService.getProjectTaskTypeName(employeeId,
-				accountProjectId);
-		return new ResponseEntity<>(projectTaskType, HttpStatus.CREATED);
+	        @RequestParam Integer accountProjectId) {
+	    try {
+	        log.info("Fetching project task types for employee ID: {}", employeeId);
+	        List<ProjectTaskTypeNameDto> projectTaskType = timesheetWeekService.getProjectTaskTypeName(employeeId,
+	                accountProjectId);
+	        log.info("Retrieved project task types for employee ID: {}", employeeId);
+	        return new ResponseEntity<>(projectTaskType, HttpStatus.OK);
+	    } catch (Exception e) {
+	        log.error("An error occurred while fetching project task types for employee ID {}: {}", employeeId, e.getMessage(), e);
+	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
 	}
 
+//	@GetMapping("/getprojecttask")
+//	public ResponseEntity<List<ProjectTaskDto>> getProjectTask(@RequestParam Integer taskTypeId) {
+//		log.info("passing employee id", taskTypeId);
+//		List<ProjectTaskDto> projectTask = timesheetWeekService.getProjectTask(taskTypeId);
+//		return new ResponseEntity<>(projectTask, HttpStatus.CREATED);
+//	}
+	
 	@GetMapping("/getprojecttask")
 	public ResponseEntity<List<ProjectTaskDto>> getProjectTask(@RequestParam Integer taskTypeId) {
-		log.info("passing employee id", taskTypeId);
-		List<ProjectTaskDto> projectTask = timesheetWeekService.getProjectTask(taskTypeId);
-		return new ResponseEntity<>(projectTask, HttpStatus.CREATED);
+	    try {
+	        log.info("Fetching project tasks for task type ID: {}", taskTypeId);
+	        List<ProjectTaskDto> projectTask = timesheetWeekService.getProjectTask(taskTypeId);
+	        log.info("Retrieved project tasks for task type ID: {}", taskTypeId);
+	        return new ResponseEntity<>(projectTask, HttpStatus.OK);
+	    } catch (Exception e) {
+	        log.error("An error occurred while fetching project tasks for task type ID {}: {}", taskTypeId, e.getMessage(), e);
+	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
 	}
+
 
 	/**
 	 * Handles the HTTP GET request to retrieve account details based on the user's
@@ -104,25 +173,43 @@ public class TimesheetWeekController {
 	 * @return ResponseEntity containing a list of AccountProjectResourceMappingDto
 	 *         objects representing account details and HTTP status code.
 	 */
+//	@GetMapping(path = "/getaccountdetails")
+//	public ResponseEntity<List<AccountProjectResourceMappingDto>> findAccountNameByUserEmpId(
+//			@RequestParam Integer userEmpId) {
+//		try {
+//
+//			List<AccountProjectResourceMappingDto> accountProjectResourceMappingDtos = timesheetWeekService
+//					.findAccountNameByUserEmpId(userEmpId);
+//
+//			log.info("Fetching accountProjectResourceMappingDtos for userEmpId {}: {}", userEmpId,
+//					accountProjectResourceMappingDtos);
+//
+//			return ResponseEntity.status(HttpStatus.OK).body(accountProjectResourceMappingDtos);
+//		} catch (Exception e) {
+//
+//			log.error("Error fetching account details for userEmpId {}: {}", userEmpId, e.getMessage());
+//
+//			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
+//	}
+	
 	@GetMapping(path = "/getaccountdetails")
 	public ResponseEntity<List<AccountProjectResourceMappingDto>> findAccountNameByUserEmpId(
-			@RequestParam Integer userEmpId) {
-		try {
+	        @RequestParam Integer userEmpId) {
+	    try {
+	        List<AccountProjectResourceMappingDto> accountProjectResourceMappingDtos = timesheetWeekService
+	                .findAccountNameByUserEmpId(userEmpId);
 
-			List<AccountProjectResourceMappingDto> accountProjectResourceMappingDtos = timesheetWeekService
-					.findAccountNameByUserEmpId(userEmpId);
+	        log.info("Fetching accountProjectResourceMappingDtos for userEmpId {}: {}", userEmpId,
+	                accountProjectResourceMappingDtos);
 
-			log.info("Fetching accountProjectResourceMappingDtos for userEmpId {}: {}", userEmpId,
-					accountProjectResourceMappingDtos);
-
-			return ResponseEntity.status(HttpStatus.OK).body(accountProjectResourceMappingDtos);
-		} catch (Exception e) {
-
-			log.error("Error fetching account details for userEmpId {}: {}", userEmpId, e.getMessage());
-
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+	        return ResponseEntity.status(HttpStatus.OK).body(accountProjectResourceMappingDtos);
+	    } catch (Exception e) {
+	        log.error("Error fetching account details for userEmpId {}: {}", userEmpId, e.getMessage(), e);
+	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
 	}
+
 
 	/**
 	 * Handles the HTTP GET request to retrieve time sheet history for a specific
@@ -249,5 +336,66 @@ public class TimesheetWeekController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	
+	
 
+	
+	@PutMapping("update/{employeeId}/{accountId}/{weekStartDate}")
+	public ResponseEntity<String> updateTimesheetStatus(@PathVariable Integer employeeId,
+	        @PathVariable Integer accountId, @PathVariable String weekStartDate) {
+	    try {
+	        log.info("Updating timesheet status for employeeId: {}, accountId: {}, weekStartDate: {}", 
+	            employeeId, accountId, weekStartDate);
+	        
+	        String result = timesheetWeekService.updateTimesheetStatus(employeeId, accountId, weekStartDate);
+	        
+	        return new ResponseEntity<>(result, HttpStatus.NO_CONTENT);
+	    } catch (Exception e) {
+	        log.error("Error updating timesheet status for employeeId: {}, accountId: {}, weekStartDate: {}: {}", 
+	            employeeId, accountId, weekStartDate, e.getMessage(), e);
+	        
+	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+	}
+
+
+	@PutMapping("reject/{employeeId}/{accountId}/{weekStartDate}")
+	public ResponseEntity<String> rejectedTimesheet(@PathVariable Integer employeeId,
+	        @PathVariable Integer accountId, @PathVariable String weekStartDate) {
+	    try {
+	        log.info("Rejecting timesheet for employeeId: {}, accountId: {}, weekStartDate: {}", 
+	            employeeId, accountId, weekStartDate);
+	        
+	        String result = timesheetWeekService.rejectedTimesheet(employeeId, accountId, weekStartDate);
+	        
+	        return new ResponseEntity<>(result, HttpStatus.NO_CONTENT);
+	    } catch (Exception e) {
+	        log.error("Error rejecting timesheet for employeeId: {}, accountId: {}, weekStartDate: {}: {}", 
+	            employeeId, accountId, weekStartDate, e.getMessage(), e);
+	        
+	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+	}
+
+	@GetMapping(path = "/gettimeSheetHistory/bymonth/{month}/{year}/{accountId}")
+	public ResponseEntity<List<TimeSheeApprovalDto>> timeSheetHistoryDto(@PathVariable String month,
+			@PathVariable int year, @PathVariable Integer accountId) {
+		try {
+
+			List<TimeSheeApprovalDto> timeSheetHistory = timesheetWeekService.timeSheetHistoryDto(month, year,
+					accountId);
+
+			log.info("Fetching timeSheetHistory for {} {} accountName: {} employeeId: {}", month, year, accountId
+					);
+
+			return ResponseEntity.status(HttpStatus.OK).body(timeSheetHistory);
+		} catch (Exception e) {
+
+			log.error("Error fetching time sheet history for {} {} accountName: {} employeeId: {}: {}", month, year,
+					accountId,  e.getMessage());
+
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }
