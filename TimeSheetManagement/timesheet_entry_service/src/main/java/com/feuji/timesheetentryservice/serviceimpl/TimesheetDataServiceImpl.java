@@ -37,6 +37,7 @@ import com.feuji.timesheetentryservice.bean.AccountProjectsBean;
 import com.feuji.timesheetentryservice.bean.AccountTaskBean;
 import com.feuji.timesheetentryservice.bean.CommonReferenceDetailsBean;
 import com.feuji.timesheetentryservice.bean.EmployeeBean;
+import com.feuji.timesheetentryservice.bean.ReferenceDetailsBean;
 import com.feuji.timesheetentryservice.bean.WeekAndDayDataBean;
 import com.feuji.timesheetentryservice.dto.EmployeeDataDto;
 import com.feuji.timesheetentryservice.dto.SaveAndEditRecordsDto;
@@ -330,6 +331,23 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 
 		return employeeBean;
 	}
+	
+	public ReferenceDetailsBean getDetailsById(Integer detailsId) {
+		log.info("Connecting to Employee server...");
+		String url = "http://localhost:8089/api/referencedetails/getbyid/" + detailsId;
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+
+		HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+
+		ResponseEntity<ReferenceDetailsBean> responseEntity = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
+				ReferenceDetailsBean.class);
+
+		ReferenceDetailsBean referenceDetailsBean = responseEntity.getBody();
+
+		return referenceDetailsBean;
+	}
 
 	public AccountProjectsBean getAccountIdFromProjectId(Integer accountId) {
 		log.info("Connecting to AccountProject server...");
@@ -469,7 +487,8 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 							.attendanceTypeName(getAttendanceType(timesheetWeekDayDetailDto.getAttendanceType())
 									.getReferenceDetailValue())
 							.attendanceType(timesheetWeekDayDetailDto.getAttendanceType())
-
+							.timesheetStatus(getDetailsById(timesheetWeekDayDetailDto.getTimesheetStatus()).getReferenceDetailId())
+							.timesheetStatusname(getDetailsById(timesheetWeekDayDetailDto.getTimesheetStatus()).getReferenceDetailValue())
 							.weekStartDate(timesheetWeekDayDetailDto.getWeekStartDate()).build();
 					if (dayOfWeek.equalsIgnoreCase("MONDAY")) {
 						timesheetWeekDayDto.setHoursMon(timesheetWeekDayDetailDto.getNumberOfHours());
