@@ -2,6 +2,12 @@ package com.feuji.employeeservice.service;
 
 import java.util.List;
 
+
+import org.springframework.data.repository.query.Param;
+
+
+
+
 import com.feuji.employeeservice.bean.EmployeeBean;
 import com.feuji.employeeservice.dto.AddEmployee;
 import com.feuji.employeeservice.dto.EmployeeDisplayDto;
@@ -23,19 +29,17 @@ public interface EmployeeService {
 	public EmployeeEntity getByUuid(String uuid);
 
 	public void updateEmployeeDetails(EmployeeEntity updateEmpolyee, Integer id) throws Throwable;
-
 	public List<EmployeeEntity> getAllEmployees();
-
 	public boolean isEmployeeCodeUnique(String empCode);
 
 	public EmployeeBean getReportingMngIdByEmpId(Integer id);
 	
 	public List<AddEmployee> getAllReportingManager();
 	
-	public List<SaveEmployeeDto> getByReferenceTypeId(Integer referenceTypeId);
 	
 	List<EmployeeEntity> searchEmployeesByFirstName(String firstName);
 	
+	public List<SaveEmployeeDto> getByReferenceTypeId(Integer referenceTypeId);
 //	public List<ReferenceDto> getAll();
 	
 	List<EmployeeDisplayDto> getEmployeeDetails();

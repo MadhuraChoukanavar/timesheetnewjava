@@ -35,39 +35,72 @@ public class CommonReferenceDetailsController {
 	@Autowired
 	CommonReferenceDetails commonReferenceDetails;
 
+//	@GetMapping("/getref/{typeName}")
+//	 @CrossOrigin(origins = "http://localhost:4200")
+//	
+//	public ResponseEntity<List<ReferenceDetailsBean>> getReferenceTypeByName(@PathVariable String typeName)
+//	{
+//	try{
+//		log.info(typeName);
+//		
+//		
+//		List<ReferenceDetailsBean> getbyreferenceType = commonReferenceDetails.getDetailsByTypeId(typeName);
+//		log.info(getbyreferenceType+"output");
+//		return new ResponseEntity<>(getbyreferenceType, HttpStatus.OK) ;	
+//	}
+//	catch (Exception e) {
+//    return null;
+//	}
+//	}
 	@GetMapping("/getref/{typeName}")
-	 @CrossOrigin(origins = "http://localhost:4200")
-	
-	public ResponseEntity<List<ReferenceDetailsBean>> getReferenceTypeByName(@PathVariable String typeName)
-	{
-	try{
-		log.info(typeName);
-		
-		
-		List<ReferenceDetailsBean> getbyreferenceType = commonReferenceDetails.getDetailsByTypeId(typeName);
-		log.info(getbyreferenceType+"output");
-		return new ResponseEntity<>(getbyreferenceType, HttpStatus.OK) ;	
-	}
-	catch (Exception e) {
-    return null;
-	}
+	@CrossOrigin(origins = "http://localhost:4200")
+	public ResponseEntity<List<ReferenceDetailsBean>> getReferenceTypeByName(@PathVariable String typeName) {
+	    try {
+	        log.info("Fetching reference details for type: {}", typeName);
+	        
+	        List<ReferenceDetailsBean> referenceDetails = commonReferenceDetails.getDetailsByTypeId(typeName);
+	        
+	        log.info("Retrieved reference details: {}", referenceDetails);
+	        
+	        return ResponseEntity.ok(referenceDetails);
+	    } catch (Exception e) {
+	        log.error("An error occurred while fetching reference details for type {}: {}", typeName, e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
 	}
 
+//	@GetMapping("/getbyid/{id}")
+//	public ResponseEntity<CommonReferenceDetailsBean> getrefenceDetailsById(@PathVariable Integer id)
+//	{
+//	try{
+//		log.info(id+"id");
+//		
+//		
+//		 CommonReferenceDetailsBean referenceById = commonReferenceDetails.getReferenceById(id);
+//		log.info(referenceById+"output");
+//		return new ResponseEntity<>(referenceById, HttpStatus.OK) ;	
+//	}
+//	catch (Exception e) {
+//    return null;
+//	}
+//	}
+	
 	@GetMapping("/getbyid/{id}")
-	public ResponseEntity<CommonReferenceDetailsBean> getrefenceDetailsById(@PathVariable Integer id)
-	{
-	try{
-		log.info(id+"id");
-		
-		
-		 CommonReferenceDetailsBean referenceById = commonReferenceDetails.getReferenceById(id);
-		log.info(referenceById+"output");
-		return new ResponseEntity<>(referenceById, HttpStatus.OK) ;	
+	public ResponseEntity<CommonReferenceDetailsBean> getrefenceDetailsById(@PathVariable Integer id) {
+	    try {
+	        log.info("Fetching reference details by ID: {}", id);
+	        
+	        CommonReferenceDetailsBean referenceById = commonReferenceDetails.getReferenceById(id);
+	        
+	        log.info("Retrieved reference details: {}", referenceById);
+	        
+	        return ResponseEntity.ok(referenceById);
+	    } catch (Exception e) {
+	        log.error("An error occurred while fetching reference details for ID {}: {}", id, e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
 	}
-	catch (Exception e) {
-    return null;
-	}
-	}
+
 //	@GetMapping("/{referenceTypeId}")
 //    public List<CommonReferenceDetailsEntity> getByReferenceTypeId(@PathVariable Integer referenceTypeId) {
 //        log.info("Fetching Common Reference Details for Reference Type ID: {}", referenceTypeId);

@@ -16,7 +16,6 @@ public interface TimesheetDayService {
 	public TimesheetDayEntity getTimeSheetDayByuuid(Integer id);
 	
 	List<TimeSheetDayHistoryDto> getTimeSheetDayHistory( String uuId);
-
 	 List<CommonReferenceDetailsBean> getDetailsByTypeId(String typeName);
 	 
 }

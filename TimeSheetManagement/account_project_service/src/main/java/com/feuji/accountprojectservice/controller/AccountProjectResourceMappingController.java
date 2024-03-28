@@ -23,15 +23,17 @@ import lombok.extern.slf4j.Slf4j;
 public class AccountProjectResourceMappingController {
 	@Autowired
 	private AccountProjectResourceMappingService accountProjectResourceMappingService;
-	
 	@GetMapping(path = "/accountdetails/{userEmpId}")
-	public ResponseEntity<List<AccountProjectResourceMappingDto>> findAccountNameByUserEmpId(@PathVariable Integer userEmpId)
-	{
-		List<AccountProjectResourceMappingDto> accountProjectResourceMappingDtos=accountProjectResourceMappingService.findAccountNameByUserEmpId(userEmpId);
-		
-		log.info("Fetching accountProjectResourceMappingDtos {}",accountProjectResourceMappingDtos);
-		ResponseEntity<List<AccountProjectResourceMappingDto>> responseEntity = new ResponseEntity<List<AccountProjectResourceMappingDto>>(HttpStatus.OK);
-		return ResponseEntity.status(HttpStatus.OK).body(accountProjectResourceMappingDtos);	
-
+	public ResponseEntity<List<AccountProjectResourceMappingDto>> findAccountNameByUserEmpId(@PathVariable Integer userEmpId) {
+	    try {
+	        List<AccountProjectResourceMappingDto> accountProjectResourceMappingDtos = accountProjectResourceMappingService.findAccountNameByUserEmpId(userEmpId);
+	        
+	        log.info("Fetching accountProjectResourceMappingDtos: {}", accountProjectResourceMappingDtos);
+	        return ResponseEntity.ok().body(accountProjectResourceMappingDtos);
+	    } catch (Exception e) {
+	        log.error("An error occurred while fetching account details by userEmpId {}: {}", userEmpId, e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
 	}
+
 }

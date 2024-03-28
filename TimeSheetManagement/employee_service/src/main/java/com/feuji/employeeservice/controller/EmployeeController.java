@@ -1,6 +1,10 @@
 package com.feuji.employeeservice.controller;
 
+import java.util.Collections;
 import java.util.List;
+
+
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import com.feuji.employeeservice.bean.EmployeeBean;
 import com.feuji.employeeservice.dto.AddEmployee;
 import com.feuji.employeeservice.dto.EmployeeDisplayDto;
@@ -25,6 +30,7 @@ import com.feuji.employeeservice.dto.UpadteEmployeeDto;
 import com.feuji.employeeservice.entity.CommonReferenceTypeEntity;
 import com.feuji.employeeservice.entity.EmployeeEntity;
 import com.feuji.employeeservice.service.EmployeeService;
+
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,24 +55,71 @@ public class EmployeeController {
 		}
 	}
 	
+
+	
+	@GetMapping("/referenceTypeId/{referenceTypeId}")
+	public ResponseEntity<List<SaveEmployeeDto>> getEmployeesByReferenceTypeId(@PathVariable Integer referenceTypeId) {
+	    try {
+	        log.info("Fetching employees by reference type ID: {}", referenceTypeId);
+	        List<SaveEmployeeDto> employees = employeeService.getByReferenceTypeId(referenceTypeId);
+	        log.info("Retrieved {} employee(s) by reference type ID: {}", employees.size(), referenceTypeId);
+	        return ResponseEntity.ok(employees);
+	    } catch (Exception e) {
+	        log.error("An error occurred while fetching employees by reference type ID {}: {}", referenceTypeId, e.getMessage());
+	        // You may choose to handle the exception differently based on your requirement.
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
+	}
+
+	
 	@GetMapping("/getReportingMngIdByEmpId/{id}")
-    public ResponseEntity<EmployeeBean> getReportingMngIdByEmpId(@PathVariable Integer id) {
-        log.info("get reporting manager id by emp id: {}", id);
-        EmployeeBean employeeBean = employeeService.getReportingMngIdByEmpId(id);
-        if (employeeBean.getReportingManagerId() != null) {
-            log.info("reporting manager id: {}", employeeBean);
-            return new ResponseEntity<>(employeeBean, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
+	public ResponseEntity<EmployeeBean> getReportingMngIdByEmpId(@PathVariable Integer id) {
+	    try {
+	        log.info("Fetching reporting manager id by employee ID: {}", id);
+	        EmployeeBean employeeBean = employeeService.getReportingMngIdByEmpId(id);
+	        
+	        if (employeeBean.getReportingManagerId() != null) {
+	            log.info("Reporting manager ID found: {}", employeeBean.getReportingManagerId());
+	            return ResponseEntity.ok(employeeBean);
+	        } else {
+	            log.warn("Reporting manager ID not found for employee ID: {}", id);
+	            return ResponseEntity.notFound().build();
+	        }
+	    } catch (Exception e) {
+	        log.error("An error occurred while fetching reporting manager ID for employee ID {}: {}", id, e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
+	}
+
+
+	
+	@GetMapping("/getAll")
+	public ResponseEntity<List<EmployeeEntity>> getAllEmployees() {
+	    try {
+	        log.info("Fetching all employees");
+	        List<EmployeeEntity> accountEntities = employeeService.getAllEmployees();
+	        log.info("Retrieved {} employee(s)", accountEntities.size());
+	        return ResponseEntity.ok(accountEntities);
+	    } catch (Exception e) {
+	        log.error("An error occurred while fetching all employees: {}", e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
+	}
 	
 	@GetMapping("/{userEmpId}")
-    public List<EmployeeDto> getEmployeeByUserEmpId(@PathVariable("userEmpId") Integer userEmpId) {
-		List<EmployeeDto> employee = employeeService.getByUserEmpId(userEmpId);
-		return employee;
-    }
-	
+	public List<EmployeeDto> getEmployeeByUserEmpId(@PathVariable("userEmpId") Integer userEmpId) {
+	    try {
+	        log.info("Fetching employee by user employee ID: {}", userEmpId);
+	        List<EmployeeDto> employee = employeeService.getByUserEmpId(userEmpId);
+	        log.info("Retrieved {} employee(s) by user employee ID: {}", employee.size(), userEmpId);
+	        return employee;
+	    } catch (Exception e) {
+	        log.error("An error occurred while fetching employee by user employee ID {}: {}", userEmpId, e.getMessage());
+	        // You may choose to handle the exception differently based on your requirement.
+	        return Collections.emptyList(); // Returning an empty list as a fallback.
+	    }
+	}
+
 	@GetMapping("/reporting-managers")
     public List<AddEmployee> getAllReportingManagers() {
         try {
@@ -82,28 +135,6 @@ public class EmployeeController {
 		return null;
     }	
 	
-	@GetMapping("/getAll")
-	public ResponseEntity<List<EmployeeEntity>> getAllEmployees(){
-		List<EmployeeEntity> accountEntities=employeeService.getAllEmployees();
-		log.info("Fetching employee details {}", accountEntities);
-		ResponseEntity<List<EmployeeEntity>> responseEntity = new ResponseEntity<List<EmployeeEntity>>(accountEntities,
-				HttpStatus.OK);
-		return responseEntity;
-	}
-
-
-	@GetMapping("/referenceTypeId/{referenceTypeId}")
-    public List<SaveEmployeeDto> getEmployeesByReferenceTypeId(@PathVariable Integer referenceTypeId) {
-        return employeeService.getByReferenceTypeId(referenceTypeId);
-    }
-	
-	@GetMapping("/search")
-    public ResponseEntity<List<EmployeeEntity>> searchEmployees(@RequestParam("firstName") String firstName) {
-        log.info("Searching employees by first name: {}", firstName);
-        List<EmployeeEntity> employees = employeeService.searchEmployeesByFirstName(firstName);
-        log.info("Found {} employees matching the search criteria", employees.size());
-        return ResponseEntity.ok(employees);
-    }
 	
 	@GetMapping(path = "/getEmployeeDetails")
 	public ResponseEntity<List<EmployeeDisplayDto>> getEmployeeDetails() {
@@ -117,6 +148,15 @@ public class EmployeeController {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	    }
 	}
+	
+	@GetMapping("/search")
+    public ResponseEntity<List<EmployeeEntity>> searchEmployees(@RequestParam("firstName") String firstName) {
+        log.info("Searching employees by first name: {}", firstName);
+        List<EmployeeEntity> employees = employeeService.searchEmployeesByFirstName(firstName);
+        log.info("Found {} employees matching the search criteria", employees.size());
+        return ResponseEntity.ok(employees);
+    }
+	
 	
 	@GetMapping(path = "/getEmployeeDetailByUUiD/{uuid}")
 	public ResponseEntity<List<UpadteEmployeeDto>> getEmployeeDetailByUUiD(@PathVariable String uuid) {

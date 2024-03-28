@@ -26,5 +26,7 @@ public interface AccountService {
 	List<UpdateAccountDto> fetchByUuID(String uuId);
 
 	public AccountEntity updateAccount(AccountBean accountBean);
+	AccountEntity delete(Integer accountId);
+
 
 }

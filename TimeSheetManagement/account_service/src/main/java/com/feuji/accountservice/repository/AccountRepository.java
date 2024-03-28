@@ -23,16 +23,17 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Integer>
 			+ " JOIN EmployeeEntity e_relationship ON a.relationshipManagerId=e_relationship.employeeId "
 			+ " JOIN EmployeeEntity e_businessDevelopment ON a.businessDevelopmentManagerId=e_businessDevelopment.employeeId "
 	        + " JOIN CommonReferenceDetailsEntity crd_accountBuId ON crd_accountBuId.referenceDetailId=a.accountBuId "
-			+" JOIN CommonReferenceDetailsEntity crd_status ON crd_status.referenceDetailId=a.accountStatus ")
+			+" JOIN CommonReferenceDetailsEntity crd_status ON crd_status.referenceDetailId=a.accountStatus "
+	         +"WHERE a.isDeleted=false ")
 	List<AccountDTO> accountDto();
 
 	@Query("SELECT NEW com.feuji.accountservice.dto.UpdateAccountDto(a.accountId,a.accountName,e_owener.employeeId,e_owener.firstName, "
 			+" e_relationship.employeeId  ,e_relationship.firstName,e_businessDevelopment.employeeId,e_businessDevelopment.firstName ,"
 			+" a_parentname.parentAccountId, a_parentname.accountName,crd_accountBuId.referenceDetailId,crd_accountBuId.referenceDetailValue, "
 			+" a.plannedStartDate ,a.plannedEndDate,a.actualStartDate,a.actualEndDate,a.address,a.city,a.state,a.zipcode,a.country, "
-			+" crd_status.referenceDetailId,crd_status.referenceDetailValue ,a.comments,a.uuId)"
+			+" crd_status.referenceDetailId,crd_status.referenceDetailValue ,a.comments,a.uuId,a.isDeleted)"
 			+ "FROM AccountEntity a " 
-					+"JOIN AccountEntity a_parentname ON a.accountId=a_parentname.parentAccountId "
+					+"JOIN AccountEntity a_parentname ON a_parentname.accountId=a.parentAccountId "
 					+ "JOIN EmployeeEntity e_owener ON a.ownerId = e_owener.employeeId "
 					+ " JOIN EmployeeEntity e_relationship ON a.relationshipManagerId=e_relationship.employeeId "
 					+ " JOIN EmployeeEntity e_businessDevelopment ON a.businessDevelopmentManagerId=e_businessDevelopment.employeeId "
