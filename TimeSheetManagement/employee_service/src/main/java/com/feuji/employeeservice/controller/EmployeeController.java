@@ -55,6 +55,7 @@ public class EmployeeController {
 		}
 	}
 	
+
 	@GetMapping("/referenceTypeId/{referenceTypeId}")
 	public ResponseEntity<List<SaveEmployeeDto>> getEmployeesByReferenceTypeId(@PathVariable Integer referenceTypeId) {
 	    try {
@@ -133,18 +134,7 @@ public class EmployeeController {
 		return null;
     }	
 
- 
-//	public List<EmployeeDisplayDto> getEmployeeDetails(Integer employeeId)
-//	@GetMapping(path = "/getEmployeeDetails")
-//	public ResponseEntity<List<EmployeeDisplayDto>> getEmployeeDetails()
-//	{
-//
-//		List<EmployeeDisplayDto> updateDta= employeeService.getEmployeeDetails();
-//		log.info("Fetching updateDta {}", updateDta);
-//		ResponseEntity<List<EmployeeDisplayDto>>  timeSheetHistory1= new ResponseEntity<List<EmployeeDisplayDto>>(HttpStatus.OK);
-//		return ResponseEntity.status(HttpStatus.OK).body(updateDta);	
-//
-//	}
+
 	
 	
 

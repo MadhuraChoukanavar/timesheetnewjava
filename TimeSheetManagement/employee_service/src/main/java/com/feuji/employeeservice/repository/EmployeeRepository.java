@@ -44,6 +44,10 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Intege
 	
 
 	
+	  List<EmployeeEntity> findByFirstNameContainingIgnoreCase(String firstName);
+
+
+	
 	
 	  List<EmployeeEntity> findByFirstNameContainingIgnoreCase(String firstName);
 	  
@@ -103,7 +107,7 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Intege
 		        "JOIN CommonReferenceDetailsEntity crd_du ON crd_du.referenceDetailId = emp.deliveryUnitId " +
 		        "Where emp.uuid=:uuid")
 		List<UpadteEmployeeDto> getEmployeeDetailByUUiD(@Param("uuid") String uuid);
-}
+
 
 	
 	
