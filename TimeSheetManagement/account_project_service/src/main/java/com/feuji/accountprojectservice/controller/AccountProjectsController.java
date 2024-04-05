@@ -2,12 +2,14 @@ package com.feuji.accountprojectservice.controller;
 
 import java.util.List;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,12 +23,14 @@ import com.feuji.accountprojectservice.bean.AccountBean;
 import com.feuji.accountprojectservice.bean.AccountProjectsBean;
 import com.feuji.accountprojectservice.bean.EmployeeBean;
 import com.feuji.accountprojectservice.dto.AccountDto;
+import com.feuji.accountprojectservice.dto.UpdateAccountProjectDto;
 import com.feuji.accountprojectservice.entity.AccountProjectsEntity;
 import com.feuji.accountprojectservice.exception.UUIDNotFoundException;
 import com.feuji.accountprojectservice.repository.AccountProjectsRepo;
 import com.feuji.accountprojectservice.service.AccountProjectsService;
 
 import lombok.extern.slf4j.Slf4j;
+
 
 @CrossOrigin(origins = "http://localhost:4200")
 @Slf4j
@@ -154,6 +158,30 @@ public class AccountProjectsController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
-}
+	 @GetMapping("/getAccountProjectUpdate/{uuid}")
+	    public ResponseEntity<List<UpdateAccountProjectDto>> getAccountProjectUpdate(@PathVariable String uuid) {
+	        try {
+	            List<UpdateAccountProjectDto> accountProjects =  accountProjectsService.getAccountProjectUpdate(uuid);
+	            return new ResponseEntity<>(accountProjects, HttpStatus.OK);
+	        } catch (Exception e) {
+	            log.error("An error occurred while fetching account projects for UUID: {}", uuid, e);
+	            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+	    }
+	 
+	 @DeleteMapping("/deleteAccProject/{accountProjectId}")
+		public ResponseEntity<AccountProjectsEntity> delete(@PathVariable Integer accountProjectId) {
+		    try {
+		        log.info("Deleting account with ID: {}", accountProjectId);
+		        AccountProjectsEntity accountEntity = accountProjectsService.delete(accountProjectId);
+		        log.info("Deleted account with ID: {}", accountProjectId);
+		        return ResponseEntity.ok(accountEntity);
+		    } catch (Exception e) {
+		        log.error("An error occurred while deleting account with ID {}: {}", accountProjectId, e.getMessage());
+		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		    }
+		}
+
+	}
 
 //  @RequestParam(name = "statusReferenceTypeId") Integer statusReferenceTypeId     

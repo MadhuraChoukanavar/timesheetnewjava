@@ -22,10 +22,16 @@ public class UpdateAccountDto {
 	private String parentAccountName;
 	private Integer accountBuId;
 	private String accountBuName;
-	private Timestamp plannedStartDate;
-	private Timestamp  plannedEndDate;
-	private Timestamp  actualStartDate;
-	private Timestamp  actualEndDate;
+	private Timestamp formattedPlannedStartDate;
+
+
+	private Timestamp formattedPlannedEndDate;
+
+
+	private Timestamp formattedActualStartDate;
+
+
+	private Timestamp formattedActualEndDate;
 	private String address;
 	private String city;
 	private String state;
@@ -37,20 +43,20 @@ public class UpdateAccountDto {
 	private String uuId;
 	private Boolean isDeleted;
 	
-	public String getFormattedPlannedStartDate() {
-        return formatDate(plannedStartDate);
+	public String getPlannedStartDate() {
+        return formatDate(formattedPlannedStartDate);
     }
 
-    public String getFormattedPlannedEndDate() {
-        return formatDate(plannedEndDate);
+    public String getPlannedEndDate() {
+        return formatDate(formattedPlannedEndDate);
     }
 
-    public String getFormattedActualStartDate() {
-        return formatDate(actualStartDate);
+    public String getActualStartDate() {
+        return formatDate(formattedActualStartDate);
     }
 
-    public String getFormattedActualEndDate() {
-        return formatDate(actualEndDate);
+    public String getActualEndDate() {
+        return formatDate(formattedActualEndDate);
     }
 
     private String formatDate(Timestamp timestamp) {
@@ -64,10 +70,10 @@ public class UpdateAccountDto {
 	public UpdateAccountDto(Integer accountId, String accountName, Integer ownerId, String ownerName,
 			Integer relationshipManagerId, String relationshipManageName, Integer businessDevelopmentManagerId,
 			String businessDevelopmentManagerName, Integer parentAccountId, String parentAccountName,
-			Integer accountBuId, String accountBuName, Timestamp plannedStartDate, Timestamp plannedEndDate,
-			Timestamp actualStartDate, Timestamp actualEndDate, String address, String city, String state,
-			String zipcode, String country, Integer accountStatus, String statusValue, String comments, String uuId,
-			Boolean isDeleted) {
+			Integer accountBuId, String accountBuName, Timestamp formattedPlannedStartDate,
+			Timestamp formattedPlannedEndDate, Timestamp formattedActualStartDate, Timestamp formattedActualEndDate,
+			String address, String city, String state, String zipcode, String country, Integer accountStatus,
+			String statusValue, String comments, String uuId, Boolean isDeleted) {
 		super();
 		this.accountId = accountId;
 		this.accountName = accountName;
@@ -81,10 +87,10 @@ public class UpdateAccountDto {
 		this.parentAccountName = parentAccountName;
 		this.accountBuId = accountBuId;
 		this.accountBuName = accountBuName;
-		this.plannedStartDate = plannedStartDate;
-		this.plannedEndDate = plannedEndDate;
-		this.actualStartDate = actualStartDate;
-		this.actualEndDate = actualEndDate;
+		this.formattedPlannedStartDate = formattedPlannedStartDate;
+		this.formattedPlannedEndDate = formattedPlannedEndDate;
+		this.formattedActualStartDate = formattedActualStartDate;
+		this.formattedActualEndDate = formattedActualEndDate;
 		this.address = address;
 		this.city = city;
 		this.state = state;
@@ -97,7 +103,7 @@ public class UpdateAccountDto {
 		this.isDeleted = isDeleted;
 	}
 
-
+	
 	
 	
 }

@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -123,24 +125,27 @@ public class TimesheetWeekServiceImpl implements TimesheetWeekService {
 		return accountProjectResourceMappingDtos;
 	}
 	
-	@Override
-	public List<TimeSheetHistoryDto> timeSheetHistoryDto(String month, int year,String accountName,int employeeId) {
-		
-		try
-		{
-	
-		List<TimeSheetHistoryDto>   timeSheetHistory =timesheetWeekRepo.getTimeSheetHistory(month, year,accountName, employeeId);
+	 public List<TimeSheetHistoryDto> timeSheetHistoryDto(String month, int year, String accountName, int employeeId) {
 
-		log.info("timeSheetHistory :" ,timeSheetHistory);
-		return timeSheetHistory;
-		}
-		catch (Exception e) {
+	        try {
+	            List<TimeSheetHistoryDto> timeSheetHistory = timesheetWeekRepo.getTimeSheetHistory(month, year, accountName, employeeId);
 
-			log.info(e.getMessage());
-		}
-		return null;
-	}
+	            // Sort the list based on weekStartDate
+	            Collections.sort(timeSheetHistory, new Comparator<TimeSheetHistoryDto>() {
+	                @Override
+	                public int compare(TimeSheetHistoryDto o1, TimeSheetHistoryDto o2) {
+	                    // Assuming weekStartDate is a Date or some comparable type
+	                    return o1.getWeekStartDate().compareTo(o2.getWeekStartDate());
+	                }
+	            });
 
+	            log.info("timeSheetHistory sorted: ", timeSheetHistory);
+	            return timeSheetHistory;
+	        } catch (Exception e) {
+	            log.info(e.getMessage());
+	        }
+	        return null;
+	    }
 	@Override
 	public List<TimeSheetHistoryDto> getTimeSheetHistoryByYear(int year, String accountName, int employeeId) {
 		try
@@ -175,22 +180,25 @@ public class TimesheetWeekServiceImpl implements TimesheetWeekService {
 		return null;
 	}
 
-	@Override
-	public List<Integer> getYear(int employeeId) {
-		try
-		{
-		
-		List<Integer>   years =timesheetWeekRepo.getYear( employeeId);
+	 public List<Integer> getYear(int employeeId) {
+	        try {
+	            List<Integer> years = timesheetWeekRepo.getYear(employeeId);
 
-		log.info("Years :" ,years);
-		return years;
-		}
-		catch (Exception e) {
+	            // Sort the list of years in ascending order
+	            Collections.sort(years, new Comparator<Integer>() {
+	                @Override
+	                public int compare(Integer year1, Integer year2) {
+	                    return Integer.compare(year1, year2);
+	                }
+	            });
 
-			log.info(e.getMessage());
-		}
-		return null;
-	}
+	            log.info("Years sorted: ", years);
+	            return years;
+	        } catch (Exception e) {
+	            log.info(e.getMessage());
+	        }
+	        return null;
+	    }
 	@Override
 	public String updateTimesheetStatus(Integer employeeId,Integer accountId,String weekStartDate) {
 		Date startDate = convertDateStringToDate(weekStartDate);

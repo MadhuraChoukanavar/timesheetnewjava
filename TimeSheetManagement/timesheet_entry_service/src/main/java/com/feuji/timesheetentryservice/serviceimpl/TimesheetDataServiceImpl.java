@@ -1,6 +1,7 @@
 package com.feuji.timesheetentryservice.serviceimpl;
 
 import java.sql.Timestamp;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
@@ -76,17 +77,14 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 	EmailSender emailSender;
 
 	@Override
-	public void saveOrUpdate(SaveAndEditRecordsDto saveAndEditRecordsDto, String mondayDate) {
-		List<WeekAndDayDataBean> dto = saveAndEditRecordsDto.getTimesheetWeekDayDetailDto();
-
-		Date date = convertDateStringToDate(mondayDate);
-		
-		List<TimesheetWeekEntity> saveAll = saveAll(saveAndEditRecordsDto.getTimesheetWeekDayDetailDto(), date);
-		saveAll.forEach(e -> System.out.println(e));
-		update(saveAndEditRecordsDto.getWeekAndDayDto());
-		
-	}
-
+	  public List<TimesheetWeekEntity> saveOrUpdate(SaveAndEditRecordsDto saveAndEditRecordsDto, String mondayDate) {
+	        List<WeekAndDayDataBean> dto = saveAndEditRecordsDto.getTimesheetWeekDayDetailDto();
+	        Date date = convertDateStringToDate(mondayDate);
+	        List<TimesheetWeekEntity> savedEntities = saveAll(saveAndEditRecordsDto.getTimesheetWeekDayDetailDto(), date);
+	        
+	        update(saveAndEditRecordsDto.getWeekAndDayDto());
+	        return savedEntities;
+	    }
 	@Override
 	public List<TimesheetWeekEntity> saveAll(List<WeekAndDayDataBean> weekAndDayDataBeans, Date mondayDate) {
 		List<TimesheetWeekEntity> weekEntityList = new ArrayList<>();
@@ -588,14 +586,14 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 
 			}
 
-		}
+		} 
 
-		return timesheetDayEntityList;
+		return listOfTimesheetDayEntity;
 	}
 
 	
 	@Override
-	public List<TimesheetWeekEntity> submittingTimesheet(String weekStartDate, Integer timesheetStatus) {
+	public List<TimesheetWeekEntity> submittingTimesheet(String weekStartDate, Integer timesheetStatus,Integer accountId,Integer employeeId) {
 
 		try {
 		
@@ -603,7 +601,7 @@ public class TimesheetDataServiceImpl implements TimeSheetDataService {
 			Date convertedWeekStartDate = dateFormat.parse(weekStartDate);
 
 			List<TimesheetWeekEntity> findByWeekStartDate = timesheetWeekRepo
-					.findByWeekStartDate(convertedWeekStartDate);
+					.findByWeekStartDateAndAccountIdAndEmployeeId(convertedWeekStartDate,accountId,employeeId);
 
 			for (TimesheetWeekEntity timesheetWeekEntity : findByWeekStartDate) {
 				timesheetWeekEntity.setTimesheetStatus(timesheetStatus);

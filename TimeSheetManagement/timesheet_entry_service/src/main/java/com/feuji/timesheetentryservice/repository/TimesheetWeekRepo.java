@@ -22,7 +22,7 @@ import jakarta.transaction.Transactional;
 @Transactional
 public interface TimesheetWeekRepo extends JpaRepository<TimesheetWeekEntity, Integer> {
 
-	public List<TimesheetWeekEntity> findByWeekStartDate(Date weekStartDate);
+	public List<TimesheetWeekEntity> findByWeekStartDateAndAccountIdAndEmployeeId(Date weekStartDate,Integer accountId,Integer employeeId);
 
 	@Query("select new com.feuji.timesheetentryservice.dto.ProjectNameDto( rmap.accountId, rmap.accountProjectId ,tsktp.projectName) "
 			+ "				from AccountProjectResourceMappingEntity rmap left join AccountProjectsEntity tsktp on( rmap.accountProjectId=tsktp.accountProjectId) "

@@ -13,7 +13,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class HolidayBean {
-	private int holidayId;
+	private Integer holidayId;
 
 	private LocalDateTime holidayDate;
 

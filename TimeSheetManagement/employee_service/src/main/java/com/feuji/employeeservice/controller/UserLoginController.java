@@ -1,8 +1,10 @@
 package com.feuji.employeeservice.controller;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.feuji.employeeservice.entity.UserLoginEntity;
+import com.feuji.employeeservice.service.JwtService;
+import com.feuji.employeeservice.service.RefreshTokenService;
 import com.feuji.employeeservice.service.UserLoginService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -25,9 +29,15 @@ public class UserLoginController {
 	@Autowired
     private UserLoginService userLoginService;
 	
-//	@Autowired
-//	private EmailService emailService;
-	
+	@Autowired
+	private JwtService jwtService;
+
+	@Autowired
+	private RefreshTokenService refreshTokenService;
+
+	@Autowired
+	private AuthenticationManager authenticationManager;
+//
 	@PostMapping("/login")
 	public ResponseEntity<UserLoginEntity> loginUser(@RequestBody UserLoginEntity userCredentials) {
 		log.info("user details :{}",userCredentials);
@@ -47,5 +57,30 @@ public class UserLoginController {
         boolean isUnique = userLoginService.isEmailUnique(email);
         return ResponseEntity.ok(isUnique);
     }
+//	
+//@PostMapping("/login")
+//	public JwtResponse authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+//		Authentication authentication = authenticationManager.authenticate(
+//				new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
+//		if (authentication.isAuthenticated()) {
+//			
+//			RefreshToken refreshToken = refreshTokenService.createRefreshToken(authRequest.getEmail());
+//			return JwtResponse.builder().accessToken(jwtService.generateToken(authRequest.getEmail()))
+//					.token(refreshToken.getToken()).build();
+//		} else {
+//			throw new UsernameNotFoundException("invalid user request !");
+//		}
+//	}
+//	
+//	@PostMapping("/refreshToken")
+//	public JwtResponse refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+//		return refreshTokenService.findByToken(refreshTokenRequest.getToken())
+//				.map(refreshTokenService::verifyExpiration).map(RefreshToken::getUserLoginEntity).map(userEntity -> {
+//					String accessToken = jwtService.generateToken(userEntity.getUserName());
+//					return JwtResponse.builder().accessToken(accessToken).token(refreshTokenRequest.getToken()).build();
+//				}).orElseThrow(() -> new RuntimeException("Refresh token is not in database!"));
+//	}
+
+
 
 }
