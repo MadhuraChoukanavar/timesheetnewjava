@@ -29,7 +29,7 @@ public class AccountDto {
 	private float noOfBillingHours;
 
 
-//	private String uuid;
+private String uuid;
 //	
 	
 	private Timestamp plannedStartDate;
@@ -37,8 +37,8 @@ public class AccountDto {
 	private Timestamp  actualStartDate;
 	private Timestamp  actualEndDate;
 	public AccountDto(Integer accountProjectId, String projectPId, String projectName, String accountName,
-			String firstName, String referenceDetailValue, float noOfBillingHours, Timestamp plannedStartDate,
-			Timestamp plannedEndDate, Timestamp actualStartDate, Timestamp actualEndDate) {
+			String firstName, String referenceDetailValue, float noOfBillingHours, String uuid,
+			Timestamp plannedStartDate, Timestamp plannedEndDate, Timestamp actualStartDate, Timestamp actualEndDate) {
 		super();
 		this.accountProjectId = accountProjectId;
 		this.projectPId = projectPId;
@@ -47,12 +47,12 @@ public class AccountDto {
 		this.firstName = firstName;
 		this.referenceDetailValue = referenceDetailValue;
 		this.noOfBillingHours = noOfBillingHours;
+		this.uuid = uuid;
 		this.plannedStartDate = plannedStartDate;
 		this.plannedEndDate = plannedEndDate;
 		this.actualStartDate = actualStartDate;
 		this.actualEndDate = actualEndDate;
 	}
-	
 	
 
 }

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,20 +54,19 @@ public class TimesheetDataController {
 	 *         HTTP status code.
 	 */
 	@PostMapping("/saveedit/{weekStartDate}")
-	public String saveOrUpdateRecords(@RequestBody SaveAndEditRecordsDto weekAndDayDataBeans,
-			@PathVariable String weekStartDate) {
-		try {
-			log.info("Saving or updating records for week starting from: {}", weekStartDate);
-			timeSheetDataService.saveOrUpdate(weekAndDayDataBeans, weekStartDate);
-			log.info("Records saved or updated successfully");
-			return "Records saved or updated successfully";
-		} catch (Exception e) {
-			log.error("An error occurred while saving or updating records for week starting from {}: {}", weekStartDate,
-					e.getMessage());
-			return "Error occurred while saving or updating records";
-		}
+	public ResponseEntity< List<TimesheetWeekEntity> > saveOrUpdateRecords(@RequestBody SaveAndEditRecordsDto weekAndDayDataBeans,
+	        @PathVariable String weekStartDate) {
+	    try {
+	        log.info("Saving or updating records for week starting from: {}", weekStartDate);
+	        List<TimesheetWeekEntity> saveOrUpdate = timeSheetDataService.saveOrUpdate(weekAndDayDataBeans, weekStartDate);
+	        log.info("Records saved or updated successfully");
+	        return ResponseEntity.ok(saveOrUpdate);
+	    } catch (Exception e) {
+	        log.error("An error occurred while saving or updating records for week starting from {}: {}", weekStartDate,
+	                e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
 	}
-
 	/**
 	 * Handles the HTTP GET request to retrieve the timesheet data for a specific
 	 * week and employee.
@@ -108,7 +108,7 @@ public class TimesheetDataController {
 	 * @return ResponseEntity containing a list of TimesheetDayEntity objects
 	 *         representing the deleted record and HTTP status code.
 	 */
-	@PostMapping("/delete")
+	@DeleteMapping("/delete")
 	public ResponseEntity<List<TimesheetDayEntity>> deleteRecord(@RequestBody WeekAndDayDto weekAndDayDto) {
 		try {
 			log.info("Deleting record: {}", weekAndDayDto);
@@ -144,7 +144,7 @@ public class TimesheetDataController {
 					Constants.TIME_SHEET_STATUS_SAVED);
 
 			List<TimesheetWeekEntity> submittingTimesheet = timeSheetDataService.submittingTimesheet(weekStartDate,
-					Constants.TIME_SHEET_STATUS_SUBMITTED);
+					Constants.TIME_SHEET_STATUS_SUBMITTED,accountId,employeeId);
 
 			if (submittingTimesheet != null && !submittingTimesheet.isEmpty()) {
 				this.sendEmails(employeeId, accountId, weekStartDate);

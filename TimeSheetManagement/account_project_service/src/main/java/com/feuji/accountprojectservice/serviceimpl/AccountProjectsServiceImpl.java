@@ -2,6 +2,7 @@ package com.feuji.accountprojectservice.serviceimpl;
 
 
 import java.sql.Timestamp;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,11 +25,13 @@ import com.feuji.accountprojectservice.bean.AccountBean;
 import com.feuji.accountprojectservice.bean.AccountProjectsBean;
 import com.feuji.accountprojectservice.bean.EmployeeBean;
 import com.feuji.accountprojectservice.dto.AccountDto;
+import com.feuji.accountprojectservice.dto.UpdateAccountProjectDto;
 import com.feuji.accountprojectservice.entity.AccountProjectsEntity;
 import com.feuji.accountprojectservice.exception.AccountProjectNotFoundException;
 import com.feuji.accountprojectservice.exception.UUIDNotFoundException;
 import com.feuji.accountprojectservice.repository.AccountProjectsRepo;
 import com.feuji.accountprojectservice.service.AccountProjectsService;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -210,7 +213,7 @@ private static Logger log = LoggerFactory.getLogger(AccountProjectsServiceImpl.c
 			    List<EmployeeBean> employeeBeans = responseEntity.getBody();
 			    
 			    List<EmployeeBean> filteredEmployees = employeeBeans.stream()
-			            .filter(employee -> employee.getDesignation().equals("Manager" ))
+			            .filter(employee -> employee.getDesignation().equalsIgnoreCase("Project Manager" ))
 			            .collect(Collectors.toList());
 		    return filteredEmployees;
 		}
@@ -261,10 +264,26 @@ private static Logger log = LoggerFactory.getLogger(AccountProjectsServiceImpl.c
 		}
 
 
+		 @Override
+		    public List<UpdateAccountProjectDto> getAccountProjectUpdate(String uuid) {
+		        return accountProjectsRepo.accountProjectUpdate(uuid);
+		    }
 
 
+		 @Override
+			public AccountProjectsEntity delete(Integer accountProjectId) {
+				log.info("service method{}", accountProjectId);
+				AccountProjectsEntity optional = accountProjectsRepo.findById(accountProjectId)
+						.orElseThrow(() -> new IllegalArgumentException("id not found"));
+				optional.setIsDeleted(true);
+				AccountProjectsBean accountBean = modelMapper.map(optional, AccountProjectsBean.class);
+				 AccountProjectsBean deletedEmployee = updateAccountProject(accountBean);
+				 AccountProjectsEntity accountProjectsEntity = modelMapper.map(deletedEmployee, AccountProjectsEntity.class);
+				return accountProjectsEntity;
 
 
+				
+			}
 }
 
 

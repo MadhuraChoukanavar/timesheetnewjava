@@ -28,18 +28,21 @@ public interface TimeSheetDataService {
 	// timesheetDayId);
 
 	List<TimesheetDayEntity> deleteDayRecord(WeekAndDayDto weekAndDayDto);
-
-	List<TimesheetWeekEntity> submittingTimesheet(String weekStartDate, Integer timesheetStatus);
+//
+//	List<TimesheetWeekEntity> submittingTimesheet(String weekStartDate, Integer timesheetStatus);
 	// void deleteRecords(Integer timesheetWeekId, Integer employeeId, String
 	// weekStartDate);
 
-	public void saveOrUpdate(SaveAndEditRecordsDto weekAndDayDataBeans, String dateMon);
+	public List<TimesheetWeekEntity> saveOrUpdate(SaveAndEditRecordsDto weekAndDayDataBeans, String dateMon);
 	
 	public List<EmployeeDataDto> getEmployeeDetailsByIdAndAccountId(Integer accountId, Integer employeeId);
 
 	public List<EmployeeDataDto> getReportingManagerByIdAndAccountId(Integer accountId, Integer employeeId);
 
 	public void processPendingTimesheetsBySubmittedStatus() throws Exception;
+
+	List<TimesheetWeekEntity> submittingTimesheet(String weekStartDate, Integer timesheetStatus, Integer accountId,
+			Integer employeeId);
 
 }
 

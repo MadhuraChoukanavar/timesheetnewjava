@@ -22,7 +22,7 @@ public class UserLoginServiceImpl implements UserLoginService {
 //	private EmailService emailService;
 
 	public UserLoginEntity loginUser(String userEmail, String userPassword) {
-	    UserLoginEntity user = userLoginRepo.findByUserEmail(userEmail);
+	    UserLoginEntity user = userLoginRepo.findByUserEmail(userEmail).get();
 
 	    if (user != null && user.getUserPassword().equals(userPassword)) {
 	        return user; // Return the UserLoginEntity if credentials are valid
@@ -33,7 +33,7 @@ public class UserLoginServiceImpl implements UserLoginService {
 
 	@Override
 	public boolean isEmailUnique(String email) {
-		 UserLoginEntity existingEmployee = userLoginRepo.findByUserEmail(email);
+		 UserLoginEntity existingEmployee = userLoginRepo.findByUserEmail(email).get();
 	        return existingEmployee == null;
 	}
 

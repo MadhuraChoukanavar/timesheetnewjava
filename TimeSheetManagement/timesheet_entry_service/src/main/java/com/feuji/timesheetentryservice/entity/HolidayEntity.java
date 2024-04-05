@@ -35,7 +35,7 @@ public class HolidayEntity {
 	@Id
 	@Column(name = "holiday_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int holidayId;
+	private Integer holidayId;
 	@Column(name = "holiday_date")
 	private LocalDate holidayDate;
 	@Column(name = "holiday_day")
